@@ -1,0 +1,98 @@
+---
+type: planning
+status: draft
+review_status: needs-human-review
+tags:
+  - planning
+  - draft
+  - needs-human-review
+  - cleany
+source_refs:
+  - "[기획서]"
+related_decisions:
+  -
+related_jira:
+  -
+updated: 2026-07-08
+---
+
+# 프로젝트 개요(Project Brief)
+
+## 1. 요약
+
+끌리니(Cleany)는 무인 점포 및 공간 대여 시설의 이용 후 정리·점검 업무를 자동화하기 위한 XLeRobot 기반 관리 로봇 프로젝트다.
+
+## 2. 현재 기획 이해
+
+- 프로젝트명은 `끌리니(Cleany) : 무인 점포 관리 로봇`이다.
+- 팀명은 `AI 에이전트는 움직이고 싶어`이다.
+- 팀원은 이동근, 박창수, 이정현이다.
+- 끌리니는 이용자가 퇴실한 뒤 지정 공간으로 이동하여 쓰레기, 분실물 후보, 흐트러진 집기류를 확인하고 기본 정리 작업을 수행하는 로봇으로 이해한다.
+- 기획서 기준 1차 타깃은 무인 스터디카페 및 공간대여 시설이다.
+
+## 3. 왜 중요한가
+
+무인 점포와 공간 공유 서비스는 상주 인력이 없거나 적기 때문에 이용 종료 직후 청결, 정돈, 시설 상태 유지가 일정하지 않을 수 있다. 이 공백은 고객 경험과 브랜드 이미지에 직접적인 영향을 주며, 점주 1인이 다수 매장을 관리할 때 운영 부담을 키운다.
+
+## 4. 핵심 내용
+
+### 4.1 프로젝트 소개
+
+- 이동형 로봇과 AI 비전 기술을 활용해 무인 점포의 이용 종료 후 정리 및 점검 업무를 자동화한다.
+- XLeRobot 기반 모바일 매니퓰레이터가 매장 내 쓰레기, 분실물 후보, 흐트러진 집기류를 확인하고 정리한다.
+- 사람이 상주하지 않는 시간에도 다음 이용자가 바로 사용할 수 있는 공간 상태를 만드는 것을 목표로 한다.
+
+### 4.2 주요 기능
+
+- 쓰레기 자동 수거
+- 공간 정리/정돈
+- 자율 주행
+- 분실물 후보 확인
+- 책상 닦기
+- 소등
+- 문단속
+- 관제 대시보드
+
+### 4.3 주요 기술 키워드
+
+- Embodied AI
+- Vision-Language-Action
+- Robotics
+- XLeRobot
+- ROS 2
+- SLAM
+- Nav2
+- Jetson AGX Orin
+- RGB-D
+- 2D LiDAR
+- IMU
+- 객체 탐지 및 Segmentation
+- 경량 VLM
+- MuJoCo
+- Isaac Sim
+- TensorRT
+- 온디바이스 추론
+
+### 4.4 기대효과 초안
+
+- 사용자 측면: 점포 청결 및 정돈 미흡으로 인한 고객 이탈과 이미지 손실을 줄이는 데 기여한다.
+- 비즈니스 측면: 반복 순찰 및 청소 소요를 줄여 다점포 운영 효율을 높이는 데 기여한다.
+- 확장 측면: 향후 로봇 임대, 유지관리 구독, 현장 설치 및 캘리브레이션 패키지 등으로 확장 가능성이 기획서에 언급되어 있다.
+
+## 5. 관련 기술 문서
+
+- [[20_TECHNICAL/00 - Technical Overview|Technical Overview]]
+- [[20_TECHNICAL/01 - System Concept|System Concept]]
+- [[20_TECHNICAL/04 - Robot Platform XLeRobot|Robot Platform XLeRobot]]
+
+## 6. 관련 결정
+
+- 현재 selected Decision 없음.
+- 후보는 [[30_DECISIONS/00 - Decision Index|Decision Index]]에 정리한다.
+
+## 7. 미해결 질문
+
+- 무인 스터디카페를 1차 타깃으로 확정할 것인가?
+- MVP 데모 범위는 쓰레기 수거, 정리, 주행, 점검 중 어디까지인가?
+- 관제 대시보드는 MVP 산출물인가, 향후 확장 placeholder인가?
+- 기획서의 시장 수치와 출처는 추가 검증이 필요한가?
