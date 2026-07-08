@@ -56,7 +56,7 @@ def wiki_target_exists(root: Path, current_file: Path, raw: str) -> bool:
         candidates.extend([root / base, current_file.parent / base])
     else:
         candidates.extend([root / f"{target}.md", current_file.parent / f"{target}.md"])
-        candidates.extend(root.rglob(f"{base.name}.md"))
+        candidates.extend(path for path in iter_markdown_files(root) if path.name == f"{base.name}.md")
     for candidate in candidates:
         try:
             resolved = candidate.resolve()
