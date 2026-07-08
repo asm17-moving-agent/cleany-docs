@@ -72,12 +72,19 @@ Sprint 목표는 확정된 결정과 검토 대기 항목을 분리해서 잡는
 4. 관련 `10_PLANNING` 또는 `20_TECHNICAL` 문서
 5. 관련 `40_RAW` 원본 기록
 
-현재 초기 scaffold에는 selected Decision 문서를 임의 생성하지 않았다. Decision 후보는 [[30_DECISIONS/00 - Decision Index|Decision Index]]와 [[10_PLANNING/08 - Questions|Questions]]에서 확인한다.
+현재 초기 scaffold에는 selected Decision 문서를 임의 생성하지 않았다. Decision 후보와 초안 상태는 [[30_DECISIONS/00 - Decision Index|Decision Index]]와 [[10_PLANNING/08 - Questions|Questions]]에서 함께 확인한다.
 
 ## 6. 외부 공유 전에
 
 1. [[00_START_HERE/02 - Current Status|Current Status]]가 최신인지 확인한다.
 2. draft 문서를 그대로 공식 결론처럼 공유하지 않는다.
 3. Raw 전체를 공유하지 않는다.
-4. 필요한 경우 `$kb-publish`로 stable view를 만든다.
-5. 공유 전 `$kb-quality-checks`와 `$kb-audit`를 실행한다.
+4. 외부 게시가 필요하면 GitHub Pages + obsidian-html 기반 배포 흐름을 사용한다.
+5. 공유 전 `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack`을 실행한다.
+
+## 7. Codex 작업 흐름을 확인해야 할 때
+
+1. `AGENTS.md`에서 저장소 작업 규칙을 확인한다.
+2. `skills/README.md`에서 사용 가능한 repo skill 목록을 확인한다.
+3. 반복 작업은 `.codex/prompts`가 아니라 `$skill-name` 형식의 repo skill prompt로 요청한다.
+4. skill이나 검사 스크립트를 바꾼 뒤에는 `$kb-quality-checks`를 실행한다.

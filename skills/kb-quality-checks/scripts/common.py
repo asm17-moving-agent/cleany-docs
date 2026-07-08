@@ -15,6 +15,7 @@ EXCLUDED_DIRS = {
     "venv",
     "__pycache__",
     ".obsidian",
+    ".codex",
     "50_WORKING",
 }
 
@@ -26,11 +27,11 @@ def repo_root_from_args(argv: list[str]) -> Path:
 
 
 def iter_markdown_files(root: Path) -> Iterable[Path]:
-    for path in root.rglob("*.md"):
-        rel_parts = path.relative_to(root).parts
-        if any(part in EXCLUDED_DIRS for part in rel_parts):
-            continue
-        yield path
+    for current, dirs, files in os.walk(root):
+        dirs[:] = sorted(d for d in dirs if d not in EXCLUDED_DIRS)
+        for filename in sorted(files):
+            if filename.endswith(".md"):
+                yield Path(current) / filename
 
 
 def rel(path: Path, root: Path) -> str:

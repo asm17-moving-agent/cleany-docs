@@ -15,7 +15,6 @@ SKIP_FRONTMATTER = {
 }
 
 SKIP_PREFIXES = (
-    ".codex/prompts/",
     "skills/kb-quality-checks/scripts/",
 )
 
@@ -34,7 +33,18 @@ def required_keys_for(path: str) -> list[str]:
     if path == "30_DECISIONS/00 - Decision Index.md":
         return ["type", "status", "review_status", "updated", "tags"]
     if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
-        return ["type", "decision_type", "status", "date", "source_refs", "reflected_in", "related_jira", "updated", "tags"]
+        return [
+            "type",
+            "decision_type",
+            "status",
+            "review_status",
+            "date",
+            "source_refs",
+            "reflected_in",
+            "related_jira",
+            "updated",
+            "tags",
+        ]
     if path.startswith("40_RAW/"):
         return ["type", "review_status", "ingest_status", "tags"]
     if path.startswith("90_TEMPLATES/"):

@@ -58,7 +58,7 @@ tags:
    - 기술 리스크 또는 안전 리스크에 영향을 준다.
 5. Decision 초안을 만들 때는 기본 상태를 유지한다.
    - `status: draft`
-   - `review_status: needs-human-review`가 필요한 경우 추가한다.
+   - `review_status: needs-human-review`
    - `source_refs`에 Raw 문서 경로를 반드시 넣는다.
    - `reflected_in`은 실제 반영한 문서만 넣는다.
    - 사람 검토 전에는 `selected`로 바꾸지 않는다.

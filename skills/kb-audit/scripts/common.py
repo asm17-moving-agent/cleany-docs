@@ -12,14 +12,17 @@ EXCLUDED_PATH_PREFIXES = ("40_RAW/60_External_Artifacts/audit/",)
 
 
 def iter_markdown(root: Path):
-    for path in sorted(root.rglob("*.md")):
-        rel = path.relative_to(root)
-        if any(part in EXCLUDED_DIRS for part in rel.parts):
-            continue
-        rel_text = str(rel).replace(os.sep, "/")
-        if rel_text.startswith(EXCLUDED_PATH_PREFIXES):
-            continue
-        yield path
+    for current, dirs, files in os.walk(root):
+        dirs[:] = sorted(d for d in dirs if d not in EXCLUDED_DIRS)
+        for filename in sorted(files):
+            if not filename.endswith(".md"):
+                continue
+            path = Path(current) / filename
+            rel = path.relative_to(root)
+            rel_text = str(rel).replace(os.sep, "/")
+            if rel_text.startswith(EXCLUDED_PATH_PREFIXES):
+                continue
+            yield path
 
 
 def rel(path: Path, root: Path) -> str:

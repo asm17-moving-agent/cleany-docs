@@ -16,6 +16,27 @@
 
 현재 가장 중요한 일은 문서를 더 많이 만드는 것이 아니라, `Questions`에 쌓인 핵심 질문을 사람 검토로 닫고 필요한 항목을 Decision 초안으로 남기는 것입니다.
 
+## 처음 작업하는 사람을 위한 10분 흐름
+
+이 저장소에서 가장 먼저 구분해야 할 것은 `근거`, `초안`, `결정`입니다.
+
+1. `40_RAW`는 근거입니다. 원문, 회의록, 조사 자료를 해석 없이 보존합니다.
+2. `10_PLANNING`과 `20_TECHNICAL`은 검토 가능한 공식 문서 초안입니다. 대부분 `draft`, `needs-human-review` 상태입니다.
+3. `30_DECISIONS`는 중요한 선택을 따로 추적하는 곳입니다. `selected`가 아니면 아직 확정 결정이 아닙니다.
+4. 불확실한 내용은 바로 결론으로 쓰지 않고 `10_PLANNING/08 - Questions.md`에 남깁니다.
+5. 문서를 고친 뒤에는 `$kb-quality-checks`로 깨진 구조와 링크를 확인합니다.
+
+작업할 때는 아래 질문으로 시작하면 됩니다.
+
+| 내가 하려는 일 | 먼저 볼 곳 | 사용할 흐름 |
+|---|---|---|
+| 새 파일을 받았다 | `40_RAW/00_Inbox` | `$office-to-markdown` 후 `$kb-ingest` |
+| 기획 범위를 정리한다 | `10_PLANNING/04 - Scope and Non-Goals.md` | 근거 확인 후 draft 유지 |
+| 기술 전제를 정리한다 | `20_TECHNICAL/00 - Technical Overview.md` | Planning과 섞지 않기 |
+| 중요한 선택을 남긴다 | `30_DECISIONS/00 - Decision Index.md` | Decision 후보 또는 draft 생성 |
+| 무엇이 막혔는지 본다 | `10_PLANNING/08 - Questions.md` | 질문 상태 갱신 |
+| 공유 전 점검한다 | `00_START_HERE/02 - Current Status.md` | `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack` |
+
 ## 자주 하는 작업
 
 ### 새 자료를 받았을 때
@@ -51,6 +72,20 @@
 1. `$kb-quality-checks`로 구조, formatting, metadata, 링크를 확인합니다.
 2. `$kb-audit`로 검토 플래그와 Decision 상태를 요약합니다.
 3. 실패 항목이 기획 판단을 요구하면 임의 수정하지 않고 `Questions`에 남깁니다.
+
+### Codex에게 요청할 때
+
+반복 작업은 자연어보다 skill prompt로 요청합니다.
+
+```text
+$office-to-markdown "40_RAW/00_Inbox/자료.docx"를 Markdown으로 변환해.
+$kb-ingest "40_RAW/10_Meetings/260708 - 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
+$kb-quality-checks 이 저장소의 전체 결정적 검사를 실행하고 실패 항목을 요약해.
+$kb-audit 전체 audit 결과를 요약해.
+$kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액션을 요약해.
+```
+
+반대로 단순 조회, 리뷰, 이어지는 문서 편집, skill 자체 개선은 자연어로 요청해도 됩니다.
 
 ## 지금 남은 핵심 질문
 
