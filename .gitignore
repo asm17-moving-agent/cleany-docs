@@ -3,5 +3,6 @@ __pycache__/
 *.py[cod]
 .uv-cache/
 dist/
+.obsidian/
 40_RAW/60_External_Artifacts/audit/
 .DS_Store
