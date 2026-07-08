@@ -4,7 +4,6 @@ from __future__ import annotations
 import sys
 
 sys.dont_write_bytecode = True
-from pathlib import Path
 
 from common import print_errors, repo_root_from_args
 
@@ -34,7 +33,6 @@ REQUIRED_DIRS = [
     ".agents/skills/kb-audit",
     ".agents/skills/kb-review-pack",
     ".agents/skills/kb-pr",
-    ".codex",
     "skills/kb-quality-checks",
     "skills/kb-quality-checks/scripts",
     "skills/office-to-markdown",
@@ -74,7 +72,14 @@ REQUIRED_FILES = [
     "20_TECHNICAL/07 - Data and Evaluation.md",
     "20_TECHNICAL/08 - Safety and Risk.md",
     "30_DECISIONS/00 - Decision Index.md",
+    "30_DECISIONS/Planning/.gitkeep",
+    "30_DECISIONS/Technical/.gitkeep",
+    "40_RAW/00_Inbox/.gitkeep",
+    "40_RAW/10_Meetings/.gitkeep",
     "40_RAW/20_Planning/기획서 원문 요약.md",
+    "40_RAW/30_Technical_Notes/.gitkeep",
+    "40_RAW/40_Research/.gitkeep",
+    "40_RAW/50_Mentor_Feedback/.gitkeep",
     "90_TEMPLATES/Template - Planning Doc.md",
     "90_TEMPLATES/Template - Technical Doc.md",
     "90_TEMPLATES/Template - Decision.md",
@@ -123,6 +128,7 @@ REQUIRED_FILES = [
 
 FORBIDDEN_NAMES = {"CLAUDE.md"}
 FORBIDDEN_DIRS = {".claude", "50_WORKING", "kb-publish", "prompts"}
+SKIP_DIRS = {".git", ".venv", ".obsidian", ".codex"}
 
 
 def main() -> int:
@@ -137,11 +143,14 @@ def main() -> int:
         if not (root / item).is_file():
             errors.append(f"필수 파일 없음: {item}")
 
-    for path in root.rglob("*"):
-        if path.name in FORBIDDEN_NAMES:
-            errors.append(f"금지 파일 존재: {path.relative_to(root)}")
-        if path.is_dir() and path.name in FORBIDDEN_DIRS:
-            errors.append(f"금지 폴더 존재: {path.relative_to(root)}")
+    for path in root.iterdir():
+        if path.name in SKIP_DIRS:
+            continue
+        for nested in path.rglob("*"):
+            if nested.name in FORBIDDEN_NAMES:
+                errors.append(f"금지 파일 존재: {nested.relative_to(root)}")
+            if nested.is_dir() and nested.name in FORBIDDEN_DIRS:
+                errors.append(f"금지 폴더 존재: {nested.relative_to(root)}")
 
     return print_errors("structure", errors)
 
