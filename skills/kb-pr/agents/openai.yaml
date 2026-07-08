@@ -1,0 +1,4 @@
+interface:
+  display_name: "KB PR"
+  short_description: "Publish Cleany KB changes through a guarded draft PR workflow."
+  default_prompt: "$kb-pr 현재 변경사항을 검토하고 draft PR을 생성해."

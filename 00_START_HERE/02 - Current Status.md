@@ -13,7 +13,7 @@ updated: 2026-07-08
 
 ## 1. 한 줄 상태
 
-현재 KB는 기획서 원문을 바탕으로 만든 초기 scaffold다. 다음 단계는 새 문서를 늘리는 것이 아니라, 핵심 질문을 사람 검토로 닫고 필요한 항목을 Decision 초안으로 분리하는 것이다.
+현재 KB는 기획서 원문을 바탕으로 만든 초기 scaffold이며, 문서작업 자동화는 `.codex/prompts`가 아니라 repo skill 중심 구조로 전환되어 있다. 다음 단계는 새 문서를 늘리는 것이 아니라, 핵심 질문을 사람 검토로 닫고 필요한 항목을 Decision 초안으로 분리하는 것이다.
 
 ## 2. 지금 확실한 것
 
@@ -22,6 +22,8 @@ updated: 2026-07-08
 - 문제 인식은 무인 점포 및 공간 공유 서비스 확산에 따른 청결, 정돈, 시설 상태 유지 공백이다.
 - 기획서 기준 1차 타깃은 무인 스터디카페/공간대여 시설로 고려된다.
 - 예비 기술 구조는 XLeRobot 기반 모바일 매니퓰레이터, Rule-based VLA, SLAM/Nav2, Jetson AGX Orin 64GB, RGB-D, 2D LiDAR, IMU를 중심으로 작성되어 있다.
+- Codex 반복 워크플로우는 `.agents/skills`로 노출되는 repo skill을 사용한다.
+- Codex custom prompt(`.codex/prompts`)와 `$kb-publish` stable view 생성 흐름은 더 이상 사용하지 않는다.
 
 ## 3. 아직 확정하면 안 되는 것
 
@@ -33,6 +35,7 @@ updated: 2026-07-08
 - 안전 기준과 실패 처리 정책
 - Jetson/ROS/JetPack 조합의 실제 호환성
 - XLeRobot의 정확한 센서, 페이로드, 매니퓰레이터 사양
+- 외부 게시 흐름의 구체 설계
 
 ## 4. 다음 회의에서 닫아야 할 질문
 
@@ -63,7 +66,8 @@ updated: 2026-07-08
 - [[20_TECHNICAL/03 - Rule-based VLA Architecture|Rule-based VLA Architecture]]
 - [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
 - [[30_DECISIONS/00 - Decision Index|Decision Index]]
+- `skills/README.md`
 
 ## 7. 작업 전 확인
 
-문서를 수정하기 전에는 이 문서의 “아직 확정하면 안 되는 것”을 확인한다. 문서를 수정한 뒤에는 `$kb-quality-checks`를 실행하고, 검토 플래그가 필요한 경우 `$kb-audit`로 요약한다.
+문서를 수정하기 전에는 이 문서의 “아직 확정하면 안 되는 것”을 확인한다. 문서를 수정한 뒤에는 `$kb-quality-checks`를 실행하고, 검토 플래그가 필요한 경우 `$kb-audit`로 요약한다. 사람 검토 전에 전체 상태를 한 번에 묶어야 하면 `$kb-review-pack`을 사용한다.
