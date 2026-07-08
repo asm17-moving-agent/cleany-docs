@@ -11,60 +11,59 @@ updated: 2026-07-08
 
 # 현재 상태(Current Status)
 
-## 1. 현재 프로젝트 단계
+## 1. 한 줄 상태
 
-- 현재 단계는 기획서 원문 기반 초기 KB scaffold 작성 단계다.
-- 세부 스토리보드, 시나리오, 부품 선정 및 아키텍처 결정은 추후 진행한다.
+현재 KB는 기획서 원문을 바탕으로 만든 초기 scaffold다. 다음 단계는 새 문서를 늘리는 것이 아니라, 핵심 질문을 사람 검토로 닫고 필요한 항목을 Decision 초안으로 분리하는 것이다.
 
-## 2. 현재 기획 상태
+## 2. 지금 확실한 것
 
-- 프로젝트명은 `끌리니(Cleany) : 무인 점포 관리 로봇`으로 확인된다.
+- 프로젝트명은 `끌리니(Cleany) : 무인 점포 관리 로봇`이다.
 - 팀명은 `AI 에이전트는 움직이고 싶어`이며 팀원은 이동근, 박창수, 이정현이다.
 - 문제 인식은 무인 점포 및 공간 공유 서비스 확산에 따른 청결, 정돈, 시설 상태 유지 공백이다.
-- 1차 타깃은 기획서 기준 무인 스터디카페/공간대여 시설로 고려된다.
-- 주요 기능은 쓰레기 자동 수거, 공간 정리/정돈, 자율 주행, 분실물 후보 확인, 책상 닦기, 소등, 문단속, 관제 대시보드다.
-- 팀 역할, 멘토 역할, 월별 상세 일정, 수행 방법, 결과물 활용방안 일부는 기획서에 placeholder 또는 빈 항목이 있어 검토 필요다.
+- 기획서 기준 1차 타깃은 무인 스터디카페/공간대여 시설로 고려된다.
+- 예비 기술 구조는 XLeRobot 기반 모바일 매니퓰레이터, Rule-based VLA, SLAM/Nav2, Jetson AGX Orin 64GB, RGB-D, 2D LiDAR, IMU를 중심으로 작성되어 있다.
 
-## 3. 현재 기술 상태
+## 3. 아직 확정하면 안 되는 것
 
-- 예비 기술 구조는 XLeRobot 기반 모바일 매니퓰레이터, Rule-based VLA, SLAM, ROS 2 Navigation/Nav2, Jetson AGX Orin 64GB, RGB-D, 2D LiDAR, IMU를 중심으로 작성되어 있다.
-- 객체 탐지 및 Segmentation, 경량 VLM, 온디바이스 추론, TensorRT 최적화, MuJoCo/Isaac Sim 기반 시뮬레이션이 기획서에 포함되어 있다.
-- Ubuntu 22.04 LTS(JetPack 6), Docker, CUDA 등 개발환경 항목은 기획서에 적힌 수준으로만 반영했으며 실제 호환성은 추가 확인 필요다.
-- Orin NX 사용 가능성은 현재 기획서 기준 공식 항목이 아니므로 검토 필요 질문으로 남긴다.
+- MVP 기능 범위
+- 관제 대시보드의 MVP 포함 여부
+- 책상 닦기, 소등, 문단속의 실제 수행 방식
+- 팀원별 역할, 멘토 역할, 월별 추진 일정
+- 정량 성공 기준과 평가 목표값
+- 안전 기준과 실패 처리 정책
+- Jetson/ROS/JetPack 조합의 실제 호환성
+- XLeRobot의 정확한 센서, 페이로드, 매니퓰레이터 사양
 
-## 4. 주요 리스크
+## 4. 다음 회의에서 닫아야 할 질문
 
-- 실제 무인 공간에서 쓰레기, 분실물, 기타 물체를 안정적으로 구분할 수 있는지 검토 필요.
-- 로봇 팔로 쓰레기 수거, 정렬, 밀기, 책상 닦기 동작을 안정적으로 수행할 수 있는지 검토 필요.
-- SLAM/Nav2 기반 주행 중 장애물 회피와 작업 위치 접근 정밀도 검토 필요.
-- Jetson AGX Orin에서 인식, 판단, 주행, 조작 기능을 실시간으로 수행할 수 있는지 검토 필요.
-- 소등, 문단속 기능은 물리 인터페이스와 안전 기준이 불명확하여 추가 확인 필요.
-- 안전 기준, 평가 지표, 실패 처리 정책이 아직 상세화되지 않았다.
+1. MVP 데모는 쓰레기 수거, 공간 정리, 자율주행, 점검 중 어디까지 보여줄 것인가?
+2. 1차 타깃을 무인 스터디카페로 확정할 것인가?
+3. 관제 대시보드는 MVP에 넣을 것인가, 향후 확장으로 둘 것인가?
+4. 정량 성공 기준은 어떤 지표와 목표값으로 둘 것인가?
+5. 안전 기준과 실패 처리 정책은 최소 어디까지 정의할 것인가?
+6. Jetson AGX Orin 64GB와 XLeRobot을 기준 플랫폼으로 확정할 것인가?
 
-## 5. 미해결 질문
+전체 질문은 [[10_PLANNING/08 - Questions|Questions]]에서 관리한다.
 
-대표 질문은 [[10_PLANNING/08 - Questions|Questions]]에 정리한다.
+## 5. 지금 문서를 고친다면
 
-- MVP 범위와 데모 시나리오는 어디까지인가?
-- 무인 스터디카페를 1차 타깃으로 확정할 것인가?
-- 정량 성공 기준은 어떻게 정의할 것인가?
-- 팀원별 역할과 멘토 역할은 어떻게 정리할 것인가?
-- Jetson AGX Orin 64GB를 확정할 것인가, 다른 Orin 계열도 검토할 것인가?
-- 관제 대시보드는 MVP에 포함되는가, 데모 placeholder인가?
+- 기획 범위를 좁히는 내용은 [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]와 [[10_PLANNING/05 - Success Criteria|Success Criteria]]에 반영한다.
+- 기술 전제를 바꾸는 내용은 `20_TECHNICAL` 문서에 반영한다.
+- 프로젝트 방향, Sprint, 안전, 기술 리스크에 영향이 큰 선택은 [[30_DECISIONS/00 - Decision Index|Decision Index]]에 후보로 남긴다.
+- 근거가 Raw에만 있으면 `source_refs`를 갱신하고 `review_status: needs-human-review`를 유지한다.
 
-## 6. 최근 갱신 문서
+## 6. 최근 기준 문서
 
 - [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
 - [[10_PLANNING/00 - Project Brief|Project Brief]]
 - [[10_PLANNING/02 - Target Scenario|Target Scenario]]
+- [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]
+- [[10_PLANNING/05 - Success Criteria|Success Criteria]]
 - [[20_TECHNICAL/00 - Technical Overview|Technical Overview]]
 - [[20_TECHNICAL/03 - Rule-based VLA Architecture|Rule-based VLA Architecture]]
+- [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
 - [[30_DECISIONS/00 - Decision Index|Decision Index]]
 
-## 7. 다음 검토 대상
+## 7. 작업 전 확인
 
-1. 기획서 원문 요약이 원문 의도를 왜곡하지 않았는지 확인.
-2. Scope와 Non-Goals가 팀 합의와 맞는지 확인.
-3. Success Criteria의 정량 기준 정의.
-4. 안전 기준과 실패 처리 정책 정의.
-5. Decision 후보 중 selected로 승격할 항목 검토.
+문서를 수정하기 전에는 이 문서의 “아직 확정하면 안 되는 것”을 확인한다. 문서를 수정한 뒤에는 `$kb-quality-checks`를 실행하고, 검토 플래그가 필요한 경우 `$kb-audit`로 요약한다.
