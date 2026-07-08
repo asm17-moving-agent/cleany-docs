@@ -9,6 +9,7 @@ sys.dont_write_bytecode = True
 from common import frontmatter_list, iter_markdown, parse_frontmatter, rel, write_or_print
 
 TARGET_PREFIXES = ("10_PLANNING/", "20_TECHNICAL/", "30_DECISIONS/")
+EXCLUDED_PATHS = {"30_DECISIONS/00 - Decision Index.md"}
 
 
 def generate(root: Path) -> str:
@@ -30,7 +31,7 @@ def generate(root: Path) -> str:
     ]
     for path in iter_markdown(root):
         r = rel(path, root)
-        if not r.startswith(TARGET_PREFIXES):
+        if r in EXCLUDED_PATHS or not r.startswith(TARGET_PREFIXES):
             continue
         data, raw = parse_frontmatter(path.read_text(encoding="utf-8"))
         refs = frontmatter_list(raw, "source_refs")

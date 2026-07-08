@@ -32,9 +32,9 @@ REQUIRED_DIRS = [
     ".agents/skills/kb-maintenance",
     ".agents/skills/kb-doc-factory",
     ".agents/skills/kb-audit",
-    ".agents/skills/kb-publish",
+    ".agents/skills/kb-review-pack",
+    ".agents/skills/kb-pr",
     ".codex",
-    ".codex/prompts",
     "skills/kb-quality-checks",
     "skills/kb-quality-checks/scripts",
     "skills/office-to-markdown",
@@ -45,8 +45,8 @@ REQUIRED_DIRS = [
     "skills/kb-doc-factory/scripts",
     "skills/kb-audit",
     "skills/kb-audit/scripts",
-    "skills/kb-publish",
-    "skills/kb-publish/scripts",
+    "skills/kb-review-pack",
+    "skills/kb-pr",
 ]
 
 REQUIRED_FILES = [
@@ -84,27 +84,24 @@ REQUIRED_FILES = [
     "90_TEMPLATES/Template - Sprint Brief.md",
     "90_TEMPLATES/Template - Jira Issue.md",
     "90_TEMPLATES/Template - AI Interaction Log.md",
-    ".codex/prompts/summarize-raw.md",
-    ".codex/prompts/draft-decision.md",
-    ".codex/prompts/update-docs.md",
-    ".codex/prompts/sprint-brief.md",
-    ".codex/prompts/review-docs.md",
     ".agents/skills/kb-quality-checks/SKILL.md",
     ".agents/skills/kb-ingest/SKILL.md",
     ".agents/skills/office-to-markdown/SKILL.md",
     ".agents/skills/kb-maintenance/SKILL.md",
     ".agents/skills/kb-doc-factory/SKILL.md",
     ".agents/skills/kb-audit/SKILL.md",
-    ".agents/skills/kb-publish/SKILL.md",
+    ".agents/skills/kb-review-pack/SKILL.md",
+    ".agents/skills/kb-pr/SKILL.md",
     "skills/README.md",
     "skills/kb-ingest/SKILL.md",
     "skills/kb-quality-checks/SKILL.md",
     "skills/kb-quality-checks/scripts/run_checks.py",
     "skills/kb-quality-checks/scripts/check_formatting.py",
     "skills/kb-quality-checks/scripts/check_metadata.py",
+    "skills/kb-quality-checks/scripts/check_yaml.py",
     "skills/kb-quality-checks/scripts/check_structure.py",
     "skills/kb-quality-checks/scripts/check_links.py",
-    "skills/kb-quality-checks/scripts/check_prompts.py",
+    "skills/kb-quality-checks/scripts/check_skills.py",
     "skills/kb-quality-checks/scripts/common.py",
     "skills/office-to-markdown/SKILL.md",
     "skills/office-to-markdown/scripts/office_to_markdown.py",
@@ -120,12 +117,12 @@ REQUIRED_FILES = [
     "skills/kb-audit/scripts/source_refs_report.py",
     "skills/kb-audit/scripts/decision_inventory.py",
     "skills/kb-audit/scripts/audit_all.py",
-    "skills/kb-publish/SKILL.md",
-    "skills/kb-publish/scripts/build_stable_view.py",
+    "skills/kb-review-pack/SKILL.md",
+    "skills/kb-pr/SKILL.md",
 ]
 
 FORBIDDEN_NAMES = {"CLAUDE.md"}
-FORBIDDEN_DIRS = {".claude", "50_WORKING"}
+FORBIDDEN_DIRS = {".claude", "50_WORKING", "kb-publish", "prompts"}
 
 
 def main() -> int:

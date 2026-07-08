@@ -8,9 +8,10 @@ from pathlib import Path
 CHECKS = [
     "check_structure.py",
     "check_formatting.py",
+    "check_yaml.py",
     "check_metadata.py",
     "check_links.py",
-    "check_prompts.py",
+    "check_skills.py",
 ]
 
 
