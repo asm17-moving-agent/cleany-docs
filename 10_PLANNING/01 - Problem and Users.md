@@ -1,11 +1,11 @@
 ---
 type: planning
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - planning
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -69,10 +69,3 @@ updated: 2026-07-08
 ## 6. 관련 결정
 
 - 현재 selected Decision 없음.
-
-## 7. 미해결 질문
-
-- 1차 타깃을 무인 스터디카페로 확정할 것인가?
-- 무인 점포 유형별로 필요한 정리 작업은 어떻게 다른가?
-- 운영자가 가장 중요하게 보는 지표는 청결, 정돈, 보안, 비용 중 무엇인가?
-- 실제 사용자 인터뷰 또는 현장 검증 계획이 있는가?

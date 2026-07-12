@@ -1,6 +1,7 @@
 ---
 type: ai-interaction-log
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 tags:
   - raw

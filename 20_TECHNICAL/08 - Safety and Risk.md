@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -74,10 +74,3 @@ updated: 2026-07-08
 
 - 현재 selected Decision 없음.
 - 안전 기준과 실패 처리 정책은 Technical Decision 후보다.
-
-## 8. 미해결 질문
-
-- 로봇이 반드시 정지해야 하는 조건은 무엇인가?
-- 분실물 후보 처리 정책은 무엇인가?
-- 소등과 문단속은 물리 조작, IoT 연동, 상태 확인 중 무엇인가?
-- 안전 평가 시나리오와 통과 기준은 무엇인가?

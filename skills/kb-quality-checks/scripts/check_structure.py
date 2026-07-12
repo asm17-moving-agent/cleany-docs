@@ -55,14 +55,13 @@ REQUIRED_FILES = [
     ".gitignore",
     "00_START_HERE/00 - README.md",
     "00_START_HERE/01 - Reading Guide.md",
-    "00_START_HERE/02 - Current Status.md",
     "00_START_HERE/03 - Glossary.md",
     "10_PLANNING/00 - Project Brief.md",
     "10_PLANNING/01 - Problem and Users.md",
     "10_PLANNING/02 - Target Scenario.md",
     "10_PLANNING/04 - Scope and Non-Goals.md",
     "10_PLANNING/05 - Success Criteria.md",
-    "10_PLANNING/08 - Questions.md",
+    "10_PLANNING/99 - Questions.md",
     "20_TECHNICAL/00 - Technical Overview.md",
     "20_TECHNICAL/01 - System Concept.md",
     "20_TECHNICAL/03 - Rule-based VLA Architecture.md",
@@ -71,6 +70,7 @@ REQUIRED_FILES = [
     "20_TECHNICAL/06 - Edge Runtime Jetson Orin.md",
     "20_TECHNICAL/07 - Data and Evaluation.md",
     "20_TECHNICAL/08 - Safety and Risk.md",
+    "20_TECHNICAL/99 - Questions.md",
     "30_DECISIONS/00 - Decision Index.md",
     "30_DECISIONS/Planning/.gitkeep",
     "30_DECISIONS/Technical/.gitkeep",
@@ -129,6 +129,11 @@ REQUIRED_FILES = [
 FORBIDDEN_NAMES = {"CLAUDE.md"}
 FORBIDDEN_DIRS = {".claude", "50_WORKING", "kb-publish", "prompts"}
 SKIP_DIRS = {".git", ".venv", ".obsidian", ".codex"}
+CANONICAL_QUESTION_FILES = {
+    "10_PLANNING/99 - Questions.md",
+    "20_TECHNICAL/99 - Questions.md",
+}
+QUESTION_SECTION_DIRS = ("10_PLANNING", "20_TECHNICAL", "90_TEMPLATES")
 
 
 def main() -> int:
@@ -151,6 +156,17 @@ def main() -> int:
                 errors.append(f"금지 파일 존재: {nested.relative_to(root)}")
             if nested.is_dir() and nested.name in FORBIDDEN_DIRS:
                 errors.append(f"금지 폴더 존재: {nested.relative_to(root)}")
+
+    for directory in QUESTION_SECTION_DIRS:
+        for path in (root / directory).glob("*.md"):
+            relative = path.relative_to(root).as_posix()
+            if relative in CANONICAL_QUESTION_FILES:
+                continue
+            for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+                if line.lstrip().startswith("#") and "미해결 질문" in line:
+                    errors.append(
+                        f"개별 문서/템플릿의 미해결 질문 섹션 금지: {relative}:{line_number}"
+                    )
 
     return print_errors("structure", errors)
 

@@ -17,7 +17,7 @@ compatibility: Python 3.11 이상, 외부 패키지 불필요
 - 템플릿 치환과 파일 생성만 수행한다.
 - 기획/기술 내용을 자동 작성하지 않는다.
 - Raw에서 Planning/Decision 내용으로 변환할 때는 `$kb-ingest`를 사용한다.
-- 생성된 문서는 기본적으로 `draft` 또는 `needs-human-review` 상태다.
+- 생성된 Planning·Technical·Decision 문서는 기본적으로 `status: draft`와 빈 `reviewers` 상태다.
 - 이미 파일이 있으면 기본적으로 덮어쓰지 않는다.
 
 ## 사용법

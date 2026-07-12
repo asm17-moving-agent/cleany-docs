@@ -69,7 +69,8 @@ def generate(root: Path) -> str:
         "---",
         "type: metadata-report",
         "status: draft",
-        "review_status: needs-human-review",
+        "reviewers:",
+        "  -",
         "ingest_status: raw",
         "updated:",
         "tags:",
@@ -79,7 +80,7 @@ def generate(root: Path) -> str:
         "",
         "# Metadata Report",
         "",
-        "| 파일 | type | status | review_status | updated | tags |",
+        "| 파일 | type | status | reviewers | updated | tags |",
         "|---|---|---|---|---|---|",
     ]
     for path in iter_markdown(root):
@@ -92,7 +93,7 @@ def generate(root: Path) -> str:
                     cell(rel),
                     cell(data.get("type", "")),
                     cell(data.get("status", "")),
-                    cell(data.get("review_status", "")),
+                    cell(", ".join(frontmatter_list(raw, "reviewers"))),
                     cell(data.get("updated", "")),
                     cell(", ".join(frontmatter_list(raw, "tags"))),
                 ]

@@ -1,7 +1,8 @@
 ---
 type: ingest-summary
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: triaged
 tags:
   - raw
@@ -32,6 +33,4 @@ created_by: codex
 
 ## 5. 새 Decision 문서 필요 여부
 
-## 6. 미해결 질문
-
-## 7. Jira Issue 후보
+## 6. Jira Issue 후보

@@ -1,21 +1,12 @@
 ---
 type: raw-meeting
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 ingest_targets:
   - planning
   - decision
-planning_targets:
-  -
-technical_targets:
-  -
 decision_candidates:
-  -
-related_decisions:
-  -
-related_planning:
-  -
-related_technical:
   -
 date:
 participants:
@@ -38,16 +29,10 @@ tags:
 
 ## 4. 결정 후보
 
-## 5. 확정된 결정
-
-| 결정 | 링크 |
-|---|---|
-|  |  |
+## 5. 회의 중 언급된 결론
 
 ## 6. 후속 작업
 
 | 작업 | 담당자 | 관련 Jira |
 |---|---|---|
 |  |  |  |
-
-## 7. 미해결 질문

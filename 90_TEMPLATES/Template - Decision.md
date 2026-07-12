@@ -2,15 +2,14 @@
 type: decision
 decision_type: planning
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - decision
   - draft
 date:
 impact:
 source_refs:
-  -
-reflected_in:
   -
 related_jira:
   -
@@ -37,8 +36,6 @@ updated:
 
 ## 6. 재검토 조건
 
-## 7. 반영 문서
-
-## 8. 출처
+## 7. 출처
 
 > `decision_type`은 `planning` 또는 `technical` 중 하나를 사용한다.

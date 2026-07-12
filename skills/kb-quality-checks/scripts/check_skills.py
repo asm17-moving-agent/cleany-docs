@@ -23,13 +23,13 @@ REQUIRED_SNIPPETS = {
     "kb-ingest": [
         "Raw 문서를 selected Decision처럼 취급하지 않는다",
         "사람 검토 없이 Decision을 `selected`로 바꾸지 않는다",
-        "`review_status: needs-human-review`",
+        "`reviewers`는 비워 둔다.",
     ],
     "kb-review-pack": [
         "$kb-quality-checks",
         "$kb-audit",
         ".codex/prompts",
-        "사람 검토 없이 `status: selected` 또는 `review_status: reviewed`로 바꾸지 않는다",
+        "사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다",
     ],
     "kb-quality-checks": [
         "Skill 검사",

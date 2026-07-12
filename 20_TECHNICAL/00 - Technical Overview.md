@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -80,9 +80,3 @@ updated: 2026-07-08
 ## 7. 관련 결정
 
 - 현재 selected Decision 없음.
-
-## 8. 미해결 질문
-
-- Rule-based VLA의 계층별 책임을 어디까지 정의할 것인가?
-- 온디바이스 추론 대상과 서버 학습 대상의 경계는 무엇인가?
-- 관제 대시보드는 로봇 상태 모니터링만 하는가, 작업 명령도 포함하는가?

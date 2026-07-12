@@ -1,7 +1,8 @@
 ---
 type: reading-guide
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - start-here
   - reading-guide
@@ -13,13 +14,13 @@ updated: 2026-07-08
 
 ## 1. 시간이 15분밖에 없을 때
 
-1. [[00_START_HERE/02 - Current Status|Current Status]]
-2. [[10_PLANNING/00 - Project Brief|Project Brief]]
-3. [[10_PLANNING/02 - Target Scenario|Target Scenario]]
-4. [[10_PLANNING/08 - Questions|Questions]]
+1. [[10_PLANNING/00 - Project Brief|Project Brief]]
+2. [[10_PLANNING/02 - Target Scenario|Target Scenario]]
+3. [[10_PLANNING/99 - Questions|Planning Questions]]
+4. [[20_TECHNICAL/99 - Questions|Technical Questions]]
 5. [[30_DECISIONS/00 - Decision Index|Decision Index]]
 
-이 순서로 읽으면 프로젝트가 무엇이고, 지금 무엇이 아직 안 정해졌는지 빠르게 파악할 수 있다.
+이 순서로 읽으면 프로젝트가 무엇이고, 아직 무엇이 정해지지 않았는지 빠르게 파악할 수 있다.
 
 ## 2. 기획 리뷰를 해야 할 때
 
@@ -28,7 +29,7 @@ updated: 2026-07-08
 3. [[10_PLANNING/02 - Target Scenario|Target Scenario]]
 4. [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]
 5. [[10_PLANNING/05 - Success Criteria|Success Criteria]]
-6. [[10_PLANNING/08 - Questions|Questions]]
+6. [[10_PLANNING/99 - Questions|Planning Questions]]
 7. [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
 
 읽으면서 확인할 것은 세 가지다.
@@ -47,6 +48,7 @@ updated: 2026-07-08
 6. [[20_TECHNICAL/06 - Edge Runtime Jetson Orin|Edge Runtime Jetson Orin]]
 7. [[20_TECHNICAL/07 - Data and Evaluation|Data and Evaluation]]
 8. [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
+9. [[20_TECHNICAL/99 - Questions|Technical Questions]]
 
 읽으면서 확인할 것은 세 가지다.
 
@@ -56,8 +58,8 @@ updated: 2026-07-08
 
 ## 4. Sprint 계획을 잡아야 할 때
 
-1. [[00_START_HERE/02 - Current Status|Current Status]]
-2. [[10_PLANNING/08 - Questions|Questions]]
+1. [[10_PLANNING/99 - Questions|Planning Questions]]
+2. [[20_TECHNICAL/99 - Questions|Technical Questions]]
 3. [[10_PLANNING/05 - Success Criteria|Success Criteria]]
 4. [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
 5. [[30_DECISIONS/00 - Decision Index|Decision Index]]
@@ -72,15 +74,13 @@ Sprint 목표는 확정된 결정과 검토 대기 항목을 분리해서 잡는
 4. 관련 `10_PLANNING` 또는 `20_TECHNICAL` 문서
 5. 관련 `40_RAW` 원본 기록
 
-현재 초기 scaffold에는 selected Decision 문서를 임의 생성하지 않았다. Decision 후보와 초안 상태는 [[30_DECISIONS/00 - Decision Index|Decision Index]]와 [[10_PLANNING/08 - Questions|Questions]]에서 함께 확인한다.
+Decision 후보와 초안 상태는 [[30_DECISIONS/00 - Decision Index|Decision Index]], [[10_PLANNING/99 - Questions|Planning Questions]], [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 함께 확인한다.
 
 ## 6. 외부 공유 전에
 
-1. [[00_START_HERE/02 - Current Status|Current Status]]가 최신인지 확인한다.
-2. draft 문서를 그대로 공식 결론처럼 공유하지 않는다.
-3. Raw 전체를 공유하지 않는다.
-4. 외부 게시가 필요하면 GitHub Pages + obsidian-html 기반 배포 흐름을 사용한다.
-5. 공유 전 `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack`을 실행한다.
+1. `draft` 문서를 그대로 공식 결론처럼 공유하지 않는다. `reviewed` 이상 문서는 `reviewers`를 함께 확인한다.
+2. Raw 전체를 공유하지 않는다.
+3. 공유 전 `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack`을 실행한다.
 
 ## 7. Codex 작업 흐름을 확인해야 할 때
 

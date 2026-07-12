@@ -61,7 +61,8 @@ type: raw-converted
 source_file: "원본 파일명"
 source_format: "docx"
 converter: office-to-markdown
-review_status: needs-human-review
+reviewers:
+  -
 ---
 ```
 

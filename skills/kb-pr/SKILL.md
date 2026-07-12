@@ -32,13 +32,10 @@ tags:
 3. 검증
    - 문서, 템플릿, prompt, skill, 검사 스크립트 변경이 있으면 실행한다.
    - `uv run python skills/kb-quality-checks/scripts/run_checks.py .`
-4. 브랜치 결정
-   - 기본 브랜치에서 작업 중이면 `agent/{short-description}` 브랜치를 만든다.
-   - 이미 작업 브랜치이면 현재 브랜치를 유지한다.
-5. 커밋
+4. 커밋
    - 확정된 파일만 stage한다.
    - 커밋 메시지는 변경 내용을 짧게 설명한다.
-6. Push 및 draft PR 생성
+5. Push 및 draft PR 생성
    - `git push -u origin $(git branch --show-current)`
    - GitHub app 또는 `gh pr create --draft`를 사용한다.
 

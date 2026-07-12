@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -72,10 +72,3 @@ XLeRobot은 끌리니의 기반 모바일 매니퓰레이터로 기획서에 명
 
 - 현재 selected Decision 없음.
 - XLeRobot을 기준 플랫폼으로 확정할지 여부는 Technical Decision 후보다.
-
-## 8. 미해결 질문
-
-- XLeRobot의 정확한 모델, 사양, 부품 리스트는 무엇인가?
-- 그리퍼 또는 말단장치 구성은 무엇인가?
-- 수거함은 로봇에 탑재되는가, 공간 내 고정 위치인가?
-- 책상 닦기 도구는 어떻게 장착되는가?

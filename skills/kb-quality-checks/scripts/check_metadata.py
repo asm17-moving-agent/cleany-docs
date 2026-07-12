@@ -18,35 +18,33 @@ SKIP_PREFIXES = (
     "skills/kb-quality-checks/scripts/",
 )
 
-COMMON_REVIEW_VALUES = {"", "needs-human-review", "reviewed"}
-COMMON_STATUS_VALUES = {"", "draft", "selected", "deprecated", "superseded", "active"}
+COMMON_STATUS_VALUES = {"", "draft", "reviewed", "selected", "dropped"}
 COMMON_INGEST_VALUES = {"", "raw", "triaged", "converted", "reflected", "blocked"}
 
 
 def required_keys_for(path: str) -> list[str]:
     if path.startswith("10_PLANNING/"):
-        return ["type", "status", "review_status", "source_refs", "related_decisions", "related_jira", "updated", "tags"]
+        return ["type", "status", "reviewers", "source_refs", "related_decisions", "related_jira", "updated", "tags"]
     if path.startswith("20_TECHNICAL/"):
-        return ["type", "status", "review_status", "source_refs", "related_decisions", "related_jira", "updated", "tags"]
+        return ["type", "status", "reviewers", "source_refs", "related_decisions", "related_jira", "updated", "tags"]
     if path.startswith("00_START_HERE/"):
-        return ["type", "status", "review_status", "updated", "tags"]
+        return ["type", "status", "reviewers", "updated", "tags"]
     if path == "30_DECISIONS/00 - Decision Index.md":
-        return ["type", "status", "review_status", "updated", "tags"]
+        return ["type", "status", "reviewers", "updated", "tags"]
     if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
         return [
             "type",
             "decision_type",
             "status",
-            "review_status",
+            "reviewers",
             "date",
             "source_refs",
-            "reflected_in",
             "related_jira",
             "updated",
             "tags",
         ]
     if path.startswith("40_RAW/"):
-        return ["type", "review_status", "ingest_status", "tags"]
+        return ["type", "reviewers", "ingest_status", "tags"]
     if path.startswith("90_TEMPLATES/"):
         return ["type", "tags"]
     if (path.startswith("skills/") or path.startswith(".agents/skills/")) and path.endswith("/SKILL.md"):
@@ -123,8 +121,8 @@ def main() -> int:
 
         if "status" in data and data.get("status", "") not in COMMON_STATUS_VALUES:
             errors.append(f"{r}: 허용되지 않은 status 값: {data.get('status')}")
-        if "review_status" in data and data.get("review_status", "") not in COMMON_REVIEW_VALUES:
-            errors.append(f"{r}: 허용되지 않은 review_status 값: {data.get('review_status')}")
+        if data.get("status") in {"reviewed", "selected"} and not frontmatter_list(raw, "reviewers"):
+            errors.append(f"{r}: status가 {data.get('status')}이면 reviewers가 하나 이상 필요함")
         if "ingest_status" in data and data.get("ingest_status", "") not in COMMON_INGEST_VALUES:
             errors.append(f"{r}: 허용되지 않은 ingest_status 값: {data.get('ingest_status')}")
 
