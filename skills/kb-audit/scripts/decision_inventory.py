@@ -22,7 +22,8 @@ def generate(root: Path) -> str:
         "---",
         "type: audit-report",
         "status: draft",
-        "review_status: needs-human-review",
+        "reviewers:",
+        "  -",
         "ingest_status: raw",
         "tags:",
         "  - audit",
@@ -32,8 +33,8 @@ def generate(root: Path) -> str:
         "",
         "# Decision Inventory",
         "",
-        "| 파일 | 제목 | decision_type | status | date | reflected_in |",
-        "|---|---|---|---|---|---|",
+        "| 파일 | 제목 | decision_type | status | date |",
+        "|---|---|---|---|---|",
     ]
     count = 0
     for path in iter_markdown(root):
@@ -42,24 +43,13 @@ def generate(root: Path) -> str:
             continue
         text = path.read_text(encoding="utf-8")
         data, raw = parse_frontmatter(text)
-        reflected = []
-        in_reflected = False
-        for line in raw:
-            if re.match(r"^[A-Za-z_][A-Za-z0-9_-]*:\s*", line):
-                in_reflected = line.split(":", 1)[0].strip() == "reflected_in"
-                continue
-            if in_reflected and line.strip().startswith("-"):
-                value = line.strip()[1:].strip()
-                if value:
-                    reflected.append(value)
         title = first_heading(text).replace("|", "\\|")
-        reflected_text = "<br>".join(reflected).replace("|", "\\|")
         lines.append(
-            f"| {r} | {title} | {data.get('decision_type', '')} | {data.get('status', '')} | {data.get('date', '')} | {reflected_text} |"
+            f"| {r} | {title} | {data.get('decision_type', '')} | {data.get('status', '')} | {data.get('date', '')} |"
         )
         count += 1
     if count == 0:
-        lines.append("|  |  |  |  |  | Decision 문서 없음 |")
+        lines.append("|  |  |  |  | Decision 문서 없음 |")
     return "\n".join(lines).rstrip() + "\n"
 
 

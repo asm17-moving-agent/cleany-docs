@@ -70,7 +70,8 @@ def frontmatter(path: Path, source_format: str) -> str:
             f"source_file: {yaml_quote(path.name)}",
             f"source_format: {yaml_quote(source_format)}",
             "converter: office-to-markdown",
-            "review_status: needs-human-review",
+            "reviewers:",
+            "  -",
             "---",
             "",
         ]

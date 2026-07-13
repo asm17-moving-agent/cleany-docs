@@ -1,7 +1,8 @@
 ---
 type: jira-issue-draft
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 tags:
   - raw

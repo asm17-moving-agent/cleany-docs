@@ -1,25 +1,13 @@
 ---
 type: raw-meeting
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 ingest_targets:
   - technical
   - decision
-planning_targets:
-  -
-technical_targets:
-  - "20_TECHNICAL/10 - Robot ROS Contract.md"
 decision_candidates:
   -
-related_decisions:
-  -
-related_planning:
-  - "10_PLANNING/08 - Questions.md"
-related_technical:
-  - "20_TECHNICAL/00 - Technical Overview.md"
-  - "20_TECHNICAL/01 - System Concept.md"
-  - "20_TECHNICAL/07 - Data and Evaluation.md"
-  - "20_TECHNICAL/09 - Mission Manager FSM.md"
 date: 2026-07-10
 participants:
   -

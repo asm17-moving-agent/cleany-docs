@@ -19,7 +19,7 @@ tags:
 - Raw 기록을 최종 결정처럼 취급하지 않는다.
 - Raw에서 나온 논의, 결정 후보, 미해결 질문을 YAML metadata와 문서 링크로 추적한다.
 - Decision이 필요한 경우 `30_DECISIONS/Planning` 또는 `30_DECISIONS/Technical`에 `status: draft` 문서를 만든다.
-- Planning 반영이 필요한 경우 `10_PLANNING` 문서의 `source_refs`, `related_decisions`, `tags`, `review_status`를 갱신한다.
+- Planning 반영이 필요한 경우 `10_PLANNING` 문서의 `source_refs`, `related_decisions`, `tags`, `status`, `reviewers`를 갱신한다.
 - 별도 working 폴더 없이 각 문서의 YAML metadata로 draft/review/ingest 상태를 표현한다.
 
 ## 입력
@@ -36,12 +36,7 @@ tags:
    - `tags`
    - `ingest_status`
    - `ingest_targets`
-   - `planning_targets`
-   - `technical_targets`
    - `decision_candidates`
-   - `related_decisions`
-   - `related_planning`
-   - `related_technical`
 3. Raw 본문에서 다음 항목을 추출한다.
    - 핵심 논의
    - 결정 후보
@@ -58,17 +53,20 @@ tags:
    - 기술 리스크 또는 안전 리스크에 영향을 준다.
 5. Decision 초안을 만들 때는 기본 상태를 유지한다.
    - `status: draft`
-   - `review_status: needs-human-review`
+   - `reviewers`는 비워 둔다.
    - `source_refs`에 Raw 문서 경로를 반드시 넣는다.
-   - `reflected_in`은 실제 반영한 문서만 넣는다.
+   - Decision은 `source_refs`로 Raw만 참조한다. Planning·Technical 반영 문서는 역링크하지 않는다.
    - 사람 검토 전에는 `selected`로 바꾸지 않는다.
 6. Planning 문서를 갱신할 때는 다음을 지킨다.
    - 기획서나 Raw에 없는 내용을 확정하지 않는다.
    - `source_refs`에 Raw 문서 경로를 추가한다.
    - 관련 Decision이 있으면 `related_decisions`에 추가한다.
-   - 검토가 필요한 상태면 `review_status: needs-human-review`를 유지한다.
+   - 검토가 필요한 상태면 `status: draft`와 빈 `reviewers`를 유지한다.
    - 불확실한 내용은 `검토 필요` 또는 `추가 확인 필요`로 표시한다.
-7. 미해결 질문은 `10_PLANNING/08 - Questions.md`에 추가한다.
+7. 미해결 질문은 계층에 따라 중앙 Questions 문서에 추가한다.
+   - 사용자, 가치, 제품 범위, 시나리오, 성공 기준, 프로젝트 운영 질문: `10_PLANNING/99 - Questions.md`
+   - 시스템 구조, 인터페이스, 하드웨어, 런타임, 데이터, 평가, 안전 질문: `20_TECHNICAL/99 - Questions.md`
+   - 두 계층에 걸친 주제는 제품 선택과 기술 구현 경계를 분리하고 같은 질문을 중복 기록하지 않는다.
 8. Decision 문서를 생성하거나 상태를 바꾼 경우 `30_DECISIONS/00 - Decision Index.md`를 갱신한다.
 9. 마지막에 `$kb-quality-checks` 검사를 요청하거나 실행하고 결과를 요약한다.
 
@@ -77,23 +75,14 @@ tags:
 ```yaml
 ---
 type: raw-meeting
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: triaged
 ingest_targets:
   - planning
   - decision
-planning_targets:
-  - "10_PLANNING/04 - Scope and Non-Goals.md"
-technical_targets:
-  -
 decision_candidates:
   - "MVP 범위 확정"
-related_decisions:
-  -
-related_planning:
-  - "10_PLANNING/04 - Scope and Non-Goals.md"
-related_technical:
-  -
 tags:
   - raw
   - meeting
@@ -106,10 +95,18 @@ tags:
 - Planning 문서: `10_PLANNING/`
 - Planning Decision: `30_DECISIONS/Planning/`
 - Technical Decision: `30_DECISIONS/Technical/`
-- 미해결 질문: `10_PLANNING/08 - Questions.md`
+- 미해결 기획 질문: `10_PLANNING/99 - Questions.md`
+- 미해결 기술 질문: `20_TECHNICAL/99 - Questions.md`
 - Raw 원본/요약: `40_RAW/`
 
-별도 working 폴더는 사용하지 않는다. 초안 여부는 `status`, `review_status`, `tags`, `ingest_status`로 표현한다.
+별도 working 폴더는 사용하지 않는다. 초안 여부는 `status`, `reviewers`, `tags`, `ingest_status`로 표현한다. 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다.
+
+## 링크 방향
+
+- Planning과 Technical 문서는 관련 Decision만 참조한다.
+- Decision 문서는 `source_refs`로 Raw만 참조한다.
+- Raw 문서는 상위 계층 문서를 역링크하지 않는다.
+- 즉, 계층 간 링크는 `10_PLANNING`·`20_TECHNICAL` → `30_DECISIONS` → `40_RAW` 단방향으로 유지한다.
 
 ## 금지 사항
 

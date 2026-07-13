@@ -1,7 +1,8 @@
 ---
 type: glossary
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - start-here
   - glossary

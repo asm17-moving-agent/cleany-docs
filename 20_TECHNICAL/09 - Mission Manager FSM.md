@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
   - mission-manager
   - fsm
@@ -228,7 +228,7 @@ data
 - `data`: 모듈별 결과 payload
 
 `status` 의미:
-
+dkfkjkjdkfj
 ```text
 OK       정상 처리됨. 다음 상태로 전이 가능
 BLOCKED  정책/조건상 실행하지 않음. 보통 REPORT로 전이
@@ -251,6 +251,8 @@ PerceptionResult
 PlanResult
 - tasks
 - skill_sequence
+
+
 
 SkillExecutionResult (단일 skill 실행 결과, `execute_skill(skill)` 호출당 하나)
 - (skill별 부가 데이터, 있다면)
@@ -414,12 +416,3 @@ HUMAN_REVIEW_REQUIRED
 ```
 
 MVP에서는 report를 console log 또는 file log로 남긴다. 이후 dashboard event publish 또는 backend upload로 확장한다.
-
-## 10. 미해결 질문
-
-- Planner의 정확한 `TaskPlan` schema는 `cleany_planner` 구현 시 확정한다.
-- Skill Executor 내부 skill breakdown은 `cleany_skill_executor` 구현 시 확정한다.
-- Navigator 내부 mock seat map 형식은 구현 시 확정한다.
-- Dashboard/backend report 연동 방식은 MVP 이후 결정한다.
-- 독립 Safety Supervisor 또는 Safety Guardrail은 MVP 이후 필요해지면 재검토한다.
-- `target_pose`, `home_pose`, `priority`, `deadline` 같은 MissionRequest 확장 필드는 MVP 이후 필요할 때 추가한다.

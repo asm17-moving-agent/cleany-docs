@@ -1,7 +1,8 @@
 ---
 type: sprint-brief
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 tags:
   - raw
@@ -24,8 +25,6 @@ created_by: codex
 
 ## 5. 관련 Decision
 
-## 6. 미해결 질문
+## 6. 리스크
 
-## 7. 리스크
-
-## 8. Jira Issue 후보
+## 7. Jira Issue 후보

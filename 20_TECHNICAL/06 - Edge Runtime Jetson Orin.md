@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -82,10 +82,3 @@ updated: 2026-07-08
 
 - 현재 selected Decision 없음.
 - Jetson AGX Orin 64GB 확정 여부는 Technical Decision 후보다.
-
-## 8. 미해결 질문
-
-- Jetson AGX Orin 64GB를 확정할 것인가?
-- Orin NX 등 다른 Jetson 계열을 대안으로 검토할 것인가?
-- Ubuntu 26.04 LTS(JetPack 7)와 ROS 2 조합은 실제 사용 가능한가?
-- 온디바이스에서 실행할 모델과 서버에서 처리할 학습 작업의 경계는 무엇인가?

@@ -1,21 +1,12 @@
 ---
 type: raw-research
-review_status: needs-human-review
+reviewers:
+  -
 ingest_status: raw
 ingest_targets:
   - planning
   - decision
-planning_targets:
-  -
-technical_targets:
-  -
 decision_candidates:
-  -
-related_decisions:
-  -
-related_planning:
-  -
-related_technical:
   -
 date:
 source_type:

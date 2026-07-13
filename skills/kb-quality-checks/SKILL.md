@@ -64,6 +64,6 @@ uv run python skills/kb-quality-checks/scripts/check_skills.py .
 ## 작업 규칙
 
 - 검사 실패를 무시하고 공식 문서를 확정하지 않는다.
-- 검사 실패가 기획 판단을 요구하는 경우 `10_PLANNING/08 - Questions.md`에 질문으로 남긴다.
-- `status: draft` 또는 `review_status: needs-human-review` 문서는 검사 통과 여부와 별개로 사람 검토 전까지 공식 문서가 아니다.
+- 검사 실패가 판단을 요구하는 경우 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
+- `status: draft` 문서는 검사 통과 여부와 별개로 사람 검토 전까지 공식 문서가 아니다. `reviewed` 이상 상태에는 `reviewers`가 기록되어야 한다.
 - 이 skill은 문서 품질을 확인할 뿐, 기획/기술 결정을 자동으로 확정하지 않는다.

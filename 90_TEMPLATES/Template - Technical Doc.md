@@ -1,7 +1,8 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
@@ -33,5 +34,3 @@ updated:
 ## 6. 리스크
 
 ## 7. 관련 결정
-
-## 8. 미해결 질문

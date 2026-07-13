@@ -1,7 +1,8 @@
 ---
 type: planning
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - planning
   - draft
@@ -27,5 +28,3 @@ updated:
 ## 5. 관련 기술 문서
 
 ## 6. 관련 결정
-
-## 7. 미해결 질문

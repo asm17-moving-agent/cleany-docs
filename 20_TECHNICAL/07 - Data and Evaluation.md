@@ -1,11 +1,11 @@
 ---
 type: technical
 status: draft
-review_status: needs-human-review
+reviewers:
+  -
 tags:
   - technical
   - draft
-  - needs-human-review
   - cleany
 source_refs:
   - "[기획서]"
@@ -81,10 +81,3 @@ updated: 2026-07-08
 ## 7. 관련 결정
 
 - 현재 selected Decision 없음.
-
-## 8. 미해결 질문
-
-- 최소 데이터셋 범위와 라벨 기준은 무엇인가?
-- 평가 지표와 목표값은 어떻게 정할 것인가?
-- 시뮬레이션으로 검증할 시나리오와 실제 테스트로 검증할 시나리오는 어떻게 나눌 것인가?
-- 현장 데이터 수집 시 개인정보 또는 보안 이슈가 있는가?

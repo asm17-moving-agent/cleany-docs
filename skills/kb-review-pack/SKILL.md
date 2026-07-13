@@ -36,7 +36,8 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - Decision inventory
 4. 필요한 경우 관련 문서를 읽어 리뷰 맥락을 확인한다.
    - `00_START_HERE/02 - Current Status.md`
-   - `10_PLANNING/08 - Questions.md`
+   - `10_PLANNING/99 - Questions.md`
+   - `20_TECHNICAL/99 - Questions.md`
    - `30_DECISIONS/00 - Decision Index.md`
    - 검토 범위의 Planning/Technical 문서
 5. 결과를 아래 형식으로 요약한다.
@@ -44,7 +45,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - Blocking issues
    - 사람 검토 필요 항목
    - Decision 후보와 draft Decision 상태
-   - `Questions`에서 닫아야 할 질문
+   - Planning/Technical `Questions`에서 닫아야 할 질문
    - Jira issue 후보
    - 다음 작업 제안
 6. 문서 수정이 필요한 경우 바로 확정하지 않고 수정 후보를 제안한다.
@@ -70,7 +71,7 @@ Decision 상태
 
 ## 금지 사항
 
-- 사람 검토 없이 `status: selected` 또는 `review_status: reviewed`로 바꾸지 않는다.
+- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다. `reviewed` 이상 상태에는 `reviewers`를 남긴다.
 - Raw 문서를 공식 결정처럼 취급하지 않는다.
 - 기획/기술 판단을 임의로 확정하지 않는다.
 - Jira issue 본문에 문서 내용을 복붙하지 않는다.
