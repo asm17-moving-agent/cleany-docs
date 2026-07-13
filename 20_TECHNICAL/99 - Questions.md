@@ -19,7 +19,7 @@ related_decisions:
   - "30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md"
 related_jira:
   -
-updated: 2026-07-12
+updated: 2026-07-13
 ---
 
 # 기술 미해결 질문(Technical Questions)
@@ -54,6 +54,10 @@ updated: 2026-07-12
 | Skill Executor 내부의 skill breakdown과 입출력 계약은 무엇인가? | 세부 동작 분해는 `cleany_skill_executor` 설계 시 확정하도록 유예됐다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Dashboard/backend와 Mission Report를 어떤 방식으로 연동할 것인가? | MVP는 console 또는 file log를 사용하고 외부 연동은 이후로 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
 | `target_pose`, `home_pose`, `priority`, `deadline` 같은 MissionRequest 확장 필드는 언제 어떤 계약으로 추가할 것인가? | MVP 최소 요청 이후의 확장 조건이 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
+| `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
+| 단일 로봇 canonical topic은 상대 이름으로 구현하고 namespace/remap으로 확장할 것인가? | global 이름 하드코딩 여부와 다중 로봇·Sim/Real 동시 비교 방식에 영향을 준다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
+| `map -> odom -> base_link`와 sensor/arm frame의 최종 이름 및 transform 소유권은 무엇인가? | SLAM, odometry backend, robot_state_publisher 사이의 중복 TF 발행을 막아야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 높음 | 추가 정의 필요 |
+| mission stack과 Sim/Real bringup을 별도 launch로 분리할 것인가? | 동일한 상위 stack을 재사용하면서 한 backend만 활성화하는 구성이 필요하다. | [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 중간 | 검토 필요 |
 
 ### 4.2 Rule-based VLA와 인식·조작
 
@@ -73,6 +77,9 @@ updated: 2026-07-12
 |---|---|---|---|---|
 | XLeRobot의 정확한 모델, 부품, 센서, 매니퓰레이터, 페이로드, 도달 범위는 무엇인가? | 작업 가능 범위와 안전 제약을 판단할 실제 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 높음 | 추가 확인 필요 |
 | 그리퍼 또는 말단장치 구성은 무엇인가? | 물체별 집기 가능성과 제어 방식을 결정하는 핵심 사양이다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 추가 확인 필요 |
+| base는 차동구동과 holonomic 중 어떤 kinematics이며 `cmd_vel.linear.y`를 지원하는가? | Sim과 Real이 같은 속도 의미를 사용하려면 실제 구동부 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 높음 | 추가 확인 필요 |
+| base command timeout, 속도·가속도 제한과 e-stop 우선순위는 어떻게 정할 것인가? | node 중단이나 비정상 명령에서도 안전하게 정지할 수 있는 backend 계약이 필요하다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
+| arm과 gripper의 공통 계약으로 `FollowJointTrajectory`와 `GripperCommand`를 채택할 것인가? | simulation private joint hook과 실제 controller를 분리하고 표준 ROS 2 tooling을 사용할지 결정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | 수거함은 로봇에 탑재되는가, 공간 내 고정 위치인가? | 플랫폼 구성과 이동·투입 시나리오가 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
 | 후속 책상 닦기 기능의 도구는 어떤 방식으로 장착할 것인가? | 1차 MVP 제외 후보지만 장기 기능의 플랫폼 제약으로 남아 있다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
 | Jetson AGX Orin 64GB를 기준 엣지 플랫폼으로 확정할 것인가? | 기획서에 명시되어 있으나 아직 selected Decision이 아니다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 높음 | 검토 필요 |
@@ -86,6 +93,7 @@ updated: 2026-07-12
 | 지도 생성은 수동 사전 매핑, 로봇 초기 캘리브레이션, 또는 둘의 조합 중 무엇인가? | 현장 준비 절차와 운영 부담을 결정해야 한다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>) | 미정 | 검토 필요 |
 | 사전 지도와 현장 환경의 차이를 어느 수준까지 허용할 수 있는가? | 가구 이동이나 배치 변경에 대한 내비게이션 허용 오차가 필요하다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>) | 미정 | 추가 정의 필요 |
 | Navigator 내부 mock seat map 형식은 무엇인가? | 현재 MVP 문서는 형식 확정을 구현 단계로 유예했다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
+| RGB-D color/depth image, CameraInfo, IMU topic 이름과 encoding 및 QoS는 무엇인가? | Perception이 Sim/Real 차이를 모르도록 sensor contract를 정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Data and Evaluation](<07 - Data and Evaluation.md>) | 높음 | 추가 정의 필요 |
 | 최소 데이터셋 범위와 라벨 기준은 무엇인가? | 모델 학습과 평가에 사용할 데이터 기준이 없다. | [Data and Evaluation](<07 - Data and Evaluation.md>) | 미정 | 추가 정의 필요 |
 | 시뮬레이션으로 검증할 시나리오와 실제 테스트로 검증할 시나리오는 어떻게 나눌 것인가? | 각 환경에서 검증 가능한 기술 항목과 전이 기준을 정해야 한다. | [Data and Evaluation](<07 - Data and Evaluation.md>) | 미정 | 추가 정의 필요 |
 | 현장 데이터 수집 시 개인정보 또는 보안 이슈를 어떻게 처리할 것인가? | 카메라 기반 데이터에 사용자나 민감 정보가 포함될 수 있다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Data and Evaluation](<07 - Data and Evaluation.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 미정 | 추가 확인 필요 |

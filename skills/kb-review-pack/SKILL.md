@@ -35,7 +35,8 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - source_refs 상태
    - Decision inventory
 4. 필요한 경우 관련 문서를 읽어 리뷰 맥락을 확인한다.
-   - `00_START_HERE/02 - Current Status.md`
+   - `00_START_HERE/00 - README.md`
+   - `00_START_HERE/01 - Reading Guide.md`
    - `10_PLANNING/99 - Questions.md`
    - `20_TECHNICAL/99 - Questions.md`
    - `30_DECISIONS/00 - Decision Index.md`

@@ -1,13 +1,13 @@
 ---
 type: reading-guide
-status: draft
+status: reviewed
 reviewers:
-  -
+  - 이동근
 tags:
   - start-here
   - reading-guide
   - cleany
-updated: 2026-07-08
+updated: 2026-07-13
 ---
 
 # 읽기 가이드(Reading Guide)
@@ -48,7 +48,10 @@ updated: 2026-07-08
 6. [[20_TECHNICAL/06 - Edge Runtime Jetson Orin|Edge Runtime Jetson Orin]]
 7. [[20_TECHNICAL/07 - Data and Evaluation|Data and Evaluation]]
 8. [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
-9. [[20_TECHNICAL/99 - Questions|Technical Questions]]
+9. [[20_TECHNICAL/09 - Mission Manager FSM|Mission Manager FSM]]
+10. [[20_TECHNICAL/10 - Robot ROS Contract|Robot ROS Contract]]
+11. [[20_TECHNICAL/11 - ROS 2 Software Architecture|ROS 2 Software Architecture]]
+12. [[20_TECHNICAL/99 - Questions|Technical Questions]]
 
 읽으면서 확인할 것은 세 가지다.
 

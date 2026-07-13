@@ -15,7 +15,7 @@ related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
 related_jira:
   -
-updated: 2026-07-12
+updated: 2026-07-13
 ---
 
 # 기획 미해결 질문(Planning Questions)
@@ -74,6 +74,7 @@ updated: 2026-07-12
 |---|---|---|---|---|
 | 팀원별 역할은 어떻게 나눌 것인가? | 기획서 역할 표에 placeholder와 빈 칸이 있다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
 | 멘토별 역할과 기대 도움은 무엇인가? | 멘토 구성 및 역할 표에 placeholder와 빈 칸이 있다. | [Project Brief](<00 - Project Brief.md>) | 중간 | 추가 확인 필요 |
+| 7/10 MVP 범위 논의의 원본 회의록은 어디에 있는가? | MVP Decision이 존재하지 않는 Raw 회의록을 출처로 참조하고 있어 원본 확인 전 해당 출처 링크를 제거했다. | [MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>) | 높음 | 추가 확인 필요 |
 | Sprint 운영 방식과 Jira Epic/Story 구조는 어떻게 잡을 것인가? | Jira가 작업 상태의 source of truth다. | [Project Brief](<00 - Project Brief.md>) | 중간 | 검토 필요 |
 | 추진 일정의 월별 배치는 어떻게 확정할 것인가? | 기획서 일정표에 항목은 있으나 월별 체크가 비어 있다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
 
