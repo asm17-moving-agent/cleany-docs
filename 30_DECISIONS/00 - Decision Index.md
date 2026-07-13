@@ -17,19 +17,19 @@ updated: 2026-07-12
 
 ## Planning Decisions
 
-| 날짜         | 결정                                              | 상태               |       |
-| ---------- | ----------------------------------------------- | ---------------- | ----- |
-| 2026-07-08 | [[30_DECISIONS/Planning/260708 - 1차 타깃 무인 스터디카페 | 1차 타깃 무인 스터디카페]] | draft |
-| 2026-07-08 | [[30_DECISIONS/Planning/260708 - MVP 기능 범위      | MVP 기능 범위]]      | draft |
+| 날짜 | 결정 | 상태 |
+|---|---|---|
+| 2026-07-08 | [1차 타깃 무인 스터디카페](<Planning/260708 - 1차 타깃 무인 스터디카페.md>) | draft |
+| 2026-07-08 | [MVP 기능 범위](<Planning/260708 - MVP 기능 범위.md>) | draft |
 
 ## Technical Decisions
 
 | 날짜 | 결정 | 상태 |
 |---|---|---|
-| 2026-07-08 | [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]] | draft |
-| 2026-07-08 | [[30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB|Jetson AGX Orin 64GB]] | draft |
-| 2026-07-08 | [[30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조|Rule-based VLA 3 Layer 구조]] | draft |
-| 2026-07-08 | [[30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책|안전 기준과 실패 처리 정책]] | draft |
+| 2026-07-08 | [XLeRobot 기반 플랫폼](<Technical/260708 - XLeRobot 기반 플랫폼.md>) | draft |
+| 2026-07-08 | [Jetson AGX Orin 64GB](<Technical/260708 - Jetson AGX Orin 64GB.md>) | draft |
+| 2026-07-08 | [Rule-based VLA 3 Layer 구조](<Technical/260708 - Rule-based VLA 3 Layer 구조.md>) | draft |
+| 2026-07-08 | [안전 기준과 실패 처리 정책](<Technical/260708 - 안전 기준과 실패 처리 정책.md>) | draft |
 
 ## Deprecated / Superseded Decisions
 
