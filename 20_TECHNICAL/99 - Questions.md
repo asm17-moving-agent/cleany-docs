@@ -17,9 +17,11 @@ related_decisions:
   - "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
   - "30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조.md"
   - "30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md"
+  - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
+  - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 related_jira:
   -
-updated: 2026-07-13
+updated: 2026-07-14
 ---
 
 # 기술 미해결 질문(Technical Questions)
@@ -77,14 +79,15 @@ updated: 2026-07-13
 |---|---|---|---|---|
 | XLeRobot의 정확한 모델, 부품, 센서, 매니퓰레이터, 페이로드, 도달 범위는 무엇인가? | 작업 가능 범위와 안전 제약을 판단할 실제 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 높음 | 추가 확인 필요 |
 | 그리퍼 또는 말단장치 구성은 무엇인가? | 물체별 집기 가능성과 제어 방식을 결정하는 핵심 사양이다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 추가 확인 필요 |
-| base는 차동구동과 holonomic 중 어떤 kinematics이며 `cmd_vel.linear.y`를 지원하는가? | Sim과 Real이 같은 속도 의미를 사용하려면 실제 구동부 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 높음 | 추가 확인 필요 |
-| base command timeout, 속도·가속도 제한과 e-stop 우선순위는 어떻게 정할 것인가? | node 중단이나 비정상 명령에서도 안전하게 정지할 수 있는 backend 계약이 필요하다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
+| 4륜 Mecanum base의 wheel radius, wheelbase, track width, wheel 순서·회전 방향과 encoder parameter를 어떤 값으로 정의할 것인가? | Sim과 Real의 kinematics 및 odometry가 같은 geometry를 사용해야 한다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 정의 필요 |
+| 멘토 지원 MCU의 정확한 모델, encoder 입력·PWM/DIR 출력 사양, control frequency, firmware 책임과 Jetson 통신 계약은 무엇인가? | 멘토 지원 MCU의 제공 및 적용 경로는 확인됐지만 구체 인터페이스 사양은 아직 정의되지 않았다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 확인 필요 |
+| base command timeout, 속도·가속도 제한, e-stop 우선순위와 motor power cut-off를 어떻게 정할 것인가? | node 중단이나 비정상 명령에서도 안전하게 정지할 수 있는 backend 계약이 필요하다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
+| mobile power, fuse와 reverse-polarity protection을 어떻게 구성할 것인가? | MDD20A에는 과전류·과열·저전압 보호가 있지만 reverse-voltage protection은 없으므로 driver 외부의 전원 보호 구성이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Safety and Risk](<08 - Safety and Risk.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 정의 필요 |
 | arm과 gripper의 공통 계약으로 `FollowJointTrajectory`와 `GripperCommand`를 채택할 것인가? | simulation private joint hook과 실제 controller를 분리하고 표준 ROS 2 tooling을 사용할지 결정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | 수거함은 로봇에 탑재되는가, 공간 내 고정 위치인가? | 플랫폼 구성과 이동·투입 시나리오가 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
 | 후속 책상 닦기 기능의 도구는 어떤 방식으로 장착할 것인가? | 1차 MVP 제외 후보지만 장기 기능의 플랫폼 제약으로 남아 있다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
-| Jetson AGX Orin 64GB를 기준 엣지 플랫폼으로 확정할 것인가? | 기획서에 명시되어 있으나 아직 selected Decision이 아니다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 높음 | 검토 필요 |
-| Orin NX 등 다른 Jetson 계열을 대안으로 검토할 것인가? | 현재 기획서 기준 공식 항목은 아니지만 대안 검토 가능성이 언급됐다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 중간 | 검토 필요 |
-| Ubuntu 26.04 LTS(JetPack 7)와 ROS 2 조합은 실제 사용 가능한가? | 개발환경 표의 버전 조합에 대한 실제 호환성 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 높음 | 추가 확인 필요 |
+| JetPack 6.2 환경에서 사용할 ROS 2 배포판과 프로젝트별 Python·AI package의 정확한 버전 조합은 무엇인가? | Orin NX 16GB의 JetPack 6.2 base stack은 정했으며 ROS 2 Humble은 Ubuntu 22.04 arm64 호환 후보다. 프로젝트 package 전체의 호환성은 별도 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 확인 필요 |
+| Orin NX 16GB에서 동시 실행할 AI 모델과 ROS 2 node별 memory budget 및 목표 latency는 얼마인가? | 하드웨어 선택은 완료됐지만 perception, navigation, manipulation과 AI 추론의 동시 실행 가능성은 benchmark가 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 정의 필요 |
 
 ### 4.4 내비게이션, 데이터, 평가
 
@@ -93,6 +96,7 @@ updated: 2026-07-13
 | 지도 생성은 수동 사전 매핑, 로봇 초기 캘리브레이션, 또는 둘의 조합 중 무엇인가? | 현장 준비 절차와 운영 부담을 결정해야 한다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>) | 미정 | 검토 필요 |
 | 사전 지도와 현장 환경의 차이를 어느 수준까지 허용할 수 있는가? | 가구 이동이나 배치 변경에 대한 내비게이션 허용 오차가 필요하다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>) | 미정 | 추가 정의 필요 |
 | Navigator 내부 mock seat map 형식은 무엇인가? | 현재 MVP 문서는 형식 확정을 구현 단계로 유예했다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
+| Mecanum wheel odometry와 IMU를 어떤 filter, covariance와 update rate로 융합하고 slip 누적 오차를 무엇으로 보정할 것인가? | IMU는 자세와 운동 추정을 보조하지만 평면 병진 slip을 단독으로 제거하지 못하므로 SLAM/localization을 포함한 상태 추정 계약이 필요하다. | [Navigation and Mapping](<05 - Navigation and Mapping.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 정의 필요 |
 | RGB-D color/depth image, CameraInfo, IMU topic 이름과 encoding 및 QoS는 무엇인가? | Perception이 Sim/Real 차이를 모르도록 sensor contract를 정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Data and Evaluation](<07 - Data and Evaluation.md>) | 높음 | 추가 정의 필요 |
 | 최소 데이터셋 범위와 라벨 기준은 무엇인가? | 모델 학습과 평가에 사용할 데이터 기준이 없다. | [Data and Evaluation](<07 - Data and Evaluation.md>) | 미정 | 추가 정의 필요 |
 | 시뮬레이션으로 검증할 시나리오와 실제 테스트로 검증할 시나리오는 어떻게 나눌 것인가? | 각 환경에서 검증 가능한 기술 항목과 전이 기준을 정해야 한다. | [Data and Evaluation](<07 - Data and Evaluation.md>) | 미정 | 추가 정의 필요 |
@@ -108,12 +112,21 @@ updated: 2026-07-13
 | 안전 평가 시나리오와 통과 기준은 무엇인가? | 정지, 회피, 실패 처리 정책을 검증할 수 있는 기준이 필요하다. | [Data and Evaluation](<07 - Data and Evaluation.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 미정 | 추가 정의 필요 |
 | 독립 Safety Supervisor 또는 Safety Guardrail은 어떤 조건에서 도입할 것인가? | MVP에서는 각 모듈의 기본 safety check만 사용하고 독립 컴포넌트는 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
 
-## 5. 관련 결정
+## 5. 해결된 질문
 
-- 현재 selected Decision 없음.
+| 질문 | 해결 내용 | 관련 문서 | 해결일 |
+|---|---|---|---|
+| base는 차동구동과 holonomic 중 어떤 kinematics이며 `cmd_vel.linear.y`를 지원하는가? | 4륜 Mecanum holonomic base를 사용하고 `linear.y`를 `base_link` 기준 좌우 병진 속도로 지원한다. 세부 wheel geometry와 controller parameter는 추가 정의가 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 2026-07-14 |
+| 메인 엣지 컴퓨팅 장치로 무엇을 사용할 것인가? | 메모리 가격 상승에 따른 AGX Orin 64GB 조달 비용 증가를 이유로 해당 안을 폐기하고 Jetson Orin NX 16GB를 사용한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson AGX Orin 64GB](<../30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
+| Orin NX 16GB의 base software stack은 무엇인가? | JetPack 6.2와 이에 포함된 Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem, CUDA 12.6, TensorRT 10.3을 사용한다. ROS 2 배포판과 프로젝트 package 조합은 추가 확인한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
+
+## 6. 관련 결정
+
+- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 `selected` Decision이다.
+- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]는 `selected` Decision이다.
+- [[30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB|Jetson AGX Orin 64GB]] 안은 `dropped`됐으며 Orin NX 16GB 결정으로 대체됐다.
 - 아래 draft Decision은 검토용 초안이며 아직 selected Decision이 아니다.
   - [[30_DECISIONS/Planning/260708 - MVP 기능 범위|MVP 기능 범위]]
   - [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]
-  - [[30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB|Jetson AGX Orin 64GB]]
   - [[30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조|Rule-based VLA 3 Layer 구조]]
   - [[30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책|안전 기준과 실패 처리 정책]]

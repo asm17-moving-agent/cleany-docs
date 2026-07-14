@@ -11,9 +11,10 @@ source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
+  - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 related_jira:
   -
-updated: 2026-07-12
+updated: 2026-07-14
 ---
 
 # 프로젝트 개요(Project Brief)
@@ -61,7 +62,7 @@ updated: 2026-07-12
 - ROS 2
 - SLAM
 - Nav2
-- Jetson AGX Orin
+- Jetson Orin NX 16GB
 - RGB-D
 - 2D LiDAR
 - IMU
@@ -86,5 +87,5 @@ updated: 2026-07-12
 
 ## 6. 관련 결정
 
-- 현재 selected Decision 없음.
+- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]는 메인 엣지 컴퓨팅 장치를 채택한 `selected` Decision이다.
 - [[30_DECISIONS/Planning/260708 - MVP 기능 범위|MVP 기능 범위]] 초안에 7/10 회의의 반영 후보를 추가했다.
