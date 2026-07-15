@@ -19,9 +19,10 @@ related_decisions:
   - "30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md"
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
+  - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
 related_jira:
   -
-updated: 2026-07-14
+updated: 2026-07-15
 ---
 
 # 기술 미해결 질문(Technical Questions)
@@ -77,8 +78,9 @@ updated: 2026-07-14
 
 | 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
 |---|---|---|---|---|
-| XLeRobot의 정확한 모델, 부품, 센서, 매니퓰레이터, 페이로드, 도달 범위는 무엇인가? | 작업 가능 범위와 안전 제약을 판단할 실제 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 높음 | 추가 확인 필요 |
+| XLeRobot에서 유지하는 듀얼 매니퓰레이터와 깊이 카메라의 정확한 모델, 페이로드, 도달 범위와 사양은 무엇인가? | 유지할 상부 모듈 범위는 정해졌지만 작업 가능 범위와 안전 제약을 판단할 실제 사양이 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [XLeRobot 기반 플랫폼](<../30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md>) | 높음 | 추가 확인 필요 |
 | 그리퍼 또는 말단장치 구성은 무엇인가? | 물체별 집기 가능성과 제어 방식을 결정하는 핵심 사양이다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 추가 확인 필요 |
+| 로봇 frame을 XLeRobot 기본 RÅSKOG와 알루미늄 프로파일 중 무엇으로 구성할 것인가? | 듀얼 매니퓰레이터의 도달 범위와 작업 높이, 4륜 Mecanum base 결합 방식 및 추가 기구학 복잡도를 비교해야 한다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [로봇 프레임 구조](<../30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md>) | 높음 | 검토 필요 |
 | 4륜 Mecanum base의 wheel radius, wheelbase, track width, wheel 순서·회전 방향과 encoder parameter를 어떤 값으로 정의할 것인가? | Sim과 Real의 kinematics 및 odometry가 같은 geometry를 사용해야 한다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 정의 필요 |
 | 멘토 지원 MCU의 정확한 모델, encoder 입력·PWM/DIR 출력 사양, control frequency, firmware 책임과 Jetson 통신 계약은 무엇인가? | 멘토 지원 MCU의 제공 및 적용 경로는 확인됐지만 구체 인터페이스 사양은 아직 정의되지 않았다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 높음 | 추가 확인 필요 |
 | base command timeout, 속도·가속도 제한, e-stop 우선순위와 motor power cut-off를 어떻게 정할 것인가? | node 중단이나 비정상 명령에서도 안전하게 정지할 수 있는 backend 계약이 필요하다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
@@ -124,9 +126,10 @@ updated: 2026-07-14
 
 - [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 `selected` Decision이다.
 - [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]는 `selected` Decision이다.
+- [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]은 XLeRobot 유지 범위를 듀얼 매니퓰레이터와 깊이 카메라로 한정한 `selected` Decision이다.
 - [[30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB|Jetson AGX Orin 64GB]] 안은 `dropped`됐으며 Orin NX 16GB 결정으로 대체됐다.
 - 아래 draft Decision은 검토용 초안이며 아직 selected Decision이 아니다.
   - [[30_DECISIONS/Planning/260708 - MVP 기능 범위|MVP 기능 범위]]
-  - [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]
   - [[30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조|Rule-based VLA 3 Layer 구조]]
   - [[30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책|안전 기준과 실패 처리 정책]]
+  - [[30_DECISIONS/Technical/260715 - 로봇 프레임 구조|로봇 프레임 구조]]
