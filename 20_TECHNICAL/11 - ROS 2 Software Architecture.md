@@ -15,7 +15,7 @@ related_decisions:
   -
 related_jira:
   -
-updated: 2026-07-13
+updated: 2026-07-17
 ---
 
 # ROS 2 소프트웨어 아키텍처
@@ -64,6 +64,81 @@ Dashboard / Backend / Manual CLI
 ```
 
 Mission Manager는 각 모듈의 내부 구현을 알지 않는다. 모듈이 반환한 `status`, `failure_code`, `retryable`을 해석해 retry, report, error 전이를 결정한다.
+
+현재 구현 상태와 계획된 연결 지점은 다음과 같다. 실선은 현재 계약과 제어 흐름을, 점선은 mock 연결 또는 향후 통합 경계를 나타낸다.
+
+```mermaid
+flowchart TB
+    EXT["Mission trigger<br/>backend / dashboard / exit event<br/><b>planned integration</b>"]:::planned
+
+    subgraph CONTROL["Control plane — cleany_mission_manager"]
+        direction LR
+        FSM["Happy path<br/>IDLE → NAVIGATE_TO_TARGET → PERCEIVE → PLAN_TASKS<br/>→ EXECUTE_TASKS → RETURN_HOME → REPORT → IDLE"]:::implemented
+        MM["Mission Manager<br/><b>sole FSM transition owner</b>"]:::implemented
+        REPORT["MissionReport<br/>SUCCESS / PARTIAL_SUCCESS / BLOCKED / FAILED<br/>HUMAN_REVIEW_REQUIRED"]:::implemented
+        ERROR["ERROR<br/>FATAL from active states only<br/>operator reset → IDLE"]:::implemented
+
+        FSM --- MM
+        MM -->|"complete / blocked / retry exhausted"| REPORT
+        MM -->|"fatal ModuleResult"| ERROR
+    end
+
+    EXT -. "MissionRequest" .-> MM
+
+    subgraph PORTS["Mission module ports"]
+        direction LR
+        NAV["Navigator port<br/>target <--> pose<br/> navigate / return home<br/><b>mock now</b>"]:::partial
+        PER["cleany_perception<br/>detection and segmentation<br/>objects / pose / confidence<br/><b>README-only skeleton</b>"]:::skeleton
+        PLAN["cleany_planner<br/>collect / skip / store_lost_item / human_review<br/>high-level skill sequence<br/><b>README-only skeleton</b>"]:::skeleton
+        EXEC["cleany_skill_executor<br/>decompose and execute one high-level skill<br/><b>README-only skeleton</b>"]:::skeleton
+    end
+
+    MM <-->|"state-owned calls ↓<br/>ModuleResult ↑"| PORTS
+    RESULT["Shared result envelope<br/>OK / BLOCKED / FAILED / FATAL<br/>failure_code / retryable / message / data"]:::implemented
+    RESULT ---|"contract used by every port"| PORTS
+
+    MOCKS["Current mock components<br/>Navigator / Perception / Planner<br/>Skill Executor / Reporter"]:::implemented
+    MOCKS -. "implement injected ports today" .-> PORTS
+
+    subgraph EXECUTION["Execution and robot boundary"]
+        direction LR
+        RI["cleany_bringup<br/>common Mock / Sim / Real seam<br/><b></b>"]:::planned
+        SIM["cleany_mujoco_sim<b><br>implemented ROS 2 bridge<br/>"]:::partial
+        REAL["Real adapter"]:::planned
+        ROBOT["Mobile base + manipulator + sensors<br/><b>no hardware specification</b>"]:::planned
+
+        RI -. "future binding" .-> SIM
+        RI -. "future binding" .-> REAL
+        REAL -. "commands / telemetry" .-> ROBOT
+    end
+
+    NAV -. "planned navigation adapter" .-> RI
+    EXEC -. "planned skill / motion delegation" .-> RI
+    ROBOT -. "camera / RGB-D / LiDAR candidates" .-> PER
+
+    subgraph CROSS["Shared and cross-cutting skeletons"]
+        direction LR
+        IFACE["cleany_interfaces<br/>ROS 2 msg / srv / action"]:::skeleton
+        CONFIG["configs/mission + configs/robot<br/>retry / frames / workspace / safety limits"]:::skeleton
+        LOG["cleany_logger<br/>events / failure codes"]:::skeleton
+    end
+
+    IFACE -. "shared contracts" .-> PORTS
+    CONFIG -. "parameters" .-> CONTROL
+    CONFIG -. "parameters" .-> RI
+    REPORT -. "publish / persist" .-> LOG
+    ERROR -. "fatal report" .-> LOG
+
+    SAFE["Conservative module outcomes<br/>uncertain object → skip / human_review<br/>unsafe or unavailable → BLOCKED / FAILED / FATAL"]:::safety
+    PORTS -. "local checks / policy decisions" .-> SAFE
+    SAFE -->|"task outcome or status;<br/>never changes FSM directly"| RESULT
+
+    classDef implemented fill:#dcfce7,stroke:#166534,color:#052e16,stroke-width:2px;
+    classDef partial fill:#fef3c7,stroke:#92400e,color:#451a03,stroke-width:2px;
+    classDef skeleton fill:#dbeafe,stroke:#1d4ed8,color:#172554,stroke-width:2px,stroke-dasharray:6 4;
+    classDef planned fill:#f3f4f6,stroke:#6b7280,color:#1f2937,stroke-width:2px,stroke-dasharray:3 5;
+    classDef safety fill:#fee2e2,stroke:#b91c1c,color:#450a0a,stroke-width:2px;
+```
 
 ### 3.2 패키지 경계 초안
 
@@ -256,15 +331,15 @@ FATAL    mission 중단 후 ERROR
 
 ## 4. 인터페이스 / 경계
 
-| 구성요소 | 책임 | 경계 |
-|---|---|---|
-| Mission Manager | FSM, retry, report, reset | perception, planning, motion 내부 로직을 수행하지 않음 |
-| Navigator | target 해석과 navigation action 조정 | motor command를 직접 구현하지 않음 |
-| Perception | typed WorldState 생성 | 최종 task와 FSM 전이를 결정하지 않음 |
-| Planner | high-level task/skill sequence 생성 | grasp, IK, trajectory를 생성하지 않음 |
-| Skill Executor | skill을 motion/robot operation으로 분해 | mission state를 변경하지 않음 |
-| Robot backend | 표준 command와 state를 hardware/sim에 연결 | mission 의미를 해석하지 않음 |
-| `cleany_interfaces` | package 경계를 넘는 stable schema | 구현 내부 dataclass 전체를 노출하지 않음 |
+| 구성요소                | 책임                                  | 경계                                          |
+| ------------------- | ----------------------------------- | ------------------------------------------- |
+| Mission Manager     | FSM, retry, report, reset           | perception, planning, motion 내부 로직을 수행하지 않음 |
+| Navigator           | target 해석과 navigation action 조정     | motor command를 직접 구현하지 않음                   |
+| Perception          | typed WorldState 생성                 | 최종 task와 FSM 전이를 결정하지 않음                    |
+| Planner             | high-level task/skill sequence 생성   | grasp, IK, trajectory를 생성하지 않음              |
+| Skill Executor      | skill을 motion/robot operation으로 분해  | mission state를 변경하지 않음                      |
+| Robot backend       | 표준 command와 state를 hardware/sim에 연결 | mission 의미를 해석하지 않음                         |
+| `cleany_interfaces` | package 경계를 넘는 stable schema        | 구현 내부 dataclass 전체를 노출하지 않음                 |
 
 ## 5. 가정
 
