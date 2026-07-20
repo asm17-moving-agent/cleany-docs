@@ -5,17 +5,7 @@ __pycache__/
 dist/
 .obsidian/
 
-# Raw source inboxes keep folder structure, but do not track local source files.
+# Raw inbox keeps folder structure, but does not track local source files.
 40_RAW/00_Inbox/*
 !40_RAW/00_Inbox/.gitkeep
-40_RAW/10_Meetings/*
-!40_RAW/10_Meetings/.gitkeep
-40_RAW/30_Technical_Notes/*
-!40_RAW/30_Technical_Notes/.gitkeep
-40_RAW/40_Research/*
-!40_RAW/40_Research/.gitkeep
-40_RAW/50_Mentor_Feedback/*
-!40_RAW/50_Mentor_Feedback/.gitkeep
-
-40_RAW/60_External_Artifacts/audit/
 .DS_Store
