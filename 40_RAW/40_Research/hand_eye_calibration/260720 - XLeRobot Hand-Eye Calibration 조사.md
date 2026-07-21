@@ -1,13 +1,13 @@
 ---
 type: raw-research
 reviewers:
-  -
+  - 이정현
 ingest_status: raw
 ingest_targets:
   - technical
   - decision
 decision_candidates:
-  - "OpenCV CALIB_HAND_EYE_PARK를 simulation 기준 알고리즘으로 사용"
+  - OpenCV CALIB_HAND_EYE_PARK를 simulation 기준 알고리즘으로 사용
 date: 2026-07-20
 related_jira:
   - SCRUM-264
@@ -18,10 +18,10 @@ tags:
   - hand-eye-calibration
   - simulation
 source_refs:
-  - "20_TECHNICAL/04 - Robot Platform XLeRobot.md"
-  - "20_TECHNICAL/10 - Robot ROS Contract.md"
-  - "30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md"
-  - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
+  - 20_TECHNICAL/04 - Robot Platform XLeRobot.md
+  - 20_TECHNICAL/10 - Robot ROS Contract.md
+  - 30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md
+  - 30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md
 ---
 
 # 260720 - Simulation 기반 Hand-Eye Calibration 방법론 선정
@@ -78,7 +78,7 @@ Calibration collector는 MuJoCo에서 되돌아온 qFb로 FK를 계산한다. Im
 현재 단계에서는 D435의 pan/tilt joint를 simulation 중 움직이지 않는다. CAD model에서 선택한 pan angle과 tilt angle을 joint 초기값으로 고정하고 다음 항목만 확인한다.
 
 - 고정 각도에서 camera optical frame과 TF 방향이 CAD model과 일치하는가?
-- 쓰레기과 작업 영역이 FOV 안에 들어오는가?
+- 쓰레기와 작업 영역이 FOV 안에 들어오는가?
 
 Pan/tilt angle별 동적 TF 계산, encoder 오차, backlash와 image timestamp 동기화는 향후 고도화 범위다. 1차 구현에선 Pan / Tilt를 hand-eye solver의 대상에 포함하지 않는다.
 
@@ -196,3 +196,17 @@ SCRUM-264 완료 시 다음 산출물을 남긴다.
 4. [ros2_control Controller Manager](https://control.ros.org/jazzy/doc/ros2_control/controller_manager/doc/userdoc.html)
 5. [mujoco_ros2_control](https://control.ros.org/humble/doc/mujoco_ros2_control/doc/index.html)
 6. [Tsai and Lenz, Hand/Eye Calibration](https://kmlee.gatech.edu/me6406/handeye.pdf)
+
+## 8. 용어 정리
+
+| 용어                               | 설명                                             |
+| -------------------------------- | ---------------------------------------------- |
+| FK (Forward Kinematics)          | joint 각도로부터 gripper pose를 계산하는 정기구학            |
+| PnP (Perspective-n-Point)        | 2D 이미지 점과 3D 점 대응으로 카메라-target pose를 추정하는 문제   |
+| SO(3) (Special Orthogonal group) | 3차원 회전만 모은 수학적 군. rotation을 이 구조에서 다룸          |
+| TF (Transform)                   | 좌표 프레임 간 변환 트리                                 |
+| Quaternion                       | 회전을 4개 수로 표현하는 방식                              |
+| Optical frame                    | 카메라 광학 중심 기준 좌표계                               |
+| Planar target                    | 평면 위 보정 패턴(예: 체커보드)                            |
+| Backlash                         | 기어 유격으로 생기는 위치 오차                              |
+| q_fb                             | feedback joint position. 시뮬레이터가 되돌린 실제 joint 값 |
