@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1210 600" font-family="sans-serif">
+  <rect width="1210" height="600" fill="#ffffff"/>
+  <text x="605" y="28" font-size="18" font-weight="bold" text-anchor="middle" fill="#1a2b40">YOLO 단일 단계 탐지: 이미지 한 번 통과로 모든 격자에서 박스·클래스를 직접 예측</text>
+
+  <!-- ===== MAIN FLOW ===== -->
+  <!-- Input -->
+  <text x="80" y="66" font-size="13" text-anchor="middle" fill="#33465e">입력 이미지</text>
+  <rect x="20" y="78" width="120" height="140" rx="8" fill="#eef2f7" stroke="#6b7d99"/>
+  <rect x="38" y="94" width="84" height="108" fill="#dbe3ee" stroke="#6b7d99"/>
+  <g stroke="#b9c5d8" stroke-width="1">
+    <path d="M59 94 V202 M80 94 V202 M101 94 V202 M38 121 H122 M38 148 H122 M38 175 H122"/>
+  </g>
+  <circle cx="66" cy="150" r="15" fill="#8fa6c4"/>
+  <rect x="88" y="160" width="26" height="24" fill="#8fa6c4"/>
+  <text x="80" y="234" font-size="10.5" text-anchor="middle" fill="#7a889c">640×640 · S×S 격자</text>
+
+  <!-- Backbone -->
+  <text x="272" y="66" font-size="13" text-anchor="middle" fill="#2f5a3d">Backbone</text>
+  <rect x="172" y="78" width="200" height="140" rx="8" fill="#e7f0ea" stroke="#5c8a6b"/>
+  <rect x="188" y="92" width="72" height="28" fill="#bcdcc7" stroke="#5c8a6b"/>
+  <text x="352" y="110" font-size="9.5" text-anchor="end" fill="#2f5a3d">P3 · 80×80 · stride 8</text>
+  <rect x="196" y="130" width="56" height="24" fill="#a9d0b7" stroke="#5c8a6b"/>
+  <text x="352" y="146" font-size="9.5" text-anchor="end" fill="#2f5a3d">P4 · 40×40 · stride 16</text>
+  <rect x="204" y="164" width="42" height="20" fill="#8fc2a3" stroke="#5c8a6b"/>
+  <text x="352" y="178" font-size="9.5" text-anchor="end" fill="#2f5a3d">P5 · 20×20 · stride 32</text>
+  <text x="272" y="205" font-size="9" text-anchor="middle" fill="#6b8a76">깊을수록 저해상·강한 의미</text>
+  <text x="272" y="234" font-size="10.5" text-anchor="middle" fill="#7a889c">CSPDarknet · C2f/C3k2</text>
+
+  <!-- Neck -->
+  <text x="499" y="66" font-size="13" text-anchor="middle" fill="#3a3f66">Neck</text>
+  <rect x="404" y="78" width="190" height="140" rx="8" fill="#eef0f7" stroke="#5f6a9a"/>
+  <rect x="446" y="90" width="120" height="26" rx="4" fill="#d6dbee" stroke="#5f6a9a"/>
+  <text x="506" y="107" font-size="10.5" text-anchor="middle" fill="#3a3f66">P5′</text>
+  <rect x="446" y="130" width="120" height="26" rx="4" fill="#d6dbee" stroke="#5f6a9a"/>
+  <text x="506" y="147" font-size="10.5" text-anchor="middle" fill="#3a3f66">P4′</text>
+  <rect x="446" y="170" width="120" height="26" rx="4" fill="#d6dbee" stroke="#5f6a9a"/>
+  <text x="506" y="187" font-size="10.5" text-anchor="middle" fill="#3a3f66">P3′</text>
+  <g stroke="#5f6a9a" stroke-width="2" fill="none" marker-end="url(#ab)"><path d="M424 116 V152"/><path d="M424 156 V192"/></g>
+  <g stroke="#a05070" stroke-width="2" fill="none" marker-end="url(#ap)"><path d="M584 192 V156"/><path d="M584 152 V116"/></g>
+  <text x="418" y="112" font-size="9" fill="#5f6a9a">▼</text>
+  <text x="580" y="200" font-size="9" fill="#a05070">▲</text>
+  <text x="499" y="234" font-size="10.5" text-anchor="middle" fill="#7a889c">FPN(▼)+PAN(▲) 융합</text>
+
+  <!-- Head -->
+  <text x="731" y="66" font-size="13" text-anchor="middle" fill="#8a5e1f">Head (Decoupled)</text>
+  <rect x="626" y="78" width="210" height="140" rx="8" fill="#faf0e6" stroke="#b3823c"/>
+  <circle cx="648" cy="148" r="7" fill="#d9a95c"/>
+  <rect x="672" y="96" width="150" height="30" rx="4" fill="#f2d9b8" stroke="#b3823c"/>
+  <text x="747" y="115" font-size="10.5" text-anchor="middle" fill="#8a5e1f">분류 분기 (class · nc)</text>
+  <rect x="672" y="140" width="150" height="30" rx="4" fill="#f2d9b8" stroke="#b3823c"/>
+  <text x="747" y="159" font-size="10.5" text-anchor="middle" fill="#8a5e1f">박스 분기 (4: cx,cy,w,h)</text>
+  <g stroke="#b3823c" stroke-width="1.6" fill="none"><path d="M655 145 L672 111"/><path d="M655 151 L672 155"/></g>
+  <text x="747" y="192" font-size="9" text-anchor="middle" fill="#a3823c">× 3 스케일(P3′·P4′·P5′) 반복 · anchor-free</text>
+  <text x="731" y="234" font-size="10.5" text-anchor="middle" fill="#7a889c">스케일별 분리 예측</text>
+
+  <!-- Candidates -->
+  <text x="923" y="66" font-size="13" text-anchor="middle" fill="#5a5a5a">후보 박스</text>
+  <rect x="868" y="98" width="110" height="100" rx="8" fill="#f2f2f2" stroke="#8a8a8a"/>
+  <text x="923" y="132" font-size="15" font-weight="bold" text-anchor="middle" fill="#444">8400개</text>
+  <text x="923" y="152" font-size="9.5" text-anchor="middle" fill="#777">80²+40²+20²</text>
+  <text x="923" y="172" font-size="9" text-anchor="middle" fill="#999">대부분 중복·저신뢰</text>
+
+  <!-- NMS -->
+  <text x="1048" y="66" font-size="13" text-anchor="middle" fill="#8a3232">NMS</text>
+  <rect x="1010" y="108" width="76" height="80" rx="8" fill="#f7e6e6" stroke="#b35c5c"/>
+  <text x="1048" y="142" font-size="10.5" text-anchor="middle" fill="#8a3232">중복</text>
+  <text x="1048" y="158" font-size="10.5" text-anchor="middle" fill="#8a3232">제거</text>
+  <text x="1048" y="234" font-size="9.5" text-anchor="middle" fill="#a86">YOLO26는 생략</text>
+
+  <!-- Output -->
+  <text x="1156" y="66" font-size="13" text-anchor="middle" fill="#256b40">결과</text>
+  <rect x="1118" y="108" width="76" height="80" rx="8" fill="#e9f7ee" stroke="#3d8a5c"/>
+  <rect x="1132" y="122" width="30" height="24" fill="none" stroke="#3d8a5c" stroke-width="2"/>
+  <rect x="1150" y="150" width="26" height="22" fill="none" stroke="#3d8a5c" stroke-width="2"/>
+  <text x="1156" y="200" font-size="9" text-anchor="middle" fill="#256b40">박스+클래스</text>
+
+  <!-- main flow arrows -->
+  <g stroke="#4a5a72" stroke-width="2.6" fill="none" marker-end="url(#ar)">
+    <path d="M140 148 L170 148"/>
+    <path d="M372 148 L402 148"/>
+    <path d="M594 148 L624 148"/>
+    <path d="M836 148 L866 148"/>
+    <path d="M978 148 L1008 148"/>
+    <path d="M1086 148 L1116 148"/>
+  </g>
+
+  <!-- divider -->
+  <line x1="20" y1="262" x2="1190" y2="262" stroke="#e2e6ec" stroke-width="1.5"/>
+
+  <!-- ===== DETAIL PANEL A: multi-scale ===== -->
+  <rect x="20" y="278" width="575" height="300" rx="8" fill="#f7faf8" stroke="#cfe0d5"/>
+  <text x="38" y="304" font-size="13" font-weight="bold" fill="#2f5a3d">① 다중 스케일 격자 — 어느 해상도가 어떤 물체를 맡나</text>
+
+  <!-- three mini grids -->
+  <g stroke="#5c8a6b" stroke-width="1">
+    <rect x="46" y="322" width="72" height="72" fill="#eaf3ee"/>
+    <path d="M58 322 V394 M70 322 V394 M82 322 V394 M94 322 V394 M106 322 V394 M46 334 H118 M46 346 H118 M46 358 H118 M46 370 H118 M46 382 H118"/>
+    <rect x="70" y="346" width="24" height="24" fill="#bcdcc7" stroke="#3d6b4d" stroke-width="1.5"/>
+  </g>
+  <text x="82" y="410" font-size="9.5" text-anchor="middle" fill="#2f5a3d">P3 (촘촘)</text>
+
+  <g stroke="#5c8a6b" stroke-width="1">
+    <rect x="150" y="322" width="72" height="72" fill="#eaf3ee"/>
+    <path d="M168 322 V394 M186 322 V394 M204 322 V394 M150 340 H222 M150 358 H222 M150 376 H222"/>
+    <rect x="168" y="340" width="36" height="36" fill="#a9d0b7" stroke="#3d6b4d" stroke-width="1.5"/>
+  </g>
+  <text x="186" y="410" font-size="9.5" text-anchor="middle" fill="#2f5a3d">P4 (중간)</text>
+
+  <g stroke="#5c8a6b" stroke-width="1">
+    <rect x="254" y="322" width="72" height="72" fill="#eaf3ee"/>
+    <path d="M290 322 V394 M254 358 H326"/>
+    <rect x="254" y="322" width="36" height="72" fill="#8fc2a3" stroke="#3d6b4d" stroke-width="1.5"/>
+  </g>
+  <text x="290" y="410" font-size="9.5" text-anchor="middle" fill="#2f5a3d">P5 (성김)</text>
+
+  <text x="186" y="434" font-size="9.5" text-anchor="middle" fill="#7a889c">작은 물체는 촘촘한 격자, 큰 물체는 성긴 격자가 담당</text>
+
+  <!-- table -->
+  <g font-size="10.5" fill="#33465e">
+    <line x1="46" y1="454" x2="569" y2="454" stroke="#cfe0d5"/>
+    <text x="60" y="470" font-weight="bold" fill="#2f5a3d">특징맵</text>
+    <text x="170" y="470" font-weight="bold" fill="#2f5a3d">격자</text>
+    <text x="285" y="470" font-weight="bold" fill="#2f5a3d">stride</text>
+    <text x="375" y="470" font-weight="bold" fill="#2f5a3d">셀 수</text>
+    <text x="470" y="470" font-weight="bold" fill="#2f5a3d">담당 물체</text>
+    <line x1="46" y1="478" x2="569" y2="478" stroke="#cfe0d5"/>
+    <text x="60" y="498">P3</text><text x="170" y="498">80×80</text><text x="285" y="498">8</text><text x="375" y="498">6,400</text><text x="470" y="498">작은 물체</text>
+    <text x="60" y="520">P4</text><text x="170" y="520">40×40</text><text x="285" y="520">16</text><text x="375" y="520">1,600</text><text x="470" y="520">중간 물체</text>
+    <text x="60" y="542">P5</text><text x="170" y="542">20×20</text><text x="285" y="542">32</text><text x="375" y="542">400</text><text x="470" y="542">큰 물체</text>
+    <line x1="46" y1="552" x2="569" y2="552" stroke="#cfe0d5"/>
+    <text x="60" y="569" font-weight="bold" fill="#2f5a3d">합계</text><text x="375" y="569" font-weight="bold" fill="#8a3232">8,400 후보</text>
+  </g>
+
+  <!-- ===== DETAIL PANEL B: one cell prediction ===== -->
+  <rect x="615" y="278" width="575" height="300" rx="8" fill="#fbf8f3" stroke="#ecdcc2"/>
+  <text x="633" y="304" font-size="13" font-weight="bold" fill="#8a5e1f">② 격자 셀 하나가 내는 예측 (anchor-free · decoupled)</text>
+
+  <!-- grid with highlighted cell -->
+  <g stroke="#b3823c" stroke-width="1">
+    <rect x="640" y="330" width="110" height="110" fill="#fbf1e0"/>
+    <path d="M662 330 V440 M684 330 V440 M706 330 V440 M728 330 V440 M640 352 H750 M640 374 H750 M640 396 H750 M640 418 H750"/>
+  </g>
+  <rect x="684" y="374" width="22" height="22" fill="#e8a94e" stroke="#8a5e1f" stroke-width="1.5"/>
+  <circle cx="695" cy="385" r="7" fill="#8a5e1f"/>
+  <text x="695" y="458" font-size="9.5" text-anchor="middle" fill="#8a5e1f">물체 중심이 놓인 셀</text>
+
+  <!-- arrow to vector -->
+  <path d="M752 385 L792 385" stroke="#8a5e1f" stroke-width="2.2" fill="none" marker-end="url(#ao)"/>
+
+  <!-- prediction vector -->
+  <text x="800" y="344" font-size="10" fill="#5c8a6b">box 분기 (4)</text>
+  <g font-size="10" fill="#2f5a3d">
+    <rect x="800" y="352" width="34" height="26" fill="#cfe6d6" stroke="#5c8a6b"/><text x="817" y="369" text-anchor="middle">cx</text>
+    <rect x="836" y="352" width="34" height="26" fill="#cfe6d6" stroke="#5c8a6b"/><text x="853" y="369" text-anchor="middle">cy</text>
+    <rect x="872" y="352" width="34" height="26" fill="#cfe6d6" stroke="#5c8a6b"/><text x="889" y="369" text-anchor="middle">w</text>
+    <rect x="908" y="352" width="34" height="26" fill="#cfe6d6" stroke="#5c8a6b"/><text x="925" y="369" text-anchor="middle">h</text>
+  </g>
+  <text x="960" y="344" font-size="10" fill="#b3823c">cls 분기 (nc=80)</text>
+  <g font-size="9.5" fill="#8a5e1f">
+    <rect x="960" y="352" width="32" height="26" fill="#f2d9b8" stroke="#b3823c"/><text x="976" y="369" text-anchor="middle">p₁</text>
+    <rect x="994" y="352" width="32" height="26" fill="#f2d9b8" stroke="#b3823c"/><text x="1010" y="369" text-anchor="middle">p₂</text>
+    <rect x="1028" y="352" width="32" height="26" fill="#f7e7cf" stroke="#b3823c"/><text x="1044" y="369" text-anchor="middle">…</text>
+    <rect x="1062" y="352" width="34" height="26" fill="#f2d9b8" stroke="#b3823c"/><text x="1079" y="369" text-anchor="middle">p₈₀</text>
+  </g>
+
+  <!-- notes -->
+  <g font-size="10.5" fill="#5a4a2e">
+    <text x="800" y="404">· anchor 없음: 셀 기준으로 박스를 직접 회귀한다</text>
+    <text x="800" y="428">· 분류·박스 분기가 분리(decoupled)돼 서로 간섭이 적다</text>
+    <text x="800" y="452">· 신뢰도는 클래스 점수에 통합 (별도 objectness 없음)</text>
+    <text x="800" y="476">· 8400개 예측 중 대부분은 저신뢰 → NMS가 정리</text>
+  </g>
+  <text x="902" y="516" font-size="10" text-anchor="middle" fill="#a86">세그 모델은 여기에 마스크 계수 32개가 추가된다 (4장 참조)</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#4a5a72"/></marker>
+    <marker id="ab" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#5f6a9a"/></marker>
+    <marker id="ap" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#a05070"/></marker>
+    <marker id="ao" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#8a5e1f"/></marker>
+  </defs>
+</svg>
