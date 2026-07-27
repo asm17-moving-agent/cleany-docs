@@ -57,7 +57,7 @@ updated: 2026-07-27
 | Skill Executor 내부의 skill breakdown과 입출력 계약은 무엇인가? | 세부 동작 분해는 `cleany_skill_executor` 설계 시 확정하도록 유예됐다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Dashboard/backend와 Mission Report를 어떤 방식으로 연동할 것인가? | MVP는 console 또는 file log를 사용하고 외부 연동은 이후로 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
 | `target_pose`, `home_pose`, `priority`, `deadline` 같은 MissionRequest 확장 필드는 언제 어떤 계약으로 추가할 것인가? | MVP 최소 요청 이후의 확장 조건이 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
-| `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. 멘토링 준비에서는 이 경계를 simulation adapter의 가정으로 제안했다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
+| `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. 이 경계는 simulation adapter의 가정으로 제안돼 있다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
 | 단일 로봇 canonical topic은 상대 이름으로 구현하고 namespace/remap으로 확장할 것인가? | global 이름 하드코딩 여부와 다중 로봇·Sim/Real 동시 비교 방식에 영향을 준다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | `map -> odom -> base_link`와 sensor/arm frame의 최종 이름 및 transform 소유권은 무엇인가? | SLAM, odometry backend, robot_state_publisher 사이의 중복 TF 발행을 막아야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 높음 | 추가 정의 필요 |
 | mission stack과 Sim/Real bringup을 별도 launch로 분리할 것인가? | 동일한 상위 stack을 재사용하면서 한 backend만 활성화하는 구성이 필요하다. | [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 중간 | 검토 필요 |
@@ -66,7 +66,7 @@ updated: 2026-07-27
 
 | 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
 |---|---|---|---|---|
-| Rule-based VLA 3 Layer의 공식 명칭과 계층별 책임은 무엇이며, Agentic VLA 후보와 어떤 관계로 둘 것인가? | 기획서에 3 Layer 개념은 있으나 각 계층의 경계가 상세하지 않다. 멘토링 준비에서는 FSM/Rule Guard, VLA Task Designer, Physical Skill Library 조합이 대안으로 제안됐다. | [Technical Overview](<00 - Technical Overview.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 높음 | 추가 정의 필요 |
+| Rule-based VLA 3 Layer의 공식 명칭과 계층별 책임은 무엇이며, FSM/Rule Guard·VLA Task Designer·Physical Skill Library와 어떤 관계로 둘 것인가? | 기획서에 3 Layer 개념은 있으나 각 계층의 경계가 상세하지 않다. 목표 해석, 규칙 검증, Physical Skill 실행의 책임 경계를 정의해야 한다. | [Technical Overview](<00 - Technical Overview.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 높음 | 추가 정의 필요 |
 | VLA 후보 모델은 무엇이며 경량 VLM과의 관계 및 선정 기준은 무엇인가? | 기획서에는 경량 VLM만 기재되어 있고 실제 후보와 평가 기준이 없다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 중간 | 추가 확인 필요 |
 | 객체 탐지·Segmentation 모델 후보와 선정 기준은 무엇인가? | YOLO, MediaPipe 등의 예시가 언급됐지만 채택 모델은 정해지지 않았다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 중간 | 검토 필요 |
 | 규칙 기반 검증의 최소 규칙 세트는 무엇인가? | 안전하고 재현 가능한 행동 선택을 위한 기본 규칙이 필요하다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
@@ -110,7 +110,7 @@ updated: 2026-07-27
 |---|---|---|---|---|
 | 장애물 회피, 사람 감지, 충돌 위험에서 로봇이 반드시 정지해야 하는 조건은 무엇인가? | 실내 이동·조작 로봇의 최소 안전 기준이 필요하다. | [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
 | 조작 실패, 파지 실패, 오분류 시 재시도·중단·보고 정책은 무엇인가? | 쓰레기와 분실물 처리 오류가 사용자 자산과 데모 안정성에 영향을 준다. | [System Concept](<01 - System Concept.md>), [Safety and Risk](<08 - Safety and Risk.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 높음 | 추가 정의 필요 |
-| Mission Action 취소 요청과 `PARTIAL_SUCCESS`·`HUMAN_REVIEW_REQUIRED` 결과를 어떤 terminal state와 운영자 알림으로 표현할 것인가? | 멘토링 준비에서 cancel 거절 및 부분 성공·사람 검토 결과의 처리 방식이 결정 후보로 제안됐다. 외부 Action 상태와 MissionReport 의미를 함께 정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
+| Mission Action 취소 요청과 `PARTIAL_SUCCESS`·`HUMAN_REVIEW_REQUIRED` 결과를 어떤 terminal state와 운영자 알림으로 표현할 것인가? | cancel 거절, 부분 성공, 사람 검토 결과의 처리 방식이 정의되지 않았다. 외부 Action 상태와 MissionReport 의미를 함께 정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
 | 후속 소등·문단속 기능은 물리 조작, IoT 연동, 상태 확인 중 무엇이며 안전·법적 기준은 무엇인가? | 시설 상태를 변경하는 방식에 따라 기술 경계와 책임이 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 확인 필요 |
 | 안전 평가 시나리오와 통과 기준은 무엇인가? | 정지, 회피, 실패 처리 정책을 검증할 수 있는 기준이 필요하다. | [Data and Evaluation](<07 - Data and Evaluation.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 미정 | 추가 정의 필요 |
 | 독립 Safety Supervisor 또는 Safety Guardrail은 어떤 조건에서 도입할 것인가? | MVP에서는 각 모듈의 기본 safety check만 사용하고 독립 컴포넌트는 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |

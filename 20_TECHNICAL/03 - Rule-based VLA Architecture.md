@@ -57,12 +57,13 @@ Rule-based VLA는 물체의 의미와 주변 맥락을 해석해 행동 후보�
 - VLM/VLA 기반 의미 판단이 불확실하거나 집기 정책이 준비되지 않은 경우에는 대기하는 것을 기본으로 둔다.
 - grasp estimation 또는 규칙 기반 집기 절차를 폴백으로 조합할 수 있으나, 실제 채택 여부와 인터페이스는 검토 필요다.
 
-### 3.5 멘토링 검토용 Agentic VLA 후보
+### 3.5 목표 해석과 Physical Skill 실행
 
-아래 그림은 멘토링 준비 문서의 Agentic VLA 제안을 재사용한 것이다. 이는
-현재 Rule-based VLA 3 Layer 초안을 대체하지 않으며, VLA Task Designer와
-FSM/Rule Guard의 책임 경계 및 Physical Skill Library의 채택 여부를 검토하기
-위한 후보 구조다.
+Mission Goal과 Perception Result는 FSM/Rule Guard에서 허용 범위를 확인한 뒤
+VLA Task Designer로 전달된다. 설계된 TaskPlan은 다시 검증되어 Physical Skill
+Library의 개별 실행으로 이어지고, 실행 결과와 새 관측은 다음 판단에 반영된다.
+이 흐름에서 VLA Task Designer와 Rule-based VLA 3 Layer의 대응 관계, Physical
+Skill Library의 실제 인터페이스는 추가 정의가 필요하다.
 
 ```mermaid
 flowchart LR

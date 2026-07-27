@@ -49,11 +49,12 @@ updated: 2026-07-27
 
 MVP 포함 여부와 상세 기능은 추가 확인 필요다.
 
-### 3.3 멘토링 검토용 서비스 흐름 후보
+### 3.3 서비스–로봇 상호작용
 
-아래 그림은 멘토링 준비 문서의 서비스–로봇 상호작용 제안을 재사용한 것이다.
-Dashboard·Mission Queue, 분실물 보관, MissionReport의 전후 사진은 현재
-MVP에 채택된 구성이나 인터페이스가 아니며, 관련 범위 결정 검토를 위한 후보다.
+서비스는 작업 요청을 받아 Mission을 로봇에 전달하고, 실행 중 feedback과 최종
+MissionReport를 운영자에게 전달한다. Dashboard·Mission Queue, 분실물 보관,
+MissionReport의 전후 사진은 이 흐름에서 확장 가능한 구성요소이며, MVP의 포함
+범위와 인터페이스는 관련 Decision에서 계속 정한다.
 
 ```mermaid
 sequenceDiagram
