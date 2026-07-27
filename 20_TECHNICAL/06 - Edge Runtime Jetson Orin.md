@@ -14,7 +14,7 @@ related_decisions:
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 related_jira:
   -
-updated: 2026-07-14
+updated: 2026-07-27
 ---
 
 # Jetson Orin 엣지 런타임
@@ -35,7 +35,7 @@ updated: 2026-07-14
 |---|---|---|---|
 | OS | Robot Edge | JetPack 6.2, Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem | selected Decision, Orin NX 16GB 지원 확인 |
 | Compute runtime | Robot Edge | CUDA 12.6, TensorRT 10.3, cuDNN 9.3 | JetPack 6.2 공식 구성 |
-| ROS 2 | Robot Edge | ROS 2 Humble 후보 | Ubuntu 22.04 arm64 공식 지원, 채택은 추가 검토 필요 |
+| ROS 2 | Robot Edge | ROS 2 Humble | JetPack 6.2의 Ubuntu 22.04 기반 root filesystem에서 사용할 기준 배포판 |
 | OS | Server, Training Server | Ubuntu 26.04 LTS, Docker, CUDA | 기획서 기반, 실제 호환성 검토 필요 |
 | 개발도구 | IDE | VS Code | 기획서 기반 |
 | 협업/CI | GitHub, GitHub Actions, Github Projects | 문서에는 GitHub Projects 표기로 기재 | 기획서 기반 |
@@ -74,13 +74,14 @@ updated: 2026-07-14
 
 - 메인 엣지 컴퓨팅 장치는 selected Decision에 따라 Jetson Orin NX 16GB를 사용한다.
 - Orin NX 16GB의 base software stack은 JetPack 6.2를 사용한다.
+- 로봇 엣지의 ROS 2 배포판은 Humble을 사용한다.
 - 온디바이스 추론 대상 모델은 경량화와 TensorRT 최적화가 필요할 수 있다.
 - perception, navigation, manipulation과 AI 추론의 동시 실행 memory budget은 benchmark로 검증한다.
-- ROS 2 Humble은 Ubuntu 22.04 arm64 호환 후보지만 프로젝트의 ROS 2 배포판으로 아직 확정하지 않는다.
+- ROS 2 Humble과 프로젝트별 Python·AI package의 정확한 버전 조합은 통합 전에 검증한다.
 
 ## 6. 리스크
 
-- JetPack 6.2 base stack 지원은 확인됐지만 ROS 2 배포판과 프로젝트별 Python·AI package 조합이 맞지 않을 수 있다.
+- JetPack 6.2과 ROS 2 Humble 조합에서 프로젝트별 Python·AI package가 맞지 않을 수 있다.
 - 객체 탐지, VLA 판단, Nav2, 조작 제어를 동시에 실행할 때 성능 병목이 생길 수 있다.
 - 16GB memory budget, 발열과 전력 사용량이 현장 운영 안정성에 영향을 줄 수 있다.
 

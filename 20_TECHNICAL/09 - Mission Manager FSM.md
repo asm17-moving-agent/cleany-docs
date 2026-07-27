@@ -16,7 +16,7 @@ related_decisions:
   -
 related_jira:
   -
-updated: 2026-07-13
+updated: 2026-07-27
 ---
 
 # Mission Manager FSM
@@ -49,7 +49,7 @@ flowchart LR
     perception["Perception<br/>objects / snapshot"]
     planner["Planner<br/>task plan"]
     executor["Skill Executor<br/>skill + motion execution"]
-    reporter["Reporter<br/>console / file log"]
+    reporter["Backend / Dashboard Bridge<br/>feedback · report · before/after result"]
 
     external -->|"MissionRequest"| mm
     mm -->|"navigate_to_target(target_id)"| nav
@@ -373,7 +373,7 @@ Planner 책임:
 - 물체별 처리 여부 결정
 - 어떤 물건을 먼저 치울지 결정
 - `collect`, `skip`, `human_review` 같은 MVP high-level task 판단
-- `store_lost_item`은 분실물을 건드리지 않는 1차 MVP 원칙에 따라 후속 기능 후보로만 유지
+- `store_lost_item`은 분실물 후보를 쓰레기 수거함과 분리된 보관함으로 옮기는 MVP task다. 분류 기준과 보관·인계 정책은 추가 정의가 필요하다.
 - 실행할 high-level skill sequence 제안
 
 Planner 책임이 아닌 것:
@@ -457,4 +457,4 @@ BLOCKED
 HUMAN_REVIEW_REQUIRED
 ```
 
-MVP에서는 report를 console log 또는 file log로 남긴다. 이후 dashboard event publish 또는 backend upload로 확장한다.
+MVP에서는 Mission feedback과 MissionReport, 전후 결과를 Backend에 전달하고 Dashboard에서 표시한다. Backend·Dashboard와 Robot Edge 사이의 구체 API, 결과 payload, 사진 저장 방식은 추가 정의가 필요하다.
