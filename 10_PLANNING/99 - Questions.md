@@ -15,7 +15,7 @@ related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
 related_jira:
   -
-updated: 2026-07-13
+updated: 2026-07-27
 ---
 
 # 기획 미해결 질문(Planning Questions)
@@ -55,7 +55,7 @@ updated: 2026-07-13
 | 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
 |---|---|---|---|---|
 | 1차 MVP의 물체 종류·개수와 물체별 집기·수거함 투입 조건은 무엇인가? | 7/10 회의에서 소수의 사전 정의 물체를 인식·분류·집기하는 범위를 우선 논의했다. | [Project Brief](<00 - Project Brief.md>), [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>) | 높음 | 추가 정의 필요 |
-| 분실물 후보와 저신뢰 물체를 사용자에게 어떻게 기록·표시·알림할 것인가? | 1차 MVP에서는 해당 물체를 건드리지 않는 방향이지만 결과 표시 방식은 정해지지 않았다. | [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>) | 높음 | 추가 정의 필요 |
+| 분실물 후보와 저신뢰 물체를 원위치 기록할지, 보관까지 수행할지, 사용자에게 어떻게 표시·알림할 것인가? | 현재 MVP 초안은 해당 물체를 건드리지 않는 방향이지만, 멘토링 준비에서는 보관 경로가 대안으로 제안됐다. 결과 표시 방식도 정해지지 않았다. | [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>), [MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>) | 높음 | 추가 정의 필요 |
 | 웹 대시보드의 최소 호출·상태 확인 기능과 작업 요청 입력은 무엇인가? | 운영자 호출 UI 후보가 논의됐지만 대상 구역 선택 외 필수 입력과 상태 범위가 정해지지 않았다. | [Project Brief](<00 - Project Brief.md>), [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>) | 중간 | 검토 필요 |
 | 자율주행·지도 생성·대시보드는 현장 시연과 사전 영상 보완을 어떤 기준으로 나눌 것인가? | 공간 배치 변경, 지도 생성 시간, 현장 안정성이 시연 리스크로 언급됐다. | [Project Brief](<00 - Project Brief.md>), [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>), [Success Criteria](<05 - Success Criteria.md>) | 높음 | 추가 정의 필요 |
 | 작업 실패나 저신뢰 결과가 발생하면 사용자에게 보이는 흐름을 대기, 재시도, 중단, 기록, 알림 중 어떻게 구성할 것인가? | 기술 실패 처리와 별개로 시연 및 운영자 경험의 기본 흐름이 필요하다. | [Target Scenario](<02 - Target Scenario.md>), [Success Criteria](<05 - Success Criteria.md>) | 미정 | 추가 정의 필요 |
@@ -72,11 +72,11 @@ updated: 2026-07-13
 
 | 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
 |---|---|---|---|---|
-| 팀원별 역할은 어떻게 나눌 것인가? | 기획서 역할 표에 placeholder와 빈 칸이 있다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
+| 팀원별 역할은 어떻게 나눌 것인가? | 기획서 역할 표에 placeholder와 빈 칸이 있고, 멘토링 준비안의 역할 배분은 아직 팀 합의가 필요하다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
 | 멘토별 역할과 기대 도움은 무엇인가? | 멘토 구성 및 역할 표에 placeholder와 빈 칸이 있다. | [Project Brief](<00 - Project Brief.md>) | 중간 | 추가 확인 필요 |
 | 7/10 MVP 범위 논의의 원본 회의록은 어디에 있는가? | MVP Decision이 존재하지 않는 Raw 회의록을 출처로 참조하고 있어 원본 확인 전 해당 출처 링크를 제거했다. | [MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>) | 높음 | 추가 확인 필요 |
 | Sprint 운영 방식과 Jira Epic/Story 구조는 어떻게 잡을 것인가? | Jira가 작업 상태의 source of truth다. | [Project Brief](<00 - Project Brief.md>) | 중간 | 검토 필요 |
-| 추진 일정의 월별 배치는 어떻게 확정할 것인가? | 기획서 일정표에 항목은 있으나 월별 체크가 비어 있다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
+| 추진 일정의 월별 배치는 어떻게 확정할 것인가? | 기획서 일정표에 항목은 있으나 월별 체크가 비어 있고, 멘토링 준비안의 7월~11월 단계는 제안 상태다. | [Project Brief](<00 - Project Brief.md>) | 높음 | 추가 확인 필요 |
 
 ## 5. 관련 결정
 

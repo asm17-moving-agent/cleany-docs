@@ -13,7 +13,7 @@ related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
 related_jira:
   -
-updated: 2026-07-12
+updated: 2026-07-27
 ---
 
 # 시스템 개념(System Concept)
@@ -48,6 +48,52 @@ updated: 2026-07-12
 - 수동 작업 요청 또는 재시도 요청
 
 MVP 포함 여부와 상세 기능은 추가 확인 필요다.
+
+### 3.3 멘토링 검토용 서비스 흐름 후보
+
+아래 그림은 멘토링 준비 문서의 서비스–로봇 상호작용 제안을 재사용한 것이다.
+Dashboard·Mission Queue, 분실물 보관, MissionReport의 전후 사진은 현재
+MVP에 채택된 구성이나 인터페이스가 아니며, 관련 범위 결정 검토를 위한 후보다.
+
+```mermaid
+sequenceDiagram
+    autonumber
+
+    actor C as 운영자·Dashboard
+    participant B as Service Backend·Mission Queue
+    participant R as Robot System
+
+    C->>B: 대상 구역 정리 요청
+    B-->>C: QUEUED·mission_id
+
+    Note over B,R: 로봇이 사용 가능할 때 Mission 할당
+    B->>R: Mission dispatch
+    R-->>B: RUNNING
+    B-->>C: 작업 시작 표시
+
+    Note over B,R: 이동·인식·수행·복귀 상태가 바뀔 때마다 Mission feedback
+    R-->>B: Mission feedback
+    B-->>C: 진행 상태 갱신
+
+    R->>R: 지정 구역 이동
+
+    loop 처리 대상이 남아 있는 동안
+        R->>R: Perception
+        R->>R: Agentic VLA 추론
+
+        alt 쓰레기
+            R->>R: pick → collect
+        else 분실물
+            R->>R: pick → store
+        else 불확실하거나 위험함
+            R->>R: skip → human review
+        end
+    end
+
+    R->>R: 청소 후 관측·대기 위치 복귀
+    R-->>B: MissionReport·전후 사진
+    B-->>C: 최종 결과 표시
+```
 
 ## 4. 인터페이스 / 경계
 
