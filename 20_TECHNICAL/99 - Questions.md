@@ -55,7 +55,7 @@ updated: 2026-07-15
 | 물체별 집기 실패와 저신뢰 분류를 어떤 결과 코드와 운영자 알림 계약으로 처리할 것인가? | 모듈 결과와 사용자 표시를 연결할 공통 실패 표현이 필요하다. | [System Concept](<01 - System Concept.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Planner의 정확한 `TaskPlan` schema는 무엇인가? | 현재 문서는 실행 가능한 high-level skill sequence만 계약으로 요구하고 상세 schema 확정을 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Skill Executor 내부의 skill breakdown과 입출력 계약은 무엇인가? | 세부 동작 분해는 `cleany_skill_executor` 설계 시 확정하도록 유예됐다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
-| Dashboard/backend와 Mission Report를 어떤 방식으로 연동할 것인가? | MVP는 console 또는 file log를 사용하고 외부 연동은 이후로 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
+| Dashboard/backend와 Mission feedback·MissionReport·전후 결과를 어떤 API와 payload로 연동할 것인가? | Dashboard·Backend 연동은 MVP에 포함되지만, Mission Queue, 진행 상태, 사진과 최종 결과의 상세 계약은 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 추가 정의 필요 |
 | `target_pose`, `home_pose`, `priority`, `deadline` 같은 MissionRequest 확장 필드는 언제 어떤 계약으로 추가할 것인가? | MVP 최소 요청 이후의 확장 조건이 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
 | `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
 | 단일 로봇 canonical topic은 상대 이름으로 구현하고 namespace/remap으로 확장할 것인가? | global 이름 하드코딩 여부와 다중 로봇·Sim/Real 동시 비교 방식에 영향을 준다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
@@ -71,7 +71,7 @@ updated: 2026-07-15
 | 객체 탐지·Segmentation 모델 후보와 선정 기준은 무엇인가? | YOLO, MediaPipe 등의 예시가 언급됐지만 채택 모델은 정해지지 않았다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 중간 | 검토 필요 |
 | 규칙 기반 검증의 최소 규칙 세트는 무엇인가? | 안전하고 재현 가능한 행동 선택을 위한 기본 규칙이 필요하다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
 | Planning에서 정한 MVP 물체별 집기 정책은 어떻게 정의할 것인가? | 물체 목록과 성공 조건을 실제 행동 규칙으로 변환해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>), [Planning Questions](<../10_PLANNING/99 - Questions.md>) | 미정 | 추가 정의 필요 |
-| 불확실한 물체의 기본 행동과 결과 표현은 무엇인가? | 분실물이나 저신뢰 물체를 건드리지 않는 원칙을 모듈 행동과 결과 코드에 반영해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
+| 불확실하거나 위험한 물체의 기본 행동과 결과 표현은 무엇인가? | 분실물 후보는 별도 보관함으로 옮기지만, 저신뢰·위험 물체는 사람 검토 요청으로 남기는 원칙을 모듈 행동과 결과 코드에 반영해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
 | grasp estimation 폴백을 실제 MVP에 포함할 것인가? | 규칙 기반 집기 실패를 보완할 후보지만 실제 채택 여부와 인터페이스가 정해지지 않았다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 검토 필요 |
 
 ### 4.3 로봇 플랫폼과 엣지 런타임
@@ -88,7 +88,7 @@ updated: 2026-07-15
 | arm과 gripper의 공통 계약으로 `FollowJointTrajectory`와 `GripperCommand`를 채택할 것인가? | simulation private joint hook과 실제 controller를 분리하고 표준 ROS 2 tooling을 사용할지 결정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | 수거함은 로봇에 탑재되는가, 공간 내 고정 위치인가? | 플랫폼 구성과 이동·투입 시나리오가 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
 | 후속 책상 닦기 기능의 도구는 어떤 방식으로 장착할 것인가? | 1차 MVP 제외 후보지만 장기 기능의 플랫폼 제약으로 남아 있다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
-| JetPack 6.2 환경에서 사용할 ROS 2 배포판과 프로젝트별 Python·AI package의 정확한 버전 조합은 무엇인가? | Orin NX 16GB의 JetPack 6.2 base stack은 정했으며 ROS 2 Humble은 Ubuntu 22.04 arm64 호환 후보다. 프로젝트 package 전체의 호환성은 별도 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 확인 필요 |
+| JetPack 6.2과 ROS 2 Humble 환경에서 사용할 프로젝트별 Python·AI package의 정확한 버전 조합은 무엇인가? | JetPack 6.2과 ROS 2 Humble은 기준으로 정했으며, 프로젝트 package 전체의 호환성은 별도 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 확인 필요 |
 | Orin NX 16GB에서 동시 실행할 AI 모델과 ROS 2 node별 memory budget 및 목표 latency는 얼마인가? | 하드웨어 선택은 완료됐지만 perception, navigation, manipulation과 AI 추론의 동시 실행 가능성은 benchmark가 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 정의 필요 |
 
 ### 4.4 내비게이션, 데이터, 평가
@@ -120,7 +120,7 @@ updated: 2026-07-15
 |---|---|---|---|
 | base는 차동구동과 holonomic 중 어떤 kinematics이며 `cmd_vel.linear.y`를 지원하는가? | 4륜 Mecanum holonomic base를 사용하고 `linear.y`를 `base_link` 기준 좌우 병진 속도로 지원한다. 세부 wheel geometry와 controller parameter는 추가 정의가 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 2026-07-14 |
 | 메인 엣지 컴퓨팅 장치로 무엇을 사용할 것인가? | 메모리 가격 상승에 따른 AGX Orin 64GB 조달 비용 증가를 이유로 해당 안을 폐기하고 Jetson Orin NX 16GB를 사용한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson AGX Orin 64GB](<../30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
-| Orin NX 16GB의 base software stack은 무엇인가? | JetPack 6.2와 이에 포함된 Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem, CUDA 12.6, TensorRT 10.3을 사용한다. ROS 2 배포판과 프로젝트 package 조합은 추가 확인한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
+| Orin NX 16GB의 base software stack은 무엇인가? | JetPack 6.2와 이에 포함된 Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem, CUDA 12.6, TensorRT 10.3, ROS 2 Humble을 사용한다. 프로젝트별 Python·AI package 조합은 추가 검증한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-27 |
 
 ## 6. 관련 결정
 
