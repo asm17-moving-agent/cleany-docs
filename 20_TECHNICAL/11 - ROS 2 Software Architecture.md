@@ -30,7 +30,7 @@ updated: 2026-07-17
 
 ## 2. 기획 맥락
 
-1차 MVP 흐름은 운영자 요청을 받아 지정 구역으로 이동하고, 사전에 정한 쓰레기 물체를 인식·분류·집기한 뒤 수거함에 투입하고 복귀하는 것이다. 분실물 후보와 저신뢰 물체는 조작하지 않고 결과에 기록하거나 사람 검토 대상으로 남긴다.
+1차 MVP 흐름은 Dashboard·Backend의 운영자 요청을 받아 지정 구역으로 이동하고, 사전에 정한 쓰레기와 분실물 후보를 인식·분류·집기한 뒤 각각의 보관 위치로 옮기고 복귀하는 것이다. 불확실하거나 위험한 물체는 조작하지 않고 사람 검토 대상으로 남긴다. Mission feedback과 최종 결과는 Backend를 거쳐 Dashboard에 표시한다.
 
 소프트웨어는 아래 경계를 유지해야 한다.
 
@@ -69,7 +69,7 @@ Mission Manager는 각 모듈의 내부 구현을 알지 않는다. 모듈이 �
 
 ```mermaid
 flowchart TB
-    EXT["Mission trigger<br/>backend / dashboard / exit event<br/><b>planned integration</b>"]:::planned
+    EXT["Mission trigger<br/>backend / dashboard<br/><b>MVP integration</b>"]:::planned
 
     subgraph CONTROL["Control plane — cleany_mission_manager"]
         direction LR
@@ -153,7 +153,7 @@ flowchart TB
 | `cleany_robot_interface` | Sim/Real 공통 robot port와 adapter | 실제 driver/`ros2_control` 패키지 구조와 이름은 검토 필요 |
 | `cleany_mujoco_sim` | MuJoCo simulation backend | 공통 robot contract와 simulation-only hook 분리 |
 | `cleany_description` | URDF/Xacro, joint/link, TF, controller 설정 | 신규 패키지 후보 |
-| `cleany_logger` | event, failure, mission report 기록 | dashboard/backend 업로드와 분리 |
+| `cleany_logger` | event, failure, mission report 기록 | Backend·Dashboard 전달 payload와 저장 책임은 추가 정의 필요 |
 | `cleany_bringup` | mission stack과 Sim/Real 구성 launch | 신규 패키지 후보 |
 
 Nav2, SLAM, MoveIt, `robot_state_publisher`, `controller_manager`는 Cleany 고유 기능으로 다시 구현하지 않고 표준 ROS 2 패키지를 사용한다.
@@ -344,9 +344,9 @@ FATAL    mission 중단 후 ERROR
 ## 5. 가정
 
 - `target_id -> pose` 변환은 MVP에서 Navigator 내부 책임으로 둔다.
-- Dashboard/backend는 Mission action client 중 하나이며 FSM source of truth가 아니다.
+- Dashboard/backend는 Mission action client이며 Mission Queue와 사용자 표시를 담당한다. FSM 상태 전이 source of truth는 Mission Manager다.
 - TaskPlan과 Skill schema는 해당 core 구현과 함께 검토한다.
-- ROS 배포판, XLeRobot 상세 hardware, controller 구조는 selected Decision이 아니다.
+- ROS 2 Humble과 JetPack 6.2은 현재 기준 런타임이다. XLeRobot 상세 hardware와 controller 구조는 추가 확인이 필요하다.
 - package 구현은 Python/C++ 선택과 무관하게 같은 ROS interface를 사용할 수 있다.
 
 ## 6. 리스크
