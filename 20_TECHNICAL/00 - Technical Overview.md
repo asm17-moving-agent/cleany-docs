@@ -13,7 +13,7 @@ related_decisions:
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 related_jira:
   -
-updated: 2026-07-27
+updated: 2026-07-28
 ---
 
 # 기술 개요(Technical Overview)
@@ -50,6 +50,7 @@ updated: 2026-07-27
 | ROS 2 Humble/Nav2 | 자율주행과 로봇 소프트웨어 통합 기반 |
 | Agentic VLA / Rule Guard | 의미 기반 행동 후보 생성과 안전·신뢰도 기반 행동 검증 구조 |
 | MuJoCo/Isaac Sim    | 주행, 접근, 파지, 수거, 정돈 시나리오 검증 환경  |
+| 개발·검증 체계 | [[20_TECHNICAL/13 - CI and Verification Strategy|CI와 검증 전략]]에 자동 CI와 수동 장비 검증의 경계를 정리 |
 
 ## 4. 인터페이스 / 경계
 
