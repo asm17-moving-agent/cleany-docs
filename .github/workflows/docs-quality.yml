@@ -16,6 +16,10 @@ concurrency:
   group: docs-quality-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   docs-quality:
     name: docs-quality
