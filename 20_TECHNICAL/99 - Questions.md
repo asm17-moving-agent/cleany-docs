@@ -22,7 +22,7 @@ related_decisions:
   - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
 related_jira:
   -
-updated: 2026-07-27
+updated: 2026-07-28
 ---
 
 # 기술 미해결 질문(Technical Questions)
@@ -114,6 +114,15 @@ updated: 2026-07-27
 | 후속 소등·문단속 기능은 물리 조작, IoT 연동, 상태 확인 중 무엇이며 안전·법적 기준은 무엇인가? | 시설 상태를 변경하는 방식에 따라 기술 경계와 책임이 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 확인 필요 |
 | 안전 평가 시나리오와 통과 기준은 무엇인가? | 정지, 회피, 실패 처리 정책을 검증할 수 있는 기준이 필요하다. | [Data and Evaluation](<07 - Data and Evaluation.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 미정 | 추가 정의 필요 |
 | 독립 Safety Supervisor 또는 Safety Guardrail은 어떤 조건에서 도입할 것인가? | MVP에서는 각 모듈의 기본 safety check만 사용하고 독립 컴포넌트는 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
+
+### 4.6 개발 및 검증 운영
+
+| 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
+|---|---|---|---|---|
+| CI 성공을 `main` 병합의 필수 조건으로 언제 강제할 것인가? | `cleany-docs` CI는 적용됐고 `cleany` CI는 PR 검토 중이지만 branch protection 적용 시점과 운영 기준은 합의되지 않았다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>) | 중간 | 검토 필요 |
+| runtime·topic·headless simulation 중 어디까지 PR CI에 포함할 것인가? | 단위 테스트보다 실제 동작에 가깝지만 실행시간, 안정성과 유지관리 비용이 커질 수 있다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>), [Data and Evaluation](<07 - Data and Evaluation.md>) | 중간 | 추가 정의 필요 |
+| Jetson self-hosted runner는 어떤 조건에서 도입할 것인가? | ARM64·JetPack 검증이 가능하지만 전원, 네트워크, 보안, 업데이트와 장비 독점 관리가 필요하다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>), [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 중간 | 검토 필요 |
+| 수동 장비 검증 결과를 어떤 체크리스트와 Jira 형식으로 기록할 것인가? | 센서, 모터, 서보 feedback과 통합 데모 결과를 팀이 같은 기준으로 재현하고 추적할 기록 형식이 필요하다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>) | 중간 | 추가 정의 필요 |
 
 ## 5. 해결된 질문
 
