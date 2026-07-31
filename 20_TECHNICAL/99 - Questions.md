@@ -22,7 +22,7 @@ related_decisions:
   - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
 related_jira:
   -
-updated: 2026-07-15
+updated: 2026-07-28
 ---
 
 # 기술 미해결 질문(Technical Questions)
@@ -55,9 +55,9 @@ updated: 2026-07-15
 | 물체별 집기 실패와 저신뢰 분류를 어떤 결과 코드와 운영자 알림 계약으로 처리할 것인가? | 모듈 결과와 사용자 표시를 연결할 공통 실패 표현이 필요하다. | [System Concept](<01 - System Concept.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Planner의 정확한 `TaskPlan` schema는 무엇인가? | 현재 문서는 실행 가능한 high-level skill sequence만 계약으로 요구하고 상세 schema 확정을 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
 | Skill Executor 내부의 skill breakdown과 입출력 계약은 무엇인가? | 세부 동작 분해는 `cleany_skill_executor` 설계 시 확정하도록 유예됐다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 추가 정의 필요 |
-| Dashboard/backend와 Mission Report를 어떤 방식으로 연동할 것인가? | MVP는 console 또는 file log를 사용하고 외부 연동은 이후로 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
+| Dashboard/backend와 Mission feedback·MissionReport·전후 결과를 어떤 API와 payload로 연동할 것인가? | Dashboard·Backend 연동은 MVP에 포함되지만, Mission Queue, 진행 상태, 사진과 최종 결과의 상세 계약은 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 추가 정의 필요 |
 | `target_pose`, `home_pose`, `priority`, `deadline` 같은 MissionRequest 확장 필드는 언제 어떤 계약으로 추가할 것인가? | MVP 최소 요청 이후의 확장 조건이 정해지지 않았다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
-| `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
+| `/cmd_vel`을 Sim/Real 공통 base command로 채택하고 Nav2 action을 그 상위 navigation 계약으로 둘 것인가? | navigation goal과 실제 차체 속도 명령의 계층 및 backend 교체 계약을 확정해야 한다. 이 경계는 simulation adapter의 가정으로 제안돼 있다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 높음 | 검토 필요 |
 | 단일 로봇 canonical topic은 상대 이름으로 구현하고 namespace/remap으로 확장할 것인가? | global 이름 하드코딩 여부와 다중 로봇·Sim/Real 동시 비교 방식에 영향을 준다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | `map -> odom -> base_link`와 sensor/arm frame의 최종 이름 및 transform 소유권은 무엇인가? | SLAM, odometry backend, robot_state_publisher 사이의 중복 TF 발행을 막아야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 높음 | 추가 정의 필요 |
 | mission stack과 Sim/Real bringup을 별도 launch로 분리할 것인가? | 동일한 상위 stack을 재사용하면서 한 backend만 활성화하는 구성이 필요하다. | [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 중간 | 검토 필요 |
@@ -66,12 +66,12 @@ updated: 2026-07-15
 
 | 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
 |---|---|---|---|---|
-| Rule-based VLA 3 Layer의 공식 명칭과 계층별 책임은 무엇인가? | 기획서에 3 Layer 개념은 있으나 각 계층의 경계가 상세하지 않다. | [Technical Overview](<00 - Technical Overview.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 높음 | 추가 정의 필요 |
+| Rule-based VLA 3 Layer의 공식 명칭과 계층별 책임은 무엇이며, FSM/Rule Guard·VLA Task Designer·Physical Skill Library와 어떤 관계로 둘 것인가? | 기획서에 3 Layer 개념은 있으나 각 계층의 경계가 상세하지 않다. 목표 해석, 규칙 검증, Physical Skill 실행의 책임 경계를 정의해야 한다. | [Technical Overview](<00 - Technical Overview.md>), [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 높음 | 추가 정의 필요 |
 | VLA 후보 모델은 무엇이며 경량 VLM과의 관계 및 선정 기준은 무엇인가? | 기획서에는 경량 VLM만 기재되어 있고 실제 후보와 평가 기준이 없다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 중간 | 추가 확인 필요 |
 | 객체 탐지·Segmentation 모델 후보와 선정 기준은 무엇인가? | YOLO, MediaPipe 등의 예시가 언급됐지만 채택 모델은 정해지지 않았다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 중간 | 검토 필요 |
 | 규칙 기반 검증의 최소 규칙 세트는 무엇인가? | 안전하고 재현 가능한 행동 선택을 위한 기본 규칙이 필요하다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
 | Planning에서 정한 MVP 물체별 집기 정책은 어떻게 정의할 것인가? | 물체 목록과 성공 조건을 실제 행동 규칙으로 변환해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>), [Planning Questions](<../10_PLANNING/99 - Questions.md>) | 미정 | 추가 정의 필요 |
-| 불확실한 물체의 기본 행동과 결과 표현은 무엇인가? | 분실물이나 저신뢰 물체를 건드리지 않는 원칙을 모듈 행동과 결과 코드에 반영해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
+| 불확실하거나 위험한 물체의 기본 행동과 결과 표현은 무엇인가? | 분실물 후보는 별도 보관함으로 옮기지만, 저신뢰·위험 물체는 사람 검토 요청으로 남기는 원칙을 모듈 행동과 결과 코드에 반영해야 한다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 추가 정의 필요 |
 | grasp estimation 폴백을 실제 MVP에 포함할 것인가? | 규칙 기반 집기 실패를 보완할 후보지만 실제 채택 여부와 인터페이스가 정해지지 않았다. | [Rule-based VLA Architecture](<03 - Rule-based VLA Architecture.md>) | 미정 | 검토 필요 |
 
 ### 4.3 로봇 플랫폼과 엣지 런타임
@@ -88,7 +88,7 @@ updated: 2026-07-15
 | arm과 gripper의 공통 계약으로 `FollowJointTrajectory`와 `GripperCommand`를 채택할 것인가? | simulation private joint hook과 실제 controller를 분리하고 표준 ROS 2 tooling을 사용할지 결정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>) | 중간 | 검토 필요 |
 | 수거함은 로봇에 탑재되는가, 공간 내 고정 위치인가? | 플랫폼 구성과 이동·투입 시나리오가 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
 | 후속 책상 닦기 기능의 도구는 어떤 방식으로 장착할 것인가? | 1차 MVP 제외 후보지만 장기 기능의 플랫폼 제약으로 남아 있다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 미정 | 검토 필요 |
-| JetPack 6.2 환경에서 사용할 ROS 2 배포판과 프로젝트별 Python·AI package의 정확한 버전 조합은 무엇인가? | Orin NX 16GB의 JetPack 6.2 base stack은 정했으며 ROS 2 Humble은 Ubuntu 22.04 arm64 호환 후보다. 프로젝트 package 전체의 호환성은 별도 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 확인 필요 |
+| JetPack 6.2과 ROS 2 Humble 환경에서 사용할 프로젝트별 Python·AI package의 정확한 버전 조합은 무엇인가? | JetPack 6.2과 ROS 2 Humble은 기준으로 정했으며, 프로젝트 package 전체의 호환성은 별도 검증이 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 확인 필요 |
 | Orin NX 16GB에서 동시 실행할 AI 모델과 ROS 2 node별 memory budget 및 목표 latency는 얼마인가? | 하드웨어 선택은 완료됐지만 perception, navigation, manipulation과 AI 추론의 동시 실행 가능성은 benchmark가 필요하다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 높음 | 추가 정의 필요 |
 
 ### 4.4 내비게이션, 데이터, 평가
@@ -110,9 +110,19 @@ updated: 2026-07-15
 |---|---|---|---|---|
 | 장애물 회피, 사람 감지, 충돌 위험에서 로봇이 반드시 정지해야 하는 조건은 무엇인가? | 실내 이동·조작 로봇의 최소 안전 기준이 필요하다. | [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
 | 조작 실패, 파지 실패, 오분류 시 재시도·중단·보고 정책은 무엇인가? | 쓰레기와 분실물 처리 오류가 사용자 자산과 데모 안정성에 영향을 준다. | [System Concept](<01 - System Concept.md>), [Safety and Risk](<08 - Safety and Risk.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 높음 | 추가 정의 필요 |
+| Mission Action 취소 요청과 `PARTIAL_SUCCESS`·`HUMAN_REVIEW_REQUIRED` 결과를 어떤 terminal state와 운영자 알림으로 표현할 것인가? | cancel 거절, 부분 성공, 사람 검토 결과의 처리 방식이 정의되지 않았다. 외부 Action 상태와 MissionReport 의미를 함께 정해야 한다. | [Robot ROS Contract](<10 - Robot ROS Contract.md>), [Mission Manager FSM](<09 - Mission Manager FSM.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 정의 필요 |
 | 후속 소등·문단속 기능은 물리 조작, IoT 연동, 상태 확인 중 무엇이며 안전·법적 기준은 무엇인가? | 시설 상태를 변경하는 방식에 따라 기술 경계와 책임이 달라진다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 높음 | 추가 확인 필요 |
 | 안전 평가 시나리오와 통과 기준은 무엇인가? | 정지, 회피, 실패 처리 정책을 검증할 수 있는 기준이 필요하다. | [Data and Evaluation](<07 - Data and Evaluation.md>), [Safety and Risk](<08 - Safety and Risk.md>) | 미정 | 추가 정의 필요 |
 | 독립 Safety Supervisor 또는 Safety Guardrail은 어떤 조건에서 도입할 것인가? | MVP에서는 각 모듈의 기본 safety check만 사용하고 독립 컴포넌트는 유예했다. | [Mission Manager FSM](<09 - Mission Manager FSM.md>) | 미정 | 검토 필요 |
+
+### 4.6 개발 및 검증 운영
+
+| 질문 | 배경 | 관련 문서 | 우선순위 | 상태 |
+|---|---|---|---|---|
+| CI 성공을 `main` 병합의 필수 조건으로 언제 강제할 것인가? | `cleany-docs` CI는 적용됐고 `cleany` CI는 PR 검토 중이지만 branch protection 적용 시점과 운영 기준은 합의되지 않았다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>) | 중간 | 검토 필요 |
+| runtime·topic·headless simulation 중 어디까지 PR CI에 포함할 것인가? | 단위 테스트보다 실제 동작에 가깝지만 실행시간, 안정성과 유지관리 비용이 커질 수 있다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>), [Data and Evaluation](<07 - Data and Evaluation.md>) | 중간 | 추가 정의 필요 |
+| Jetson self-hosted runner는 어떤 조건에서 도입할 것인가? | ARM64·JetPack 검증이 가능하지만 전원, 네트워크, 보안, 업데이트와 장비 독점 관리가 필요하다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>), [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>) | 중간 | 검토 필요 |
+| 수동 장비 검증 결과를 어떤 체크리스트와 Jira 형식으로 기록할 것인가? | 센서, 모터, 서보 feedback과 통합 데모 결과를 팀이 같은 기준으로 재현하고 추적할 기록 형식이 필요하다. | [CI와 검증 전략](<13 - CI and Verification Strategy.md>) | 중간 | 추가 정의 필요 |
 
 ## 5. 해결된 질문
 
@@ -120,7 +130,7 @@ updated: 2026-07-15
 |---|---|---|---|
 | base는 차동구동과 holonomic 중 어떤 kinematics이며 `cmd_vel.linear.y`를 지원하는가? | 4륜 Mecanum holonomic base를 사용하고 `linear.y`를 `base_link` 기준 좌우 병진 속도로 지원한다. 세부 wheel geometry와 controller parameter는 추가 정의가 필요하다. | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>), [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>) | 2026-07-14 |
 | 메인 엣지 컴퓨팅 장치로 무엇을 사용할 것인가? | 메모리 가격 상승에 따른 AGX Orin 64GB 조달 비용 증가를 이유로 해당 안을 폐기하고 Jetson Orin NX 16GB를 사용한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson AGX Orin 64GB](<../30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
-| Orin NX 16GB의 base software stack은 무엇인가? | JetPack 6.2와 이에 포함된 Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem, CUDA 12.6, TensorRT 10.3을 사용한다. ROS 2 배포판과 프로젝트 package 조합은 추가 확인한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-14 |
+| Orin NX 16GB의 base software stack은 무엇인가? | JetPack 6.2와 이에 포함된 Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem, CUDA 12.6, TensorRT 10.3, ROS 2 Humble을 사용한다. 프로젝트별 Python·AI package 조합은 추가 검증한다. | [Edge Runtime Jetson Orin](<06 - Edge Runtime Jetson Orin.md>), [Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>) | 2026-07-27 |
 
 ## 6. 관련 결정
 

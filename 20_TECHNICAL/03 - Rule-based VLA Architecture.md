@@ -11,16 +11,17 @@ source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
+  - "30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조.md"
 related_jira:
   -
-updated: 2026-07-12
+updated: 2026-07-27
 ---
 
 # Rule-based VLA 아키텍처
 
 ## 1. 요약
 
-Rule-based VLA는 물체의 의미와 주변 맥락을 해석해 행동 후보를 생성하고, 규칙 기반 검증을 거쳐 수거, 보관, 밀기, 정렬, 대기 중 하나의 행동으로 변환하는 예비 판단 구조다.
+Agentic VLA와 Rule Guard는 물체의 의미와 주변 맥락을 해석해 행동 후보를 생성하고, 안전·신뢰도·허용 작업 검증을 거쳐 수거, 분실물 별도 보관, 사람 검토 요청 중 하나의 행동으로 변환하는 MVP 판단 구조다.
 
 ## 2. 기획 맥락
 
@@ -47,14 +48,47 @@ Rule-based VLA는 물체의 의미와 주변 맥락을 해석해 행동 후보�
 ### 3.3 1차 MVP 행동 후보
 
 - 수거: 쓰레기 후보를 지정 수거함으로 이동한다.
-- 미처리/대기: 분실물 후보, 저신뢰 물체, 위험 물체는 건드리지 않고 운영자 검토 대상으로 남긴다.
-- 정렬, 밀기, 닦기, 보관은 후속 기능 후보로 둔다.
+- 보관: 분실물 후보를 쓰레기 수거함과 분리된 보관함으로 이동한다. 분류 기준과 보관·인계 정책은 추가 정의가 필요하다.
+- 사람 검토: 저신뢰 물체와 위험 물체는 건드리지 않고 운영자 검토 대상으로 남긴다.
+- 정렬, 밀기, 닦기는 후속 기능 후보로 둔다.
 
 ### 3.4 물체별 정책과 폴백 후보
 
 - 컵, 캔, 휴지 등 사전에 정한 소수 물체에 대해 인식·집기 정책을 분리하는 방안이 논의됐다. 실제 대상 목록은 추가 확정이 필요하다.
 - VLM/VLA 기반 의미 판단이 불확실하거나 집기 정책이 준비되지 않은 경우에는 대기하는 것을 기본으로 둔다.
 - grasp estimation 또는 규칙 기반 집기 절차를 폴백으로 조합할 수 있으나, 실제 채택 여부와 인터페이스는 검토 필요다.
+
+### 3.5 목표 해석과 Physical Skill 실행
+
+Mission Goal과 Perception Result는 FSM/Rule Guard에서 허용 범위를 확인한 뒤
+VLA Task Designer로 전달된다. 설계된 TaskPlan은 다시 검증되어 Physical Skill
+Library의 개별 실행으로 이어지고, 실행 결과와 새 관측은 다음 판단에 반영된다.
+이 흐름에서 VLA Task Designer와 Rule-based VLA 3 Layer의 대응 관계, Physical
+Skill Library의 실제 인터페이스는 추가 정의가 필요하다.
+
+```mermaid
+flowchart LR
+    input["Mission Goal<br/>+ Perception Result"]
+
+    subgraph agent["Agentic VLA · 검증 → 설계 → 실행"]
+        direction LR
+        fsm["1. FSM / Rule Guard<br/>현재 상태 · 허용 범위<br/>실행 결과 검증"]
+        vla["2. VLA Task Designer<br/>쓰레기 수거 · 분실물 보관<br/>task와 skill sequence 설계"]
+        skills[("3. Prebuilt Physical Skill Library<br/>navigate · pick · place · store · return")]
+
+        fsm -->|검증된 goal · context| vla
+        vla -->|TaskPlan · skill sequence| fsm
+        fsm -->|승인된 skill을 하나씩 dispatch| skills
+    end
+
+    robot["Robot Execution<br/>Navigator · MoveIt · LeRobot<br/>Sim / Real Backend"]
+    result["ModuleResult<br/>+ New Observation"]
+    report["MissionReport<br/>또는 Human Review"]
+
+    input --> fsm
+    skills --> robot --> result --> fsm
+    fsm -->|완료 · 실패 · 불확실| report
+```
 
 ## 4. 인터페이스 / 경계
 
