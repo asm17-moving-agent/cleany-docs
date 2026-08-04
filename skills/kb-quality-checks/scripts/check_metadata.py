@@ -34,7 +34,7 @@ def required_keys_for(path: str) -> list[str]:
     if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
         return ["status", "date", "source_refs"]
     if path.startswith("40_RAW/"):
-        return ["ingest_status"]
+        return []
     if path.startswith("90_TEMPLATES/"):
         if path.endswith(("Template - Planning Doc.md", "Template - Technical Doc.md")):
             return ["status", "source_refs", "related_decisions"]

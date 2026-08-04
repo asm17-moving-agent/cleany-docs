@@ -17,17 +17,17 @@ status: selected
 3. [[10_PLANNING/99 - Questions|Planning Questions]]와 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 아직 확정되지 않은 항목을 본다.
 4. [[30_DECISIONS/00 - Decision Index|Decision Index]]에서 결정 후보와 selected Decision 여부를 확인한다.
 
-문서를 읽을 때 `draft`, `reviewed`, `selected`, `dropped`, `검토 필요`, `추가 확인 필요` 표시와 `reviewers`를 함께 본다.
+문서를 읽을 때 `draft`, `reviewed`, `selected`, `dropped`, `검토 필요`, `추가 확인 필요` 표시와 GitHub PR 검토 이력을 함께 본다.
 
 ## 3. 한 번에 이해하는 작업 흐름
 
-이 KB의 기본 흐름은 `Raw 보존 → 초안 반영 → 질문/Decision 분리 → 검사 → 사람 검토`다.
+이 KB의 기본 흐름은 `Raw 작성·보존 → 공식 문서 반영 → 질문/Decision 분리 → 검사 → 사람 검토`다.
 
-### 3.1 Raw 보존
+### 3.1 Raw 작성과 보존
 
-새 자료가 들어오면 먼저 `40_RAW`에 둔다. 원문 파일은 가능하면 그대로 보존하고, Office/PDF 파일은 `$office-to-markdown`으로 Markdown 변환본을 만든다.
+`40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료와 임시 메모를 자유롭게 두는 비공식 작업 공간이다. 독립 문서는 `40_RAW` 루트에 두고, 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둔다. 자료 종류별 고정 분류 폴더는 두지 않는다.
 
-이 단계에서는 요약, 판단, 결론을 만들지 않는다. Raw 변환 결과는 `ingest_status`로 처리 단계를 표시하고, Planning·Technical·Decision 초안은 `status: draft`와 빈 `reviewers`로 아직 검토 전임을 표시한다.
+Raw의 내용만으로 프로젝트 결론을 확정하지 않는다. 공식 지식으로 사용할 내용은 Planning·Technical·Decision에 반영하고 GitHub PR에서 검토한다.
 
 ### 3.2 초안 반영
 
@@ -47,8 +47,8 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 
 - 기획 질문은 [[10_PLANNING/99 - Questions|Planning Questions]], 기술 질문은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에 남긴다.
 - Decision 후보는 [[30_DECISIONS/00 - Decision Index|Decision Index]]에 남긴다.
-- Decision 문서를 만들 때는 `status: draft`, 빈 `reviewers`를 유지한다.
-- 사람 검토가 끝나면 reviewer를 기록하고 `reviewed`로 바꾼다. 회의·스프린트에서 채택한 경우에만 `selected`로 바꾼다.
+- Decision 문서를 만들 때는 `status: draft`를 유지한다.
+- 검토와 승인 이력은 GitHub PR에 남긴다. 회의·스프린트에서 채택한 경우에만 `selected`로 바꾼다.
 
 ### 3.4 검사와 리뷰
 
@@ -64,16 +64,16 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 
 ### 4.1 새 원본 자료가 들어오면
 
-1. 원본은 `40_RAW`에 보존한다.
-2. Office/PDF 파일은 `$office-to-markdown`으로 변환한다.
-3. Raw 요약은 최종 결정으로 취급하지 않는다.
+1. 독립적인 Markdown 초안과 메모는 `40_RAW` 루트에 둔다.
+2. 여러 문서와 첨부 자료가 하나의 작업 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둔다. 첨부 파일은 해당 묶음의 `assets/`에 보존하고 필요하면 `$office-to-markdown`으로 변환한다.
+3. Raw 문서는 최종 결정으로 취급하지 않는다.
 4. 공식 문서에 반영할 후보가 있으면 `$kb-ingest`를 사용한다.
 5. 계층 간 링크는 Planning·Technical → Decision → Raw 순서로만 남긴다. Planning·Technical에는 `related_decisions`, Decision에는 Raw `source_refs`를 사용한다.
 
 예시 요청:
 
 ```text
-$office-to-markdown "40_RAW/00_Inbox/자료.docx"를 Markdown으로 변환해 "40_RAW/20_Planning/자료 원문 변환.md"에 저장해. 요약이나 해석은 하지 마.
+$office-to-markdown "40_RAW/assets/자료.docx"를 Markdown으로 변환해 "40_RAW/자료 원문 변환.md"에 저장해. 요약이나 해석은 하지 마.
 ```
 
 ### 4.2 질문을 발견하면
@@ -87,13 +87,13 @@ $office-to-markdown "40_RAW/00_Inbox/자료.docx"를 Markdown으로 변환해 "4
 
 1. 후보가 프로젝트 방향, Sprint, 기술 리스크, 안전 기준에 영향을 주는지 본다.
 2. 영향이 크면 Decision 초안을 만든다.
-3. 사람 검토 전에는 `status: draft`, 빈 `reviewers`를 유지한다.
-4. 검토가 끝나면 reviewer를 기록하고 `reviewed`로 바꾼다. 채택된 Decision만 `selected`로 승격한다.
+3. 사람 검토 전에는 `status: draft`를 유지한다.
+4. 검토와 승인 이력은 GitHub PR에 남긴다. 채택된 Decision만 `selected`로 승격한다.
 
 예시 요청:
 
 ```text
-$kb-ingest "40_RAW/10_Meetings/260708 - MVP 범위 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
+$kb-ingest "40_RAW/260708 - MVP 범위 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
 ```
 
 ### 4.4 문서를 고쳤으면
@@ -117,14 +117,14 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 | `10_PLANNING`  | 문제, 사용자, 범위, 시나리오, 성공 기준     | 하드웨어 상세 구현      |
 | `20_TECHNICAL` | 시스템 개념, 아키텍처, 인터페이스, 제약, 리스크 | 시장 narrative 반복 |
 | `30_DECISIONS` | 중요한 결정과 이유                   | 검토 전 확정 선언      |
-| `40_RAW`       | 기획서, 회의록, 조사 자료, 멘토 피드백      | 공식 결론           |
+| `40_RAW`       | 초안, 학습 노트, 회의록, 조사 자료와 첨부 원본 | 공식 결론           |
 | `90_TEMPLATES` | 반복 문서 템플릿                    | 프로젝트 고유 사실      |
 
 ## 6. 초심자가 자주 헷갈리는 규칙
 
 | 헷갈리는 점                      | 기준                                |
 | --------------------------- | --------------------------------- |
-| Raw에 적혀 있으면 확정인가?           | 아니다. Raw는 근거이며 최종 결정이 아니다.        |
+| Raw에 적혀 있으면 확정인가?           | 아니다. Raw는 비공식 작업 공간이며 최종 결정이 아니다. |
 | draft 문서를 공식 문서처럼 써도 되는가?   | 검토 전 초안으로만 다룬다.                   |
 | selected Decision은 누가 만드는가? | 사람 검토 후에만 승격한다.                   |
 | 모르는 내용을 추정해서 채워도 되는가?       | 안 된다. `검토 필요` 또는 `추가 확인 필요`로 남긴다. |

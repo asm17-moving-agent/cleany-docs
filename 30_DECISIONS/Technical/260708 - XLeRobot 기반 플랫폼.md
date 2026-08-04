@@ -2,8 +2,8 @@
 status: selected
 date: 2026-07-08
 source_refs:
-  - 40_RAW/20_Planning/기획서 원문 요약.md
-  - 40_RAW/00_Inbox/지출신청서_관리.md
+  - 40_RAW/기획서 원문 요약.md
+  - 40_RAW/지출신청서_관리.md
 supersedes:
 ---
 
@@ -55,7 +55,7 @@ XLeRobot 전체 조립체를 그대로 채택하지 않고, XLeRobot에서 유�
 
 ## 7. 출처
 
-- [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
+- [[40_RAW/기획서 원문 요약|기획서 원문 요약]]
 - 지출신청서 관리 원본(로컬 Inbox, Git 추적 대상 아님)
 - [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]
 - [[30_DECISIONS/Technical/260715 - 로봇 프레임 구조|로봇 프레임 구조]]

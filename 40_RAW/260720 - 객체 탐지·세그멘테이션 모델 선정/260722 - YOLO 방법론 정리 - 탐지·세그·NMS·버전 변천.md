@@ -9,7 +9,7 @@ date: 2026-07-22
 source_type: methodology-survey
 ---
 
-# 260722 - YOLO 방법론 정리 (탐지·세그멘테이션·NMS·버전 변천)
+# 260722 - YOLO 방법론 정리 - 탐지·세그·NMS·버전 변천
 
 > [!IMPORTANT]
 > 현재 객체 인식·판단 구성은 `YOLOE + VLM`, `로컬 VLM + Segmentation model`,

@@ -2,7 +2,7 @@
 status: draft
 source_refs:
   - "20_TECHNICAL/09 - Mission Manager FSM.md"
-  - "40_RAW/10_Meetings/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
+  - "40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
 related_decisions:
   -
 ---

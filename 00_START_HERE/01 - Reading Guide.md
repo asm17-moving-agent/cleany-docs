@@ -22,7 +22,7 @@ status: reviewed
 4. [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]
 5. [[10_PLANNING/05 - Success Criteria|Success Criteria]]
 6. [[10_PLANNING/99 - Questions|Planning Questions]]
-7. [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
+7. [[40_RAW/기획서 원문 요약|기획서 원문 요약]]
 
 읽으면서 확인할 것은 세 가지다.
 
@@ -67,13 +67,13 @@ Sprint 목표는 확정된 결정과 검토 대기 항목을 분리해서 잡는
 2. `30_DECISIONS/Planning/`의 Planning Decision 문서
 3. `30_DECISIONS/Technical/`의 Technical Decision 문서
 4. 관련 `10_PLANNING` 또는 `20_TECHNICAL` 문서
-5. 관련 `40_RAW` 원본 기록
+5. 관련 `40_RAW` 비공식 기록
 
 Decision 후보와 초안 상태는 [[30_DECISIONS/00 - Decision Index|Decision Index]], [[10_PLANNING/99 - Questions|Planning Questions]], [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 함께 확인한다.
 
 ## 6. 외부 공유 전에
 
-1. `draft` 문서를 그대로 공식 결론처럼 공유하지 않는다. `reviewed` 이상 문서는 `reviewers`를 함께 확인한다.
+1. `draft` 문서를 그대로 공식 결론처럼 공유하지 않는다. 검토와 승인 여부는 GitHub PR 이력에서 확인한다.
 2. Raw 전체를 공유하지 않는다.
 3. 공유 전 `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack`을 실행한다.
 

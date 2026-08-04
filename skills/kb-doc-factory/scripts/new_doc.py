@@ -24,12 +24,12 @@ TEMPLATES = {
 DEFAULT_DIRS = {
     "planning": "10_PLANNING",
     "technical": "20_TECHNICAL",
-    "meeting": "40_RAW/10_Meetings",
-    "research": "40_RAW/40_Research",
-    "raw-ingest": "40_RAW/00_Inbox",
-    "sprint": "40_RAW/60_External_Artifacts/Sprint_Briefs",
-    "jira": "40_RAW/60_External_Artifacts/Jira_Issue_Drafts",
-    "ai-log": "40_RAW/70_AI_Interaction_Logs",
+    "meeting": "40_RAW",
+    "research": "40_RAW",
+    "raw-ingest": "40_RAW",
+    "sprint": "40_RAW",
+    "jira": "40_RAW",
+    "ai-log": "40_RAW",
 }
 
 

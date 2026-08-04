@@ -1,8 +1,8 @@
 ---
 status: draft
 source_refs:
-  - "40_RAW/10_Meetings/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
-  - "40_RAW/00_Inbox/지출신청서_관리.md"
+  - "40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
+  - "40_RAW/지출신청서_관리.md"
 related_decisions:
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
 ---
@@ -210,4 +210,4 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 - [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 `selected` Decision이다.
 - `/cmd_vel`, frame, arm/gripper, sensor naming의 최종 채택은 Technical Decision 또는 팀 검토가 필요하다.
 - 관련 미해결 항목은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 관리한다.
-- 회의 준비 근거는 [[40_RAW/10_Meetings/260710 - Docs 검증 및 ROS 2 Contract 회의 준비|Docs 검증 및 ROS 2 Contract 회의 준비]]다.
+- 회의 준비 근거는 [[40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비|Docs 검증 및 ROS 2 Contract 회의 준비]]다.

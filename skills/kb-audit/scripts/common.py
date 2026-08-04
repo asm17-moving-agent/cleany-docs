@@ -8,7 +8,11 @@ from pathlib import Path
 sys.dont_write_bytecode = True
 
 EXCLUDED_DIRS = {".git", ".venv", "node_modules", "__pycache__", ".obsidian", ".agents", ".codex", "skills", "50_WORKING"}
-EXCLUDED_PATH_PREFIXES = ("40_RAW/60_External_Artifacts/audit/",)
+EXCLUDED_PATHS = {
+    "40_RAW/decision-inventory.md",
+    "40_RAW/review-flags-report.md",
+    "40_RAW/source-refs-report.md",
+}
 
 
 def iter_markdown(root: Path):
@@ -20,7 +24,7 @@ def iter_markdown(root: Path):
             path = Path(current) / filename
             rel = path.relative_to(root)
             rel_text = str(rel).replace(os.sep, "/")
-            if rel_text.startswith(EXCLUDED_PATH_PREFIXES):
+            if rel_text in EXCLUDED_PATHS:
                 continue
             yield path
 

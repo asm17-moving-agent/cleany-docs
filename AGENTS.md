@@ -23,10 +23,11 @@
 - `20_TECHNICAL`은 시스템 개념, 아키텍처, 인터페이스, 제약, 가정, 리스크, 평가를 다룬다.
 - 기획 문서와 기술 문서를 섞지 않는다.
 - `30_DECISIONS`는 무엇을 왜 결정했는지 기록한다.
-- `40_RAW`는 원본 기록이며 최종 결정이 아니다.
+- `40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료, 임시 메모와 첨부 원본을 두는 비공식 작업 공간이며 최종 결정이 아니다.
+- 독립적인 Raw Markdown은 `40_RAW` 루트에 둔다. 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`로 관리할 수 있다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
 - 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning·Technical 문서와 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
 - 초안·검토·채택 상태는 각 문서의 YAML metadata(`status`, `ingest_status`)로 표현한다.
-- 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다. Raw 원본은 `ingest_status`로 ingest 상태를 표현한다.
+- 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다. Raw에서 처리 상태가 꼭 필요할 때만 `ingest_status`를 선택적으로 사용한다.
 - 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 승격하지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 
 ## 4. Source of Truth 우선순위
@@ -35,10 +36,9 @@
 
 1. `status: selected`인 `30_DECISIONS` 문서
 2. `status: reviewed`인 `10_PLANNING` 및 `20_TECHNICAL` 문서
-3. `40_RAW` 원본 기록
-4. `status: draft`인 문서
+3. `status: draft`인 `10_PLANNING`, `20_TECHNICAL`, `30_DECISIONS` 문서
 
-충돌을 임의로 해결하지 않는다. 기획 판단은 `10_PLANNING/99 - Questions.md`, 기술 판단은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남기고, 필요한 경우 관련 Jira issue 후보를 제안한다.
+`40_RAW`는 우선순위에 포함하지 않고 근거와 맥락을 확인할 때만 참고한다. 충돌을 임의로 해결하지 않는다. 기획 판단은 `10_PLANNING/99 - Questions.md`, 기술 판단은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남기고, 필요한 경우 관련 Jira issue 후보를 제안한다.
 
 ## 5. 기획서 기반 작성 규칙
 

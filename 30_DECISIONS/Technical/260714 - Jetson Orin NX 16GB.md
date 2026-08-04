@@ -2,7 +2,7 @@
 status: selected
 date: 2026-07-14
 source_refs:
-  - "40_RAW/20_Planning/기획서 원문 요약.md"
+  - "40_RAW/기획서 원문 요약.md"
 supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 ---
 
@@ -50,7 +50,7 @@ supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 
 ## 7. 출처
 
-- [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
+- [[40_RAW/기획서 원문 요약|기획서 원문 요약]]
 - [NVIDIA JetPack 6.2 Release Notes](https://docs.nvidia.com/jetson/jetpack/6.2/release-notes/index.html)
 - [ROS 2 Humble Ubuntu 22.04 arm64 지원](https://docs.ros.org/en/humble/Installation/Alternatives/Ubuntu-Install-Binary.html)
 

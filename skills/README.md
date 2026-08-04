@@ -34,7 +34,7 @@ Codex custom prompt(`.codex/prompts`)는 deprecated이므로 이 저장소에서
 Office/PDF 변환:
 
 ```text
-$office-to-markdown "파일.docx"를 Markdown으로 변환해 "40_RAW/00_Inbox/파일 변환.md"에 저장해. 요약이나 해석은 하지 마.
+$office-to-markdown "40_RAW/assets/파일.docx"를 Markdown으로 변환해 "40_RAW/파일 변환.md"에 저장해. 요약이나 해석은 하지 마.
 ```
 
 문서 생성:
@@ -46,7 +46,7 @@ $kb-doc-factory decision 문서 "MVP 범위 확정" 초안을 planning decision�
 Raw → Planning/Decision 변환:
 
 ```text
-$kb-ingest "40_RAW/10_Meetings/YYMMDD - MVP 범위 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어. 별도 working 폴더를 만들지 말고 YAML metadata로 상태를 표시해.
+$kb-ingest "40_RAW/YYMMDD - MVP 범위 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어. 별도 working 폴더를 만들지 말고 YAML metadata로 상태를 표시해.
 ```
 
 KB 정비:
@@ -58,7 +58,7 @@ $kb-maintenance Markdown formatting을 정리하고 필요한 metadata report를
 Audit 리포트:
 
 ```text
-$kb-audit 전체 audit 리포트를 "40_RAW/60_External_Artifacts/audit" 아래에 생성해.
+$kb-audit 전체 audit 리포트를 "40_RAW"에 생성해.
 ```
 
 사람 검토 패키지:

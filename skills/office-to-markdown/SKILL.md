@@ -34,7 +34,7 @@ compatibility: Python 3.11 이상, uv project dependencies 사용
 저장소 루트에서 실행한다.
 
 ```bash
-uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/00_Inbox/[기획서] AI 에이전트는 움직이고 싶어(3).docx" --output "40_RAW/20_Planning/기획서 원문 변환.md"
+uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets/자료.docx" --output "40_RAW/자료 원문 변환.md"
 ```
 
 stdout으로 확인하려면 `--output`을 생략한다.
@@ -46,7 +46,7 @@ uv run python skills/office-to-markdown/scripts/office_to_markdown.py "파일.do
 ## 폴더 일괄 변환
 
 ```bash
-uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/00_Inbox" --output "40_RAW/00_Inbox/converted"
+uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets" --output "40_RAW"
 ```
 
 입력이 폴더인 경우 `--output`은 출력 폴더로 해석된다.

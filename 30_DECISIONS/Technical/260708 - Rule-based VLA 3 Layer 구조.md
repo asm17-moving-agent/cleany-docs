@@ -2,7 +2,7 @@
 status: draft
 date: 2026-07-08
 source_refs:
-  - "40_RAW/20_Planning/기획서 원문 요약.md"
+  - "40_RAW/기획서 원문 요약.md"
 supersedes:
 ---
 
@@ -46,4 +46,4 @@ Rule-based VLA의 3 Layer 구조와 각 계층 책임을 확정하기 위한 Tec
 
 ## 7. 출처
 
-- [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
+- [[40_RAW/기획서 원문 요약|기획서 원문 요약]]

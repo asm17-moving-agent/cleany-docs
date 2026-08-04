@@ -19,8 +19,8 @@
 
 이 저장소에서 가장 먼저 구분해야 할 것은 `근거`, `초안`, `결정`입니다.
 
-1. `40_RAW`는 근거입니다. 원문, 회의록, 조사 자료를 해석 없이 보존합니다.
-2. `10_PLANNING`과 `20_TECHNICAL`은 검토 가능한 공식 문서 초안입니다. 대부분 `draft` 상태이며, 검토가 끝나면 reviewer와 함께 `reviewed`로 바꿉니다.
+1. `40_RAW`는 비공식 작업 공간입니다. 초안, 개인 학습 노트, 회의록, 조사 자료와 원본을 자유롭게 보관합니다.
+2. `10_PLANNING`과 `20_TECHNICAL`은 검토 가능한 공식 문서 초안입니다. 검토와 승인 이력은 GitHub PR에 남깁니다.
 3. `30_DECISIONS`는 중요한 선택을 따로 추적하는 곳입니다. `selected`가 아니면 아직 확정 결정이 아닙니다.
 4. 불확실한 내용은 바로 결론으로 쓰지 않고 기획 질문은 `10_PLANNING/99 - Questions.md`, 기술 질문은 `20_TECHNICAL/99 - Questions.md`에 남깁니다.
 5. 문서를 고친 뒤에는 `$kb-quality-checks`로 깨진 구조와 링크를 확인합니다.
@@ -29,7 +29,7 @@
 
 | 내가 하려는 일 | 먼저 볼 곳 | 사용할 흐름 |
 |---|---|---|
-| 새 파일을 받았다 | `40_RAW/00_Inbox` | `$office-to-markdown` 후 `$kb-ingest` |
+| 새 자료나 초안을 기록한다 | `40_RAW` | 필요한 경우 `$office-to-markdown`, `$kb-ingest` 사용 |
 | 기획 범위를 정리한다 | `10_PLANNING/04 - Scope and Non-Goals.md` | 근거 확인 후 draft 유지 |
 | 기술 전제를 정리한다 | `20_TECHNICAL/00 - Technical Overview.md` | Planning과 섞지 않기 |
 | 중요한 선택을 남긴다 | `30_DECISIONS/00 - Decision Index.md` | Decision 후보 또는 draft 생성 |
@@ -40,8 +40,8 @@
 
 ### 새 자료를 받았을 때
 
-1. 원본 파일을 `40_RAW` 아래에 둡니다.
-2. 원본을 해석 없이 보존합니다.
+1. 독립적인 Markdown 초안과 메모는 `40_RAW` 루트에 둡니다.
+2. 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둡니다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않습니다.
 3. Office/PDF 파일이면 `$office-to-markdown`으로 Markdown 변환을 요청합니다.
 4. Planning 또는 Decision으로 반영해야 하면 `$kb-ingest`를 사용합니다.
 5. 반영 후 `source_refs`, `related_decisions`를 갱신합니다.
@@ -78,8 +78,8 @@
 반복 작업은 자연어보다 skill prompt로 요청합니다.
 
 ```text
-$office-to-markdown "40_RAW/00_Inbox/자료.docx"를 Markdown으로 변환해.
-$kb-ingest "40_RAW/10_Meetings/260708 - 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
+$office-to-markdown "40_RAW/assets/자료.docx"를 Markdown으로 변환해 "40_RAW/자료 변환.md"에 저장해.
+$kb-ingest "40_RAW/260708 - 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
 $kb-quality-checks 이 저장소의 전체 결정적 검사를 실행하고 실패 항목을 요약해.
 $kb-audit 전체 audit 결과를 요약해.
 $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액션을 요약해.
@@ -100,7 +100,7 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 | `10_PLANNING` | 왜 만들고, 누구를 위해, 어디까지 할지 정할 때 |
 | `20_TECHNICAL` | 기획을 기술적으로 어떻게 가능하게 할지 정리할 때 |
 | `30_DECISIONS` | 중요한 결정을 후보 또는 기록으로 남길 때 |
-| `40_RAW` | 기획서, 회의록, 조사 자료, 멘토 피드백 원본을 보존할 때 |
+| `40_RAW` | 초안, 개인 학습 노트, 회의록, 조사 자료 등 비공식 내용을 기록할 때 |
 | `90_TEMPLATES` | 반복 문서 초안을 만들 때 |
 | `skills` | 변환, 정비, 검사, 배포용 deterministic script를 관리할 때 |
 
@@ -110,10 +110,9 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 
 1. `status: selected`인 `30_DECISIONS` 문서
 2. `status: reviewed`인 `10_PLANNING` 및 `20_TECHNICAL` 문서
-3. `40_RAW` 원본 기록
-4. `status: draft`인 문서
+3. `status: draft`인 `10_PLANNING`, `20_TECHNICAL`, `30_DECISIONS` 문서
 
-충돌을 발견하면 임의로 정리하지 말고, 기획 판단은 [Planning Questions](10_PLANNING/99%20-%20Questions.md), 기술 판단은 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
+`40_RAW`는 우선순위에 포함하지 않고 근거와 맥락을 확인할 때만 참고합니다. 충돌을 발견하면 임의로 정리하지 말고, 기획 판단은 [Planning Questions](10_PLANNING/99%20-%20Questions.md), 기술 판단은 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
 
 ## 원칙
 

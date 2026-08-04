@@ -2,7 +2,7 @@
 status: dropped
 date: 2026-07-08
 source_refs:
-  - "40_RAW/20_Planning/기획서 원문 요약.md"
+  - "40_RAW/기획서 원문 요약.md"
 supersedes:
 ---
 
@@ -46,7 +46,7 @@ NVIDIA Jetson AGX Orin 64GB를 끌리니의 메인 엣지 컴퓨팅 장치로 �
 
 ## 7. 출처
 
-- [[40_RAW/20_Planning/기획서 원문 요약|기획서 원문 요약]]
+- [[40_RAW/기획서 원문 요약|기획서 원문 요약]]
 - [NVIDIA JetPack 6.2 Release Notes](https://docs.nvidia.com/jetson/jetpack/6.2/release-notes/index.html)
 
 ## 8. 관련 결정

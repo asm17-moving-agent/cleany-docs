@@ -51,7 +51,7 @@ uv run python skills/kb-maintenance/scripts/generate_file_index.py . --output "0
 ## Metadata report 생성
 
 ```bash
-uv run python skills/kb-maintenance/scripts/metadata_report.py . --output "40_RAW/60_External_Artifacts/metadata-report.md"
+uv run python skills/kb-maintenance/scripts/metadata_report.py . --output "40_RAW/metadata-report.md"
 ```
 
 ## 사용 원칙

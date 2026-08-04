@@ -34,15 +34,15 @@ uv run python skills/kb-audit/scripts/audit_all.py .
 파일 리포트가 명시적으로 필요할 때만 `--output-dir`를 사용한다.
 
 ```bash
-uv run python skills/kb-audit/scripts/audit_all.py . --output-dir "40_RAW/60_External_Artifacts/audit"
+uv run python skills/kb-audit/scripts/audit_all.py . --output-dir "40_RAW"
 ```
 
 ## 개별 리포트
 
 ```bash
-uv run python skills/kb-audit/scripts/review_flags_report.py . --output "40_RAW/60_External_Artifacts/audit/review-flags.md"
-uv run python skills/kb-audit/scripts/source_refs_report.py . --output "40_RAW/60_External_Artifacts/audit/source-refs-report.md"
-uv run python skills/kb-audit/scripts/decision_inventory.py . --output "40_RAW/60_External_Artifacts/audit/decision-inventory.md"
+uv run python skills/kb-audit/scripts/review_flags_report.py . --output "40_RAW/review-flags-report.md"
+uv run python skills/kb-audit/scripts/source_refs_report.py . --output "40_RAW/source-refs-report.md"
+uv run python skills/kb-audit/scripts/decision_inventory.py . --output "40_RAW/decision-inventory.md"
 ```
 
 ## 사용 원칙

@@ -8,7 +8,7 @@ decision_candidates:
 date: 2026-07-20
 ---
 
-# 260720 - Simulation 기반 Hand-Eye Calibration 방법론 선정
+# 260720 - XLeRobot Hand-Eye Calibration 조사
 
 ## 1. 목표와 결론
 

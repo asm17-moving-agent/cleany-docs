@@ -2,7 +2,7 @@
 status: draft
 source_refs:
   - "[기획서]"
-  - "40_RAW/10_Meetings/260717 - 신승렬 멘토님 멘토링 준비.md"
+  - "40_RAW/260717 - 신승렬 멘토님 멘토링 준비.md"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
 ---

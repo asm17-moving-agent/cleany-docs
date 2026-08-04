@@ -12,7 +12,7 @@ tags:
 
 # KB Ingest
 
-이 skill은 `40_RAW`의 회의록, 조사 내용, 기획서 요약을 근거로 `10_PLANNING` 또는 `30_DECISIONS` 문서를 생성/갱신하는 Codex 문서 작성 워크플로우다.
+이 skill은 `40_RAW`의 초안, 학습 노트, 회의록, 조사 내용, 기획서 요약을 근거로 `10_PLANNING` 또는 `30_DECISIONS` 문서를 생성/갱신하는 Codex 문서 작성 워크플로우다.
 
 ## 목적
 
@@ -24,7 +24,7 @@ tags:
 
 ## 입력
 
-- Raw 문서 경로: `40_RAW/.../*.md`
+- Raw 문서 경로: `40_RAW` 루트 또는 하위 작업 폴더의 Markdown 문서
 - 변환 목표: `planning`, `decision`, 또는 `planning+decision`
 - 필요한 경우 대상 Planning 문서 경로
 - 필요한 경우 Decision 제목과 decision_type: `planning` 또는 `technical`
@@ -89,7 +89,7 @@ decision_candidates:
 - Technical Decision: `30_DECISIONS/Technical/`
 - 미해결 기획 질문: `10_PLANNING/99 - Questions.md`
 - 미해결 기술 질문: `20_TECHNICAL/99 - Questions.md`
-- Raw 원본/요약: `40_RAW/`
+- Raw 초안·노트·원본·요약: `40_RAW/`
 
 별도 working 폴더는 사용하지 않는다. 초안 여부는 `status`, `ingest_status`로 표현한다. 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다.
 
