@@ -1,24 +1,9 @@
 ---
-type: decision
-decision_type: technical
 status: dropped
-reviewers:
-  - 박창수
-tags:
-  - decision
-  - dropped
-  - technical
-  - edge-runtime
-  - cleany
 date: 2026-07-08
-impact: high
 source_refs:
   - "40_RAW/20_Planning/기획서 원문 요약.md"
-related_jira:
-  -
 supersedes:
-superseded_by: "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
-updated: 2026-07-14
 ---
 
 # 260708 - Jetson AGX Orin 64GB

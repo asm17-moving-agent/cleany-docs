@@ -1,22 +1,10 @@
 ---
-type: technical
 status: reviewed
-reviewers:
-  - 이동근
-tags:
-  - technical
-  - draft
-  - cleany
-  - mission-manager
-  - fsm
 source_refs:
   - "[ros2_ws/src/cleany_mission_manager/README.md]"
   - "[ros2_ws/src/cleany_interfaces/README.md]"
 related_decisions:
   -
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # Mission Manager FSM

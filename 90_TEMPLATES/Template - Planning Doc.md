@@ -1,18 +1,9 @@
 ---
-type: planning
 status: draft
-reviewers:
-  -
-tags:
-  - planning
-  - draft
 source_refs:
   -
 related_decisions:
   -
-related_jira:
-  -
-updated:
 ---
 
 # 문서 제목

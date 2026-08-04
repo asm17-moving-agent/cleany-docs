@@ -1,19 +1,9 @@
 ---
-type: planning
 status: draft
-reviewers:
-  -
-tags:
-  - planning
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   -
-related_jira:
-  -
-updated: 2026-07-08
 ---
 
 # 문제와 사용자(Problem and Users)

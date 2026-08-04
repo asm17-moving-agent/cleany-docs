@@ -1,7 +1,4 @@
 ---
-type: raw-research
-reviewers:
-  - 이정현
 ingest_status: raw
 ingest_targets:
   - technical
@@ -9,14 +6,6 @@ ingest_targets:
 decision_candidates:
   - 정확도 비교 결과에 따라 OpenCV CALIB_HAND_EYE_PARK 또는 CALIB_HAND_EYE_TSAI를 simulation 기준 알고리즘으로 사용
 date: 2026-07-20
-related_jira:
-  - SCRUM-264
-tags:
-  - raw
-  - research
-  - xlerobot
-  - hand-eye-calibration
-  - simulation
 ---
 
 # 260720 - Simulation 기반 Hand-Eye Calibration 방법론 선정

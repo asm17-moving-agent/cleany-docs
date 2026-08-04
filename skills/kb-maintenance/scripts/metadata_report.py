@@ -40,26 +40,6 @@ def parse_frontmatter(text: str) -> tuple[dict[str, str], list[str]]:
     return data, raw
 
 
-def frontmatter_list(raw: list[str], key: str) -> list[str]:
-    values: list[str] = []
-    in_key = False
-    for line in raw:
-        if line.startswith(" ") or line.startswith("-"):
-            if in_key:
-                stripped = line.strip()
-                if stripped.startswith("-"):
-                    value = stripped[1:].strip().strip('"').strip("'")
-                    if value:
-                        values.append(value)
-            continue
-        if ":" in line:
-            current, after = line.split(":", 1)
-            in_key = current.strip() == key
-            if in_key and after.strip():
-                values.append(after.strip().strip('"').strip("'"))
-    return values
-
-
 def cell(value: str) -> str:
     return value.replace("|", "\\|")
 
@@ -67,35 +47,26 @@ def cell(value: str) -> str:
 def generate(root: Path) -> str:
     lines = [
         "---",
-        "type: metadata-report",
         "status: draft",
-        "reviewers:",
-        "  -",
         "ingest_status: raw",
-        "updated:",
-        "tags:",
-        "  - metadata",
-        "  - report",
         "---",
         "",
         "# Metadata Report",
         "",
-        "| 파일 | type | status | reviewers | updated | tags |",
-        "|---|---|---|---|---|---|",
+        "| 파일 | status | ingest_status | date |",
+        "|---|---|---|---|",
     ]
     for path in iter_markdown(root):
         rel = str(path.relative_to(root)).replace("\\", "/")
-        data, raw = parse_frontmatter(path.read_text(encoding="utf-8"))
+        data, _ = parse_frontmatter(path.read_text(encoding="utf-8"))
         lines.append(
             "| "
             + " | ".join(
                 [
                     cell(rel),
-                    cell(data.get("type", "")),
                     cell(data.get("status", "")),
-                    cell(", ".join(frontmatter_list(raw, "reviewers"))),
-                    cell(data.get("updated", "")),
-                    cell(", ".join(frontmatter_list(raw, "tags"))),
+                    cell(data.get("ingest_status", "")),
+                    cell(data.get("date", "")),
                 ]
             )
             + " |"

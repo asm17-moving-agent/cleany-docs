@@ -66,12 +66,9 @@ def frontmatter(path: Path, source_format: str) -> str:
     return "\n".join(
         [
             "---",
-            "type: raw-converted",
             f"source_file: {yaml_quote(path.name)}",
             f"source_format: {yaml_quote(source_format)}",
             "converter: office-to-markdown",
-            "reviewers:",
-            "  -",
             "---",
             "",
         ]

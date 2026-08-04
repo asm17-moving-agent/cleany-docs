@@ -44,7 +44,7 @@
 2. 원본을 해석 없이 보존합니다.
 3. Office/PDF 파일이면 `$office-to-markdown`으로 Markdown 변환을 요청합니다.
 4. Planning 또는 Decision으로 반영해야 하면 `$kb-ingest`를 사용합니다.
-5. 반영 후 `source_refs`, `related_decisions`, `related_jira`를 갱신합니다.
+5. 반영 후 `source_refs`, `related_decisions`를 갱신합니다.
 
 ### 기획 내용을 정리할 때
 
@@ -64,7 +64,7 @@
 
 1. 중요한 선택지는 먼저 [30_DECISIONS/00 - Decision Index.md](30_DECISIONS/00%20-%20Decision%20Index.md)에 후보로 둡니다.
 2. 결정의 영향이 크면 `$kb-ingest` 또는 Decision 템플릿으로 초안을 만듭니다.
-3. 사람 검토 전에는 `status: draft`와 빈 `reviewers`를 유지합니다. 검토가 끝나면 reviewer를 기록하고 `reviewed` 또는 `selected`로 바꿉니다.
+3. 사람 검토 전에는 `status: draft`를 유지합니다. 검토와 승인 이력은 GitHub PR에 남기고, 검토가 끝나면 `reviewed` 또는 `selected`로 바꿉니다.
 4. `selected` Decision은 사람 검토 후에만 만듭니다.
 
 ### 문서 수정 후

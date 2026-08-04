@@ -1,21 +1,10 @@
 ---
-type: planning
 status: draft
-reviewers:
-  -
-tags:
-  - planning
-  - questions
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - 1차 타깃 무인 스터디카페.md"
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # 기획 미해결 질문(Planning Questions)

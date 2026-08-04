@@ -1,19 +1,9 @@
 ---
-type: planning
 status: draft
-reviewers:
-  -
-tags:
-  - planning
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # 성공 기준(Success Criteria)

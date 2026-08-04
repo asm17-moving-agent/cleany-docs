@@ -1,13 +1,5 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - questions
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
   - "[ros2_ws/src/cleany_mission_manager/README.md]"
@@ -20,9 +12,6 @@ related_decisions:
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
   - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
-related_jira:
-  -
-updated: 2026-07-28
 ---
 
 # 기술 미해결 질문(Technical Questions)

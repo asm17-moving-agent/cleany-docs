@@ -1,7 +1,4 @@
 ---
-type: raw-research
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - technical
@@ -10,18 +7,6 @@ decision_candidates:
   - YOLO 계열 버전 선정 시 NMS-free(YOLO26) 채택 여부
 date: 2026-07-22
 source_type: methodology-survey
-source_url:
-related_jira:
-  -
-tags:
-  - raw
-  - research
-  - ingest-source
-  - perception
-  - object-detection
-  - segmentation
-  - nms
-  - yolo
 ---
 
 # 260722 - YOLO 방법론 정리 (탐지·세그멘테이션·NMS·버전 변천)

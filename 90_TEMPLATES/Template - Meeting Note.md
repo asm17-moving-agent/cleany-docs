@@ -1,7 +1,4 @@
 ---
-type: raw-meeting
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - planning
@@ -11,12 +8,6 @@ decision_candidates:
 date:
 participants:
   -
-related_jira:
-  -
-tags:
-  - raw
-  - meeting
-  - ingest-source
 ---
 
 # YYMMDD - 회의 제목

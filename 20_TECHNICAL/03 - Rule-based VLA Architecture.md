@@ -1,20 +1,10 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
   - "30_DECISIONS/Technical/260708 - Rule-based VLA 3 Layer 구조.md"
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # Rule-based VLA 아키텍처

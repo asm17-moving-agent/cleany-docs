@@ -39,14 +39,8 @@ def generate(root: Path, include_guides: bool = False) -> str:
 
     lines = [
         "---",
-        "type: audit-report",
         "status: draft",
-        "reviewers:",
-        "  -",
         "ingest_status: raw",
-        "tags:",
-        "  - audit",
-        "  - report",
         "---",
         "",
         "# Review Flags Report",

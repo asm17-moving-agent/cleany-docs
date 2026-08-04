@@ -1,17 +1,8 @@
 ---
-type: ai-interaction-log
-reviewers:
-  -
 ingest_status: raw
-tags:
-  - raw
-  - ai-log
-  - codex
 date:
 tool:
 related_docs:
-  -
-related_jira:
   -
 ---
 

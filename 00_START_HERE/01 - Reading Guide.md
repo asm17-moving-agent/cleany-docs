@@ -1,13 +1,5 @@
 ---
-type: reading-guide
 status: reviewed
-reviewers:
-  - 이동근
-tags:
-  - start-here
-  - reading-guide
-  - cleany
-updated: 2026-07-13
 ---
 
 # 읽기 가이드(Reading Guide)

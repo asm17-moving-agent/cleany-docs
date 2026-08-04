@@ -1,19 +1,9 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   -
-related_jira:
-  -
-updated: 2026-07-08
 ---
 
 # 안전과 리스크(Safety and Risk)

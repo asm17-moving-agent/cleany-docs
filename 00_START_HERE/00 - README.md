@@ -1,12 +1,5 @@
 ---
-type: start-here
 status: selected
-reviewers:
-  - 박창수
-tags:
-  - start-here
-  - cleany
-updated: 2026-07-08
 ---
 
 # 끌리니(Cleany) 기획 KB 시작하기

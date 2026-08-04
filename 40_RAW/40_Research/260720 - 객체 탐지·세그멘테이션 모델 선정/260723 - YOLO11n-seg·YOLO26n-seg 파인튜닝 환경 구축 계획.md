@@ -1,7 +1,4 @@
 ---
-type: raw-research
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - technical
@@ -10,21 +7,6 @@ decision_candidates:
   - YOLO 파인튜닝 학습 환경(브랜치·프로젝트 구조) 구성 방식
 date: 2026-07-23
 source_type: implementation-plan
-source_url:
-related_jira:
-  -
-tags:
-  - raw
-  - research
-  - ingest-source
-  - perception
-  - segmentation
-  - yolo
-  - training
-  - finetuning
-  - infrastructure
-  - dataset
-  - labeling
 ---
 
 # 260723 - YOLO11n-seg·YOLO26n-seg 파인튜닝 환경 구축 계획

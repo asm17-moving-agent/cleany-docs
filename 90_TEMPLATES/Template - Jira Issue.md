@@ -1,16 +1,7 @@
 ---
-type: jira-issue-draft
 status: draft
-reviewers:
-  -
 ingest_status: raw
-tags:
-  - raw
-  - jira
-  - draft
 related_docs:
-  -
-related_jira:
   -
 ---
 

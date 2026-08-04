@@ -57,12 +57,9 @@ uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/00
 
 ```yaml
 ---
-type: raw-converted
 source_file: "원본 파일명"
 source_format: "docx"
 converter: office-to-markdown
-reviewers:
-  -
 ---
 ```
 

@@ -1,7 +1,4 @@
 ---
-type: raw-research
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - planning
@@ -10,13 +7,6 @@ decision_candidates:
   -
 date:
 source_type:
-source_url:
-related_jira:
-  -
-tags:
-  - raw
-  - research
-  - ingest-source
 ---
 
 # YYMMDD - 조사 제목

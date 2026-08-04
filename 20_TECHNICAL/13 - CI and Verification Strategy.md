@@ -1,14 +1,5 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - ci
-  - github-actions
-  - verification
 source_refs:
   - "https://github.com/asm17-moving-agent/cleany-docs/blob/main/.github/workflows/docs-quality.yml"
   - "https://github.com/asm17-moving-agent/cleany/pull/20"
@@ -16,9 +7,6 @@ source_refs:
   - "https://github.com/asm17-moving-agent/cleany-docs/actions/runs/30334467335"
 related_decisions:
   -
-related_jira:
-  -
-updated: 2026-07-28
 ---
 
 # CI와 검증 전략

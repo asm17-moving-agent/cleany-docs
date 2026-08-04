@@ -1,6 +1,6 @@
 ---
 name: kb-ingest
-description: 40_RAW의 회의록, 조사자료, 기획서 요약을 근거로 Planning/Decision 문서 초안을 생성하거나 갱신한다. Raw를 source of truth 근거로 보존하면서 YAML metadata, tags, source_refs, related_decisions를 연결할 때 사용한다.
+description: 40_RAW의 회의록, 조사자료, 기획서 요약을 근거로 Planning/Decision 문서 초안을 생성하거나 갱신한다. Raw를 source of truth 근거로 보존하면서 source_refs와 related_decisions를 연결할 때 사용한다.
 compatibility: Codex repo-scoped skill, instruction-only workflow
 tags:
   - skill
@@ -19,7 +19,7 @@ tags:
 - Raw 기록을 최종 결정처럼 취급하지 않는다.
 - Raw에서 나온 논의, 결정 후보, 미해결 질문을 YAML metadata와 문서 링크로 추적한다.
 - Decision이 필요한 경우 `30_DECISIONS/Planning` 또는 `30_DECISIONS/Technical`에 `status: draft` 문서를 만든다.
-- Planning 반영이 필요한 경우 `10_PLANNING` 문서의 `source_refs`, `related_decisions`, `tags`, `status`, `reviewers`를 갱신한다.
+- Planning 반영이 필요한 경우 `10_PLANNING` 문서의 `source_refs`, `related_decisions`, `status`를 갱신한다.
 - 별도 working 폴더 없이 각 문서의 YAML metadata로 draft/review/ingest 상태를 표현한다.
 
 ## 입력
@@ -33,7 +33,6 @@ tags:
 
 1. Raw 문서를 끝까지 읽는다.
 2. Raw frontmatter를 확인하고 필요한 경우 아래 metadata를 갱신한다.
-   - `tags`
    - `ingest_status`
    - `ingest_targets`
    - `decision_candidates`
@@ -53,15 +52,15 @@ tags:
    - 기술 리스크 또는 안전 리스크에 영향을 준다.
 5. Decision 초안을 만들 때는 기본 상태를 유지한다.
    - `status: draft`
-   - `reviewers`는 비워 둔다.
    - `source_refs`에 Raw 문서 경로를 반드시 넣는다.
    - Decision은 `source_refs`로 Raw만 참조한다. Planning·Technical 반영 문서는 역링크하지 않는다.
    - 사람 검토 전에는 `selected`로 바꾸지 않는다.
+   - 검토자와 승인 이력은 GitHub PR에 남긴다.
 6. Planning 문서를 갱신할 때는 다음을 지킨다.
    - 기획서나 Raw에 없는 내용을 확정하지 않는다.
    - `source_refs`에 Raw 문서 경로를 추가한다.
    - 관련 Decision이 있으면 `related_decisions`에 추가한다.
-   - 검토가 필요한 상태면 `status: draft`와 빈 `reviewers`를 유지한다.
+   - 검토가 필요한 상태면 `status: draft`를 유지한다.
    - 불확실한 내용은 `검토 필요` 또는 `추가 확인 필요`로 표시한다.
 7. 미해결 질문은 계층에 따라 중앙 Questions 문서에 추가한다.
    - 사용자, 가치, 제품 범위, 시나리오, 성공 기준, 프로젝트 운영 질문: `10_PLANNING/99 - Questions.md`
@@ -74,19 +73,12 @@ tags:
 
 ```yaml
 ---
-type: raw-meeting
-reviewers:
-  -
 ingest_status: triaged
 ingest_targets:
   - planning
   - decision
 decision_candidates:
   - "MVP 범위 확정"
-tags:
-  - raw
-  - meeting
-  - ingest-source
 ---
 ```
 
@@ -99,7 +91,7 @@ tags:
 - 미해결 기술 질문: `20_TECHNICAL/99 - Questions.md`
 - Raw 원본/요약: `40_RAW/`
 
-별도 working 폴더는 사용하지 않는다. 초안 여부는 `status`, `reviewers`, `tags`, `ingest_status`로 표현한다. 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다.
+별도 working 폴더는 사용하지 않는다. 초안 여부는 `status`, `ingest_status`로 표현한다. 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다.
 
 ## 링크 방향
 

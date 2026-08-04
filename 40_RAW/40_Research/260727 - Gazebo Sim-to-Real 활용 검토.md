@@ -1,23 +1,10 @@
 ---
-type: raw-research
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - technical
 decision_candidates: []
 date: 2026-07-27
 source_type: literature-and-official-documentation
-source_url: https://arxiv.org/abs/1703.06907
-related_jira:
-  -
-tags:
-  - raw
-  - research
-  - ingest-source
-  - gazebo
-  - sim-to-real
-  - domain-randomization
 ---
 
 # 260727 - Gazebo Sim-to-Real 활용 검토

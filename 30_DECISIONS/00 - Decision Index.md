@@ -1,14 +1,5 @@
 ---
-type: decision-index
 status: draft
-reviewers:
-  -
-tags:
-  - decision
-  - index
-  - draft
-  - cleany
-updated: 2026-07-15
 ---
 
 # 결정 인덱스(Decision Index)

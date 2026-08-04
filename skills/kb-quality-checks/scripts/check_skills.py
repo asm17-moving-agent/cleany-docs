@@ -23,7 +23,7 @@ REQUIRED_SNIPPETS = {
     "kb-ingest": [
         "Raw 문서를 selected Decision처럼 취급하지 않는다",
         "사람 검토 없이 Decision을 `selected`로 바꾸지 않는다",
-        "`reviewers`는 비워 둔다.",
+        "검토자와 승인 이력은 GitHub PR에 남긴다.",
     ],
     "kb-review-pack": [
         "$kb-quality-checks",

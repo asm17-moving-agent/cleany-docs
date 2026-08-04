@@ -1,21 +1,10 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - ros2
-  - software-architecture
 source_refs:
   - "20_TECHNICAL/09 - Mission Manager FSM.md"
   - "40_RAW/10_Meetings/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
 related_decisions:
   -
-related_jira:
-  -
-updated: 2026-07-17
 ---
 
 # ROS 2 소프트웨어 아키텍처

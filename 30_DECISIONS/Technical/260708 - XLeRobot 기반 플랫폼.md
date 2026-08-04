@@ -1,24 +1,10 @@
 ---
-type: decision
-decision_type: technical
 status: selected
-reviewers:
-  - 박창수
-tags:
-  - decision
-  - technical
-  - robot-platform
-  - cleany
 date: 2026-07-08
-impact: high
 source_refs:
   - 40_RAW/20_Planning/기획서 원문 요약.md
   - 40_RAW/00_Inbox/지출신청서_관리.md
-related_jira:
-  -
 supersedes:
-superseded_by:
-updated: 2026-07-15
 ---
 
 # 260708 - XLeRobot 기반 플랫폼

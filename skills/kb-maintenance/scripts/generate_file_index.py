@@ -37,15 +37,7 @@ def generate(root: Path, include_tools: bool) -> str:
 
     lines = [
         "---",
-        "type: file-index",
         "status: draft",
-        "reviewers:",
-        "  -",
-        "updated:",
-        "tags:",
-        "  - start-here",
-        "  - file-index",
-        "  - generated",
         "---",
         "",
         "# File Index",

@@ -1,13 +1,6 @@
 ---
-type: ingest-summary
 status: draft
-reviewers:
-  -
 ingest_status: triaged
-tags:
-  - raw
-  - ingest-summary
-  - draft
 source_refs:
   -
 created_by: codex

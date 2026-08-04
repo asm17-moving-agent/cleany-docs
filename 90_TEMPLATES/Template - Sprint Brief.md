@@ -1,13 +1,6 @@
 ---
-type: sprint-brief
 status: draft
-reviewers:
-  -
 ingest_status: raw
-tags:
-  - raw
-  - sprint
-  - draft
 sprint:
 date:
 created_by: codex

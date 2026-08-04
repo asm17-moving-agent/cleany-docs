@@ -72,7 +72,7 @@ Decision 상태
 
 ## 금지 사항
 
-- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다. `reviewed` 이상 상태에는 `reviewers`를 남긴다.
+- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 - Raw 문서를 공식 결정처럼 취급하지 않는다.
 - 기획/기술 판단을 임의로 확정하지 않는다.
 - Jira issue 본문에 문서 내용을 복붙하지 않는다.

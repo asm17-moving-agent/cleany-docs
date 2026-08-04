@@ -1,18 +1,9 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
 source_refs:
   -
 related_decisions:
   -
-related_jira:
-  -
-updated:
 ---
 
 # 문서 제목

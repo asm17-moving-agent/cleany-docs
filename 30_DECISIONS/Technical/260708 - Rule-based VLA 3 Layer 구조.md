@@ -1,24 +1,9 @@
 ---
-type: decision
-decision_type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - decision
-  - draft
-  - technical
-  - vla
-  - cleany
 date: 2026-07-08
-impact: high
 source_refs:
   - "40_RAW/20_Planning/기획서 원문 요약.md"
-related_jira:
-  -
 supersedes:
-superseded_by:
-updated: 2026-07-08
 ---
 
 # 260708 - Rule-based VLA 3 Layer 구조

@@ -74,22 +74,18 @@ def replace_frontmatter_value(text: str, key: str, value: str) -> str:
     return re.sub(rf"^{re.escape(key)}:[ \t]*.*$", f"{key}: {value}", text, count=1, flags=re.MULTILINE)
 
 
-def render(template: str, kind: str, title: str, d: date, decision_type: str) -> str:
+def render(template: str, kind: str, title: str, d: date) -> str:
     yy = yymmdd(d)
     iso = d.isoformat()
     text = template
 
     if kind == "planning":
         text = text.replace("# 문서 제목", f"# {title}")
-        text = replace_frontmatter_value(text, "updated", iso)
     elif kind == "technical":
         text = text.replace("# 문서 제목", f"# {title}")
-        text = replace_frontmatter_value(text, "updated", iso)
     elif kind == "decision":
         text = text.replace("# YYMMDD - 결정 제목", f"# {yy} - {title}")
-        text = replace_frontmatter_value(text, "decision_type", decision_type)
         text = replace_frontmatter_value(text, "date", iso)
-        text = replace_frontmatter_value(text, "updated", iso)
     elif kind == "meeting":
         text = text.replace("# YYMMDD - 회의 제목", f"# {yy} - {title}")
         text = replace_frontmatter_value(text, "date", iso)
@@ -133,7 +129,7 @@ def main() -> int:
         print(f"이미 파일이 있음: {output}. 덮어쓰려면 --force 사용", file=sys.stderr)
         return 1
 
-    content = render(template_path.read_text(encoding="utf-8"), args.kind, args.title, d, args.decision_type)
+    content = render(template_path.read_text(encoding="utf-8"), args.kind, args.title, d)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(content, encoding="utf-8")
     print(f"created: {output}")

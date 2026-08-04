@@ -1,19 +1,9 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # 시스템 개념(System Concept)

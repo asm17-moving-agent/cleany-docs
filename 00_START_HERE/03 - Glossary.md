@@ -1,13 +1,5 @@
 ---
-type: glossary
 status: draft
-reviewers:
-  -
-tags:
-  - start-here
-  - glossary
-  - cleany
-updated: 2026-07-08
 ---
 
 # 용어집(Glossary)

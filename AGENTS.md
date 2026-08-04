@@ -25,9 +25,9 @@
 - `30_DECISIONS`는 무엇을 왜 결정했는지 기록한다.
 - `40_RAW`는 원본 기록이며 최종 결정이 아니다.
 - 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning·Technical 문서와 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
-- 초안·검토·채택 상태는 각 문서의 YAML metadata(`status`, `reviewers`, `tags`, `ingest_status`)로 표현한다.
+- 초안·검토·채택 상태는 각 문서의 YAML metadata(`status`, `ingest_status`)로 표현한다.
 - 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다. Raw 원본은 `ingest_status`로 ingest 상태를 표현한다.
-- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 승격하지 않는다. `reviewed` 이상으로 바꿀 때는 `reviewers`에 검토자를 남긴다.
+- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 승격하지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 
 ## 4. Source of Truth 우선순위
 
@@ -50,14 +50,14 @@
 
 ## 6. 공식 문서 갱신 규칙
 
-- 공식 문서를 갱신할 때 `source_refs`, `related_decisions`, `related_jira`를 가능한 한 갱신한다.
+- 공식 문서를 갱신할 때 `source_refs`, `related_decisions`를 가능한 한 갱신한다.
 - 계층 간 링크는 `10_PLANNING`·`20_TECHNICAL` → `30_DECISIONS` → `40_RAW` 단방향으로 둔다. Planning·Technical 문서는 관련 Decision을, Decision 문서는 `source_refs`로 Raw를 참조한다.
 - Jira issue에는 문서 본문을 복붙하지 않고 관련 문서 링크만 둔다.
 - 결과물은 사람이 읽기 쉬운 구조로 작성한다.
 
 ## 7. AI 작업 규칙
 
-- AI가 만든 Planning, Technical, Decision 문서는 대상 계층에 바로 두되 `status: draft`, 빈 `reviewers`, 적절한 `tags`를 반드시 유지한다.
+- AI가 만든 Planning, Technical, Decision 문서는 대상 계층에 바로 두되 `status: draft`를 반드시 유지한다.
 - 공식 문서 직접 수정은 명시적으로 요청받았거나 사람 검토가 끝난 경우에만 수행한다.
 - 근거 없는 rationale, 가정, 수치를 만들지 않는다.
 - Decision 후보를 selected Decision으로 바꾸지 않는다.

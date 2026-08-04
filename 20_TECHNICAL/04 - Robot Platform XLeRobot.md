@@ -1,12 +1,5 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
   - "40_RAW/00_Inbox/지출신청서_관리.md"
@@ -15,9 +8,6 @@ related_decisions:
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
   - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
-related_jira:
-  -
-updated: 2026-07-15
 ---
 
 # XLeRobot 로봇 플랫폼

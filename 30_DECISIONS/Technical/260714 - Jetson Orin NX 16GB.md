@@ -1,24 +1,9 @@
 ---
-type: decision
-decision_type: technical
 status: selected
-reviewers:
-  - 박창수
-tags:
-  - decision
-  - technical
-  - edge-runtime
-  - jetson
-  - orin-nx
 date: 2026-07-14
-impact: high
 source_refs:
   - "40_RAW/20_Planning/기획서 원문 요약.md"
-related_jira:
-  -
 supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
-superseded_by:
-updated: 2026-07-27
 ---
 
 # 260714 - Jetson Orin NX 16GB

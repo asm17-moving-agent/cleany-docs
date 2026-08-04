@@ -1,7 +1,4 @@
 ---
-type: raw-meeting
-reviewers:
-  -
 ingest_status: raw
 ingest_targets:
   - technical
@@ -11,14 +8,6 @@ decision_candidates:
 date: 2026-07-10
 participants:
   -
-related_jira:
-  -
-tags:
-  - raw
-  - meeting
-  - ingest-source
-  - ros2
-  - contract
 ---
 
 # 260710 - Docs 검증 및 ROS 2 Contract 회의 준비

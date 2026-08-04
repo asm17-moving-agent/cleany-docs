@@ -1,23 +1,11 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - hardware
-  - robot-platform
-  - components
-  - cleany
 source_refs:
   - "비공개 Raw 원본: 끌리니 하드웨어 구성 및 부품 목록"
 related_decisions:
   - "30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md"
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
-related_jira:
-  -
-updated: 2026-07-27
 ---
 
 # 하드웨어 구성(Hardware Configuration)

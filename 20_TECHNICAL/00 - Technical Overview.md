@@ -1,19 +1,9 @@
 ---
-type: technical
 status: draft
-reviewers:
-  -
-tags:
-  - technical
-  - draft
-  - cleany
 source_refs:
   - "[기획서]"
 related_decisions:
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
-related_jira:
-  -
-updated: 2026-07-28
 ---
 
 # 기술 개요(Technical Overview)
