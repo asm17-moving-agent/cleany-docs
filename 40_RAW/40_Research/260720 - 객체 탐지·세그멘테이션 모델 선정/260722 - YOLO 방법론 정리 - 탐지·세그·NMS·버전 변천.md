@@ -11,6 +11,12 @@ source_type: methodology-survey
 
 # 260722 - YOLO 방법론 정리 (탐지·세그멘테이션·NMS·버전 변천)
 
+> [!IMPORTANT]
+> 현재 객체 인식·판단 구성은 `YOLOE + VLM`, `로컬 VLM + Segmentation model`,
+> `Gemini Robotics ER 2 + Segmentation model` 중에서 아직 선택하지 않았다. YOLOE는
+> 첫 번째 후보의 detector다. 아래 YOLOv8·YOLO11·YOLO26 내용은 기존 방법론의 역사적
+> 참고 자료이며 현재 모델 선정안이 아니다.
+
 ## 1. 목표 및 요약
 
 이 문서는 `YOLO11n-seg`를 우선 선정안으로 정리한 「260720 - 객체 탐지·세그멘테이션 모델 비교」의 후속 자료다. 모델 이름과 표만으로는 판단하기 어려운 부분, 즉 YOLO가 어떻게 객체를 탐지하고 마스크를 만드는지, NMS가 무엇이고 왜 문제가 되는지, YOLOv8에서 YOLO11로 그리고 YOLO26으로 넘어오며 무엇이 바뀌었는지를 방법론 수준에서 정리한다.

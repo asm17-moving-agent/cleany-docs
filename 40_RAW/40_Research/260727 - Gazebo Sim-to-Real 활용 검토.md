@@ -9,6 +9,11 @@ source_type: literature-and-official-documentation
 
 # 260727 - Gazebo Sim-to-Real 활용 검토
 
+> [!IMPORTANT]
+> 2026-08-03 기준으로 perception 모델 파인튜닝은 진행하지 않는다. 이 문서의
+> 파인튜닝·학습 데이터 생성 관련 제안은 취소하며, Gazebo의 인터페이스·센서·실기
+> 검증 관련 내용만 참고한다.
+
 ## 1. 출처
 
 - [Tobin et al., *Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World* (2017)](https://arxiv.org/abs/1703.06907)
@@ -52,7 +57,7 @@ Gazebo Sensors는 camera, laser range finder, IMU 등 센서 모델과 noise mod
 |---|---|---|
 | Navigation | `cmd_vel`, TF, goal 처리, obstacle·timeout 실패 흐름의 회귀 테스트 | wheel slip, LiDAR 반사·가림, 실제 통로·가구 변화, 제동 거리 |
 | LiDAR·위치 추정 | 고정 월드의 `/scan`, `/imu`, map/localization 계약과 노이즈 후보 비교 | sensor extrinsic, 실제 noise·drift, localization 안정성 |
-| Perception | RGB·depth·segmentation의 사전학습 또는 데이터 증강 후보 | D435 실제 depth 특성, 조명·반사·가림, 실제 쓰레기·분실물 데이터 |
+| Perception | 파인튜닝·학습 데이터 생성 활용은 취소 | 사전 학습 모델의 D435 실제 장면 추론 품질만 검증 |
 | Manipulation policy | 초기 pose·trajectory·접촉 실패 시나리오 생성 후보 | servo backlash, 마찰, 힘·접촉, 물체 변형과 그리퍼 특성 |
 
 Navigation의 Nav2는 일반적으로 지도·센서·경로 계획을 사용하는 소프트웨어
@@ -63,10 +68,8 @@ Navigation의 Nav2는 일반적으로 지도·센서·경로 계획을 사용하
 
 1. Gazebo에서 LiDAR·IMU·실내 월드와 `map -> odom -> base_link` 계약을 구성한다.
 2. 실제 D435·LiDAR로 소량의 기준 장면과 센서 로그를 수집한다.
-3. 카메라 기반 인식이 필요하면 합성 데이터에서 조명, texture, 물체 pose, camera
-   pose, 가림과 sensor noise를 변화시킨 baseline을 만든다.
-4. 합성 데이터만 사용한 모델과 합성 데이터 후 실제 데이터 fine-tuning 모델을,
-   분리한 실제 검증 세트에서 비교한다.
+3. 카메라 기반 인식은 선택한 사전 학습 모델을 실제 D435 장면에서 검증한다.
+4. 합성 데이터 생성과 실제 데이터 fine-tuning 비교는 취소한다.
 5. arm·gripper policy의 직접 전이는 실제 기구학, 구동계, 접촉 특성 측정 이후의
    후속 실험으로 둔다.
 
@@ -88,7 +91,8 @@ camera bridge를 제공한다. LiDAR·IMU·Nav2·SLAM/localization은 아직 포
 
 향후 아래 항목이 확인되면 Technical Decision 후보가 될 수 있다.
 
-- perception 학습에서 합성 데이터와 실제 데이터의 사용 비율·fine-tuning 방식
+- ~~perception 학습에서 합성 데이터와 실제 데이터의 사용 비율·fine-tuning 방식~~
+  (2026-08-03 취소)
 - Sim-to-Real 대상 범위가 인식 보조인지, base control 또는 manipulation policy까지인지
 - domain randomization에 포함할 camera, sensor, 물리 parameter와 평가 기준
 
@@ -109,7 +113,7 @@ camera bridge를 제공한다. LiDAR·IMU·Nav2·SLAM/localization은 아직 포
 
 - LiDAR·IMU를 포함한 Gazebo 주행 센서 contract와 headless 검증 시나리오 정의
 - 실제 D435·LiDAR 기준 로그의 수집 항목, 보관 위치, calibration 절차 정의
-- 인식 baseline의 synthetic-only, real-only, synthetic-to-real 비교 실험 설계
+- 사전 학습 인식 모델의 실제 D435 장면 검증 조건 정의
 - 실제 검증 세트의 성공 지표와 안전 중단 기준 정의
 ## 3. 핵심 내용
 

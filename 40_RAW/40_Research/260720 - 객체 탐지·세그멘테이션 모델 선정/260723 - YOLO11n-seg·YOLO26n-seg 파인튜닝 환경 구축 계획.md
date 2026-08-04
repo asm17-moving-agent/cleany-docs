@@ -1,5 +1,7 @@
 ---
-ingest_status: raw
+ingest_status: blocked
+cancelled_at: 2026-08-03
+cancel_reason: "파인튜닝을 진행하지 않고 YOLOE 기반 후보를 검토하기로 함"
 ingest_targets:
   - technical
 decision_candidates:
@@ -10,6 +12,10 @@ source_type: implementation-plan
 ---
 
 # 260723 - YOLO11n-seg·YOLO26n-seg 파인튜닝 환경 구축 계획
+
+> [!WARNING]
+> 파인튜닝을 진행하지 않기로 하면서 이 환경 구축 계획을 2026-08-03에 취소했다.
+> 실행하거나 공식 문서로 ingest하지 않으며, 아래 원문은 이력 보존용이다.
 
 ## 1. 목표 및 결론
 
