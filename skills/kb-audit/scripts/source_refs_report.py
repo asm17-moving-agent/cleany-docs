@@ -14,25 +14,20 @@ EXCLUDED_PATHS = {"30_DECISIONS/00 - Decision Index.md"}
 
 def generate(root: Path) -> str:
     lines = [
-        "---",
-        "status: draft",
-        "ingest_status: raw",
-        "---",
-        "",
         "# Source Refs Report",
         "",
-        "| 파일 | status | source_refs | 상태 |",
-        "|---|---|---|---|",
+        "| 파일 | source_refs | 결과 |",
+        "|---|---|---|",
     ]
     for path in iter_markdown(root):
         r = rel(path, root)
         if r in EXCLUDED_PATHS or not r.startswith(TARGET_PREFIXES):
             continue
-        data, raw = parse_frontmatter(path.read_text(encoding="utf-8"))
+        _, raw = parse_frontmatter(path.read_text(encoding="utf-8"))
         refs = frontmatter_list(raw, "source_refs")
-        status = "OK" if refs else "source_refs 없음"
+        result = "OK" if refs else "source_refs 없음"
         refs_text = "<br>".join(refs).replace("|", "\\|")
-        lines.append(f"| {r} | {data.get('status', '')} | {refs_text} | {status} |")
+        lines.append(f"| {r} | {refs_text} | {result} |")
     return "\n".join(lines).rstrip() + "\n"
 
 

@@ -1,7 +1,3 @@
----
-status: draft
----
-
 # 끌리니(Cleany) 기획 KB 시작하기
 
 ## 1. 이 문서는 무엇인가
@@ -15,10 +11,12 @@ status: draft
 
 1. [[00_START_HERE/01 - Reading Guide|Reading Guide]]에서 내 목적에 맞는 읽기 순서를 고른다.
 2. [[10_PLANNING/00 - Project Brief|Project Brief]]로 프로젝트 목적을 확인한다.
-3. [[10_PLANNING/99 - Questions|Planning Questions]]와 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 아직 확정되지 않은 항목을 본다.
-4. [[30_DECISIONS/00 - Decision Index|Decision Index]]에서 결정 후보와 selected Decision 여부를 확인한다.
+3. [[00_START_HERE/03 - Glossary|핵심 용어]]에서 프로젝트 내부 용어의 책임 경계를 확인한다.
+4. [[10_PLANNING/99 - Questions|Planning Questions]]와 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 아직 확정되지 않은 항목을 본다.
+5. [[30_DECISIONS/00 - Decision Index|Decision Index]]에서 실제 결정과 변경 이력을 확인한다.
 
-문서를 읽을 때 `draft`, `reviewed`, `selected`, `dropped`, `검토 필요`, `추가 확인 필요` 표시와 GitHub PR 검토 이력을 함께 본다.
+`main`의 Planning·Technical은 현재 기준이고, 작업 브랜치의 변경은 GitHub PR에서
+검토 중인 제안이다.
 
 ## 3. 한 번에 이해하는 작업 흐름
 
@@ -30,7 +28,7 @@ status: draft
 
 Raw의 내용만으로 프로젝트 결론을 확정하지 않는다. 공식 지식으로 사용할 내용은 Planning·Technical·Decision에 반영하고 GitHub PR에서 검토한다.
 
-### 3.2 초안 반영
+### 3.2 공식 문서 반영
 
 Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`를 사용한다. 이때 작성자는 다음을 구분한다.
 
@@ -38,7 +36,7 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 | --------------------------- | --------------------------------------- |
 | 기획 범위, 사용자, 가치, 성공 기준       | `10_PLANNING`에 반영                       |
 | 시스템 개념, 아키텍처, 제약, 리스크       | `20_TECHNICAL`에 반영                      |
-| 프로젝트 방향이나 Sprint에 영향을 주는 선택 | `30_DECISIONS`에 draft Decision 생성       |
+| 팀이 실제로 내린 중요한 선택          | `30_DECISIONS`에 Decision 기록           |
 | 확정할 수 없는 기획 내용              | `10_PLANNING/99 - Questions.md`에 질문 추가  |
 | 확정할 수 없는 기술 내용              | `20_TECHNICAL/99 - Questions.md`에 질문 추가 |
 
@@ -47,17 +45,18 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 질문은 결론이 아니다. 질문은 팀이 검토해야 할 빈칸이고, Decision은 검토 결과를 추적하는 문서다.
 
 - 기획 질문은 [[10_PLANNING/99 - Questions|Planning Questions]], 기술 질문은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에 남긴다.
-- Decision 후보는 [[30_DECISIONS/00 - Decision Index|Decision Index]]에 남긴다.
-- Decision 문서를 만들 때는 `status: draft`를 유지한다.
-- 검토와 승인 이력은 GitHub PR에 남긴다. 회의·스프린트에서 채택한 경우에만 `selected`로 바꾼다.
+- Decision 후보는 Raw 또는 Questions에 남긴다.
+- 팀이 실제 결정을 내린 뒤 작업 브랜치에서 Decision 문서를 작성한다.
+- 검토와 승인 이력은 GitHub PR에 남기고, 병합된 Decision을 결정 이력으로 사용한다.
 
 ### 3.4 검사와 리뷰
 
 문서를 고친 뒤에는 `$kb-quality-checks`를 실행한다. 이 검사는 구조, formatting, YAML metadata, 내부 링크, repo skill 구조를 확인한다.
 
-검토 준비가 필요하면 `$kb-audit`를 실행한다. 이 리포트는 제품 문서의 `검토 필요`, `추가 확인 필요`, `추가 정의 필요`, Decision inventory, source_refs 상태를 요약한다.
+검토 준비가 필요하면 `$kb-audit`를 실행한다. 이 리포트는 제품 문서의 검토 플래그,
+Decision 목록·대체 관계와 source_refs 상태를 요약한다.
 
-사람 검토 전에 한 번에 볼 패키지가 필요하면 `$kb-review-pack`을 사용한다. 이 skill은 품질 검사, audit, Decision 상태, 미해결 질문, 다음 리뷰 액션을 함께 요약한다.
+사람 검토 전에 한 번에 볼 패키지가 필요하면 `$kb-review-pack`을 사용한다. 이 skill은 품질 검사, audit, Decision 목록·대체 관계, 미해결 질문, 다음 리뷰 액션을 함께 요약한다.
 
 검사 실패가 단순 형식 문제면 수정한다. 판단이 필요하면 기획 항목은 [[10_PLANNING/99 - Questions|Planning Questions]], 기술 항목은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에 남긴다.
 
@@ -89,20 +88,20 @@ $office-to-markdown "40_RAW/assets/자료.docx"를 Markdown으로 변환해 "40_
 ### 4.3 결정을 내려야 하면
 
 1. 후보가 프로젝트 방향, Sprint, 기술 리스크, 안전 기준에 영향을 주는지 본다.
-2. 영향이 크면 Decision 초안을 만든다.
-3. 사람 검토 전에는 `status: draft`를 유지한다.
-4. 검토와 승인 이력은 GitHub PR에 남긴다. 채택된 Decision만 `selected`로 승격한다.
+2. 아직 선택 전이면 Raw 또는 Questions에서 관리한다.
+3. 팀이 실제 결정을 내리면 작업 브랜치에 Decision 문서를 작성한다.
+4. 검토와 승인 이력은 GitHub PR에 남기고 병합 후 결정 이력으로 사용한다.
 
 예시 요청:
 
 ```text
-$kb-ingest "40_RAW/260708 - MVP 범위 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
+$kb-ingest "40_RAW/260708 - MVP 범위 회의.md"를 근거로 Planning 반영안과 회의에서 실제로 확정된 Decision만 정리해.
 ```
 
 ### 4.4 문서를 고쳤으면
 
 1. `$kb-quality-checks`로 구조, metadata, 링크를 확인한다.
-2. `$kb-audit`로 검토 플래그와 Decision 상태를 확인한다.
+2. `$kb-audit`로 검토 플래그와 Decision 목록·대체 관계를 확인한다.
 3. 실패 항목이 기획 판단을 요구하면 임의 수정하지 않고 질문으로 남긴다.
 
 예시 요청:
@@ -117,9 +116,9 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 
 | 위치             | 쓰는 내용                        | 쓰지 않는 내용        |
 | -------------- | ---------------------------- | --------------- |
-| `10_PLANNING`  | 문제, 사용자, 범위, 시나리오, 성공 기준     | 하드웨어 상세 구현      |
-| `20_TECHNICAL` | 시스템 개념, 아키텍처, 인터페이스, 제약, 리스크 | 시장 narrative 반복 |
-| `30_DECISIONS` | 중요한 결정과 이유                   | 검토 전 확정 선언      |
+| `10_PLANNING`  | 현재 합의된 문제, 사용자, 범위, 시나리오, 성공 기준 | 하드웨어 상세 구현      |
+| `20_TECHNICAL` | 현재 합의된 시스템 개념, 아키텍처, 인터페이스, 제약 | 시장 narrative 반복 |
+| `30_DECISIONS` | 실제로 내린 중요한 결정과 이유·대체 이력       | 결정 전 후보          |
 | `40_RAW`       | 초안, 학습 노트, 회의록, 조사 자료와 첨부 원본 | 공식 결론           |
 | `90_TEMPLATES` | 반복 문서 템플릿                    | 프로젝트 고유 사실      |
 
@@ -128,8 +127,8 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 | 헷갈리는 점                      | 기준                                |
 | --------------------------- | --------------------------------- |
 | Raw에 적혀 있으면 확정인가?           | 아니다. Raw는 비공식 작업 공간이며 최종 결정이 아니다. |
-| draft 문서를 공식 문서처럼 써도 되는가?   | 검토 전 초안으로만 다룬다.                   |
-| selected Decision은 누가 만드는가? | 사람 검토 후에만 승격한다.                   |
+| 작업 브랜치의 공식 문서 변경은 확정인가?      | 아니다. PR 검토 후 `main`에 병합되어야 현재 기준이다. |
+| Decision 후보는 어디에 두는가?          | Raw 또는 실제 Questions에 둔다.             |
 | 모르는 내용을 추정해서 채워도 되는가?       | 안 된다. `검토 필요` 또는 `추가 확인 필요`로 남긴다. |
 | Jira issue에는 무엇을 넣는가?       | 문서 본문 복붙이 아니라 관련 문서 링크를 넣는다.      |
 | 제품 구현 코드를 만들어도 되는가?         | 안 된다. 이 저장소는 기획 KB다.              |
@@ -139,5 +138,5 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 - Raw는 근거지만 최종 결정은 아니다.
 - 기획서에 없는 내용을 확정 사실처럼 쓰지 않는다.
 - Planning과 Technical을 섞지 않는다.
-- 사람 검토 전에는 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다.
-- selected Decision은 사람 검토 후에만 만든다.
+- 폴더는 지식의 성격을, Git 브랜치와 PR은 검토 상태를 나타낸다.
+- 팀이 실제로 내리지 않은 결정을 Decision으로 만들지 않는다.

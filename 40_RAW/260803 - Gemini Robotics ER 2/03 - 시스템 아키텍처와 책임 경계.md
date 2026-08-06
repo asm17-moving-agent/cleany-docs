@@ -1,5 +1,4 @@
 ---
-ingest_status: raw
 ingest_targets:
   - technical
   - decision

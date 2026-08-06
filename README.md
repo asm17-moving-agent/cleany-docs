@@ -11,17 +11,19 @@
 1. 전체 맥락을 잡는다: [00_START_HERE/00 - README.md](00_START_HERE/00%20-%20README.md)
 2. 내 역할에 맞는 읽기 순서를 고른다: [00_START_HERE/01 - Reading Guide.md](00_START_HERE/01%20-%20Reading%20Guide.md)
 3. 막힌 질문을 확인한다: [Planning Questions](10_PLANNING/99%20-%20Questions.md), [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)
-4. 결정 후보를 확인한다: [30_DECISIONS/00 - Decision Index.md](30_DECISIONS/00%20-%20Decision%20Index.md)
+4. 결정 이력을 확인한다: [30_DECISIONS/00 - Decision Index.md](30_DECISIONS/00%20-%20Decision%20Index.md)
 
-현재 가장 중요한 일은 문서를 더 많이 만드는 것이 아니라, 두 `Questions` 문서에 쌓인 핵심 질문을 사람 검토로 닫고 필요한 항목을 Decision 초안으로 남기는 것입니다.
+현재 가장 중요한 일은 문서를 더 많이 만드는 것이 아니라, 두 `Questions` 문서의
+실제 질문을 사람 검토로 닫고 결정된 내용을 Planning·Technical·Decision에
+반영하는 것입니다.
 
 ## 처음 작업하는 사람을 위한 10분 흐름
 
-이 저장소에서 가장 먼저 구분해야 할 것은 `근거`, `초안`, `결정`입니다.
+이 저장소에서 가장 먼저 구분해야 할 것은 `비공식 기록`, `현재 기준`, `결정 이력`입니다.
 
 1. `40_RAW`는 비공식 작업 공간입니다. 초안, 개인 학습 노트, 회의록, 조사 자료와 원본을 자유롭게 보관합니다.
-2. `10_PLANNING`과 `20_TECHNICAL`은 검토 가능한 공식 문서 초안입니다. 검토와 승인 이력은 GitHub PR에 남깁니다.
-3. `30_DECISIONS`는 중요한 선택을 따로 추적하는 곳입니다. `selected`가 아니면 아직 확정 결정이 아닙니다.
+2. `main`의 `10_PLANNING`과 `20_TECHNICAL`은 현재 팀이 합의한 제품·기술 기준입니다.
+3. `main`의 `30_DECISIONS`는 실제로 내린 중요한 선택과 대체 이력을 추적합니다.
 4. 불확실한 내용은 바로 결론으로 쓰지 않고 기획 질문은 `10_PLANNING/99 - Questions.md`, 기술 질문은 `20_TECHNICAL/99 - Questions.md`에 남깁니다.
 5. 문서를 고친 뒤에는 `$kb-quality-checks`로 깨진 구조와 링크를 확인합니다.
 
@@ -30,9 +32,9 @@
 | 내가 하려는 일 | 먼저 볼 곳 | 사용할 흐름 |
 |---|---|---|
 | 새 자료나 초안을 기록한다 | `40_RAW` | 필요한 경우 `$office-to-markdown`, `$kb-ingest` 사용 |
-| 기획 범위를 정리한다 | `10_PLANNING/04 - Scope and Non-Goals.md` | 근거 확인 후 draft 유지 |
+| 기획 범위를 정리한다 | `10_PLANNING/04 - Scope and Non-Goals.md` | 작업 브랜치에서 수정하고 PR 검토 |
 | 기술 전제를 정리한다 | `20_TECHNICAL/00 - Technical Overview.md` | Planning과 섞지 않기 |
-| 중요한 선택을 남긴다 | `30_DECISIONS/00 - Decision Index.md` | Decision 후보 또는 draft 생성 |
+| 중요한 선택을 남긴다 | `30_DECISIONS/00 - Decision Index.md` | 실제 결정 확인 후 Decision 기록 |
 | 무엇이 막혔는지 본다 | `10_PLANNING/99 - Questions.md`, `20_TECHNICAL/99 - Questions.md` | 계층별 질문 상태 갱신 |
 | 공유 전 점검한다 | `00_START_HERE/01 - Reading Guide.md` | `$kb-quality-checks`, `$kb-audit`, `$kb-review-pack` |
 
@@ -50,28 +52,27 @@
 ### 기획 내용을 정리할 때
 
 1. 문제, 사용자, 가치, 범위, 시나리오는 `10_PLANNING`에 둡니다.
-2. 근거가 Raw에만 있으면 확정처럼 쓰지 않습니다.
-3. 불확실한 내용은 `검토 필요` 또는 `추가 확인 필요`로 남깁니다.
-4. 핵심 판단이 필요하면 [Planning Questions](10_PLANNING/99%20-%20Questions.md)에 질문으로 남깁니다.
+2. 근거가 Raw에만 있으면 작업 브랜치에서 반영안을 만들고 PR에서 검토합니다.
+3. 팀이 실제로 제기한 미결정 사항은 [Planning Questions](10_PLANNING/99%20-%20Questions.md)에 남깁니다.
 
 ### 기술 내용을 정리할 때
 
 1. 시스템 개념, 아키텍처, 인터페이스, 제약, 리스크는 `20_TECHNICAL`에 둡니다.
 2. 실제 구현 코드, 빌드 설정, 배포 설정은 만들지 않습니다.
-3. 하드웨어·런타임·모델 후보는 기획서에 적힌 수준과 추가 확인 필요 항목을 구분합니다.
-4. 기술 판단이 필요하면 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 질문으로 남깁니다.
+3. 하드웨어·런타임·모델 후보는 합의된 기준과 실제 미결정 사항을 구분합니다.
+4. 팀이 실제로 제기한 기술 판단은 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
 
 ### 결정을 남길 때
 
-1. 중요한 선택지는 먼저 [30_DECISIONS/00 - Decision Index.md](30_DECISIONS/00%20-%20Decision%20Index.md)에 후보로 둡니다.
-2. 결정의 영향이 크면 `$kb-ingest` 또는 Decision 템플릿으로 초안을 만듭니다.
-3. 사람 검토 전에는 `status: draft`를 유지합니다. 검토와 승인 이력은 GitHub PR에 남기고, 검토가 끝나면 `reviewed` 또는 `selected`로 바꿉니다.
-4. `selected` Decision은 사람 검토 후에만 만듭니다.
+1. 결정 전 선택지와 질문은 Raw 또는 Questions에서 관리합니다.
+2. 팀이 실제 결정을 내리면 `$kb-ingest` 또는 Decision 템플릿으로 작업 브랜치에 기록합니다.
+3. 검토와 승인 이력은 GitHub PR에 남기고, 병합된 Decision을 결정 이력으로 사용합니다.
+4. 이전 결정을 바꾸면 기존 문서를 삭제하지 않고 `supersedes`·`superseded_by`로 연결합니다.
 
 ### 문서 수정 후
 
 1. `$kb-quality-checks`로 구조, formatting, metadata, 링크를 확인합니다.
-2. `$kb-audit`로 검토 플래그와 Decision 상태를 요약합니다.
+2. `$kb-audit`로 검토 플래그와 Decision 목록·대체 관계를 요약합니다.
 3. 실패 항목이 판단을 요구하면 기획 항목은 Planning Questions, 기술 항목은 Technical Questions에 남깁니다.
 
 ### Codex에게 요청할 때
@@ -80,7 +81,7 @@
 
 ```text
 $office-to-markdown "40_RAW/assets/자료.docx"를 Markdown으로 변환해 "40_RAW/자료 변환.md"에 저장해.
-$kb-ingest "40_RAW/260708 - 회의.md"를 근거로 Planning 반영 후보와 Decision 초안을 만들어.
+$kb-ingest "40_RAW/260708 - 회의.md"를 근거로 Planning 반영안과 회의에서 실제로 확정된 Decision만 정리해.
 $kb-quality-checks 이 저장소의 전체 결정적 검사를 실행하고 실패 항목을 요약해.
 $kb-audit 전체 audit 결과를 요약해.
 $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액션을 요약해.
@@ -98,22 +99,22 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 | 위치 | 언제 쓰나 |
 |---|---|
 | `00_START_HERE` | 처음 읽을 때, 현재 상태를 파악할 때 |
-| `10_PLANNING` | 왜 만들고, 누구를 위해, 어디까지 할지 정할 때 |
-| `20_TECHNICAL` | 기획을 기술적으로 어떻게 가능하게 할지 정리할 때 |
-| `30_DECISIONS` | 중요한 결정을 후보 또는 기록으로 남길 때 |
+| `10_PLANNING` | 현재 합의된 제품 기준을 확인하고 바꿀 때 |
+| `20_TECHNICAL` | 현재 합의된 기술 기준을 확인하고 바꿀 때 |
+| `30_DECISIONS` | 실제로 내린 중요한 결정과 변경 이력을 확인할 때 |
 | `40_RAW` | 초안, 개인 학습 노트, 회의록, 조사 자료 등 비공식 내용을 기록할 때 |
 | `90_TEMPLATES` | 반복 문서 초안을 만들 때 |
 | `skills` | 변환, 정비, 검사, 배포용 deterministic script를 관리할 때 |
 
 ## Source of Truth
 
-문서끼리 충돌하면 아래 순서를 따릅니다.
+`main`의 Planning·Technical을 현재 기준으로 사용하고, Decision에서 그 이유와 변경
+이력을 확인합니다. 두 계층이 충돌하면 임의로 우선순위를 정하지 말고 문서 반영
+누락이나 Decision 대체 관계를 확인합니다. 해결되지 않으면 기획 판단은
+[Planning Questions](10_PLANNING/99%20-%20Questions.md), 기술 판단은
+[Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
 
-1. `status: selected`인 `30_DECISIONS` 문서
-2. `status: reviewed`인 `10_PLANNING` 및 `20_TECHNICAL` 문서
-3. `status: draft`인 `10_PLANNING`, `20_TECHNICAL`, `30_DECISIONS` 문서
-
-`40_RAW`는 우선순위에 포함하지 않고 근거와 맥락을 확인할 때만 참고합니다. 충돌을 발견하면 임의로 정리하지 말고, 기획 판단은 [Planning Questions](10_PLANNING/99%20-%20Questions.md), 기술 판단은 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
+`40_RAW`는 우선순위에 포함하지 않고 근거와 맥락을 확인할 때만 참고합니다.
 
 ## 원칙
 

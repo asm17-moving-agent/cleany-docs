@@ -1,19 +1,17 @@
 ---
-status: draft
 date: 2026-08-06
 source_refs:
   - "40_RAW/260803 - Gemini Robotics ER 2/00 - README.md"
   - "40_RAW/260803 - Gemini Robotics ER 2/03 - 시스템 아키텍처와 책임 경계.md"
-supersedes:
 ---
 
 # 260806 - Task Planning과 Robot Capability 경계
 
-## 결정할 것
+## 결정
 
 Gemini Robotics ER 2, RuleBasedPlanner, Navigation, VLA-backed Manipulation Skill과
-Safety Control의 최종 호출 경계를 정한다. 이전 `Rule-based VLA 3 Layer` 후보는
-ER 2와 물리 VLA를 구분하지 못하므로 이 초안으로 대체한다.
+Safety Control은 아래 책임 경계를 따른다. 이전 `Rule-based VLA 3 Layer` 후보는
+ER 2와 물리 VLA를 구분하지 못하므로 사용하지 않는다.
 
 ## 현재 합의된 경계
 

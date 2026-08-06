@@ -1,5 +1,4 @@
 ---
-ingest_status: blocked
 cancelled_at: 2026-08-03
 cancel_reason: "파인튜닝을 진행하지 않고 YOLOE 기반 후보를 검토하기로 함"
 ingest_targets:
@@ -75,7 +74,7 @@ source_type: implementation-plan
 - ONNX·TensorRT export와 양자화
 - 모델 registry, 원격 artifact store, W&B와 MLflow
 - RTX 3080 4장·8장을 사용하는 DDP 분산학습
-- 모델의 최종 제품 채택과 기존 KB Decision 상태 변경
+- 모델의 최종 제품 채택과 기존 KB Decision 변경
 
 ## 4. 브랜치와 구현 경계
 

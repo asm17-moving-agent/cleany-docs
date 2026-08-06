@@ -36,10 +36,6 @@ def generate(root: Path, include_tools: bool) -> str:
         groups[folder].append(rel.name)
 
     lines = [
-        "---",
-        "status: draft",
-        "---",
-        "",
         "# File Index",
         "",
         "이 문서는 deterministic script로 생성한 Markdown 파일 색인이다.",

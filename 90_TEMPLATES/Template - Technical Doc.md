@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   -
 related_decisions:

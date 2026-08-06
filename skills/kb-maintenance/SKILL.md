@@ -18,7 +18,7 @@ compatibility: Python 3.11 이상, 외부 패키지 불필요
 |---|---|
 | `scripts/normalize_markdown.py` | Markdown 파일의 LF newline, trailing whitespace, EOF newline을 검사하거나 정리 |
 | `scripts/generate_file_index.py` | 폴더별 Markdown 파일 색인을 생성 |
-| `scripts/metadata_report.py` | YAML frontmatter key를 읽어 metadata report 생성 |
+| `scripts/metadata_report.py` | YAML frontmatter의 날짜와 key 목록을 읽어 metadata report 생성 |
 
 ## Formatting normalize
 

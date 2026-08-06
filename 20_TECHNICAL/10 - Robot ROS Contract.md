@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
 related_decisions:
@@ -12,11 +11,11 @@ related_decisions:
 
 이 문서는 Cleany 상위 소프트웨어가 Gazebo 주행, MuJoCo 조작과 실제 로봇을 같은
 의미로 사용할 수 있도록 robot boundary의 command, state, frame, 시간과 안전
-원칙을 정의하는 초안이다.
+원칙을 정의한다.
 
 4륜 Mecanum base와 `base_link` 기준 `linear.x`, `linear.y`, `angular.z` 지원은
-selected Decision으로 채택됐다. 나머지 표는 의미 경계를 위한 초안이며 정확한 topic,
-QoS, 수치와 frame 이름은 실제 package 구현과 robot description에서 확정한다.
+Decision으로 정했다. 이 문서는 공통 의미 경계를 관리하고, 정확한 topic, QoS,
+수치와 frame 이름은 실제 package 구현과 robot description에서 확정한다.
 
 ## 2. 기획 맥락
 
@@ -68,7 +67,7 @@ create_publisher(Odometry, "odom", ...)
 
 ### 3.3 MVP 핵심 topic 권고안
 
-아래 표 전체는 아직 팀 검토가 필요한 `draft`다.
+아래 표는 Sim과 Real backend가 공유하는 현재 상위 의미 경계다.
 
 | 상대 topic | message type | Publisher | Subscriber | 계약 의미 |
 |---|---|---|---|---|
@@ -214,7 +213,7 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 
 ## 7. 관련 결정
 
-- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 `selected` Decision이다.
+- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 Decision이다.
 - `/cmd_vel`, frame, arm/gripper, sensor naming의 최종 채택은 Technical Decision 또는 팀 검토가 필요하다.
 - 관련 미해결 항목은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 관리한다.
 - 회의 준비 근거는 [[40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비|Docs 검증 및 ROS 2 Contract 회의 준비]]다.

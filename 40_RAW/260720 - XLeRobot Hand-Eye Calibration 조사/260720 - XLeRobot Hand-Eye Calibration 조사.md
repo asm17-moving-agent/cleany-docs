@@ -1,5 +1,4 @@
 ---
-ingest_status: raw
 ingest_targets:
   - technical
   - decision
@@ -155,7 +154,7 @@ Park과 Tsai 중 정확도가 우수한 방법을 최종안으로 사용한다. 
 5. Implementation difficulty와 runtime은 정확도가 동등한 경우에만 보조 기준으로 사용한다.
 6. 두 후보 모두 유효 결과 비율이 95% 미만이거나 특정 seed 의존성이 재현되면 Horaud, Andreff 또는 Daniilidis를 추가 비교한다.
 
-실제 robot의 mm, degree 합격 기준은 시뮬레이션 비교 후 확정한다. 기준 확정 전에는 Park 또는 Tsai를 selected Decision으로 승격하지 않는다.
+실제 robot의 mm, degree 합격 기준은 시뮬레이션 비교 후 확정한다. 기준 확정 전에는 Park 또는 Tsai를 Decision으로 기록하지 않는다.
 
 ## 6. SCRUM-264 산출물
 

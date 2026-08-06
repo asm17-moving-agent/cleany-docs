@@ -1,6 +1,4 @@
 ---
-status: draft
-ingest_status: raw
 sprint:
 date:
 created_by: codex

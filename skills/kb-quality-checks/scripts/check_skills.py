@@ -21,15 +21,16 @@ REQUIRED_SKILLS = [
 
 REQUIRED_SNIPPETS = {
     "kb-ingest": [
-        "Raw 문서를 selected Decision처럼 취급하지 않는다",
-        "사람 검토 없이 Decision을 `selected`로 바꾸지 않는다",
+        "Raw 문서를 공식 지식처럼 취급하지 않는다",
+        "실제 결정이 확인되기 전에는 Decision 문서를 만들지 않는다",
+        "가능한 미결정 사항을 추측해 Questions를 채우지 않는다",
         "검토자와 승인 이력은 GitHub PR에 남긴다.",
     ],
     "kb-review-pack": [
         "$kb-quality-checks",
         "$kb-audit",
         ".codex/prompts",
-        "사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다",
+        "작업 브랜치와 PR의 변경을 `main`의 현재 기준처럼 취급하지 않는다",
     ],
     "kb-quality-checks": [
         "Skill 검사",

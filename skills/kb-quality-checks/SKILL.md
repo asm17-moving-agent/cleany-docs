@@ -31,7 +31,7 @@ compatibility: Python 3.11 이상, uv project 환경 사용, 외부 패키지 �
 | 구조 검사 | `scripts/check_structure.py` | 필수 폴더/파일 존재, 금지 파일 부재 |
 | Formatting 검사 | `scripts/check_formatting.py` | UTF-8, 최종 newline, trailing whitespace, fence 균형 등 |
 | YAML 검사 | `scripts/check_yaml.py` | Markdown frontmatter YAML 기본 문법, 중복 key, tab, quote 오류 |
-| Metadata 검사 | `scripts/check_metadata.py` | Obsidian YAML frontmatter와 필수 key |
+| Metadata 검사 | `scripts/check_metadata.py` | 필수 관계 key와 `status`·`ingest_status` 부재 |
 | 링크 검사 | `scripts/check_links.py` | Markdown 링크와 Obsidian wiki link 대상 존재 |
 | Skill 검사 | `scripts/check_skills.py` | repo skill entrypoint, 필수 skill, deprecated `.codex/prompts` 부재 |
 
@@ -65,5 +65,5 @@ uv run python skills/kb-quality-checks/scripts/check_skills.py .
 
 - 검사 실패를 무시하고 공식 문서를 확정하지 않는다.
 - 검사 실패가 판단을 요구하는 경우 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
-- `status: draft` 문서는 검사 통과 여부와 별개로 사람 검토 전까지 공식 문서가 아니다. 검토자와 승인 이력은 GitHub PR에서 관리한다.
+- 검사 통과는 내용 승인과 별개다. 작업 브랜치의 변경은 사람 검토와 GitHub PR 병합 전까지 `main`의 현재 기준이 아니다.
 - 이 skill은 문서 품질을 확인할 뿐, 기획/기술 결정을 자동으로 확정하지 않는다.

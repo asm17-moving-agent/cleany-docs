@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/"
   - "https://ai.google.dev/gemini-api/docs/robotics-overview"

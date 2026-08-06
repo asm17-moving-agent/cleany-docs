@@ -1,6 +1,4 @@
 ---
-status: draft
-ingest_status: triaged
 source_refs:
   -
 created_by: codex

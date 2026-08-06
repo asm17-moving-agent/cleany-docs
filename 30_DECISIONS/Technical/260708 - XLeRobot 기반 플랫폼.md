@@ -1,10 +1,8 @@
 ---
-status: selected
 date: 2026-07-08
 source_refs:
   - 40_RAW/기획서 원문 요약.md
   - "비공개 Raw 원본: 끌리니 하드웨어 구성 및 부품 목록"
-supersedes:
 ---
 
 # 260708 - XLeRobot 기반 플랫폼
@@ -13,9 +11,9 @@ supersedes:
 
 XLeRobot 전체 조립체를 그대로 채택하지 않고, XLeRobot에서 유지하는 범위를 상부 모듈인 듀얼 매니퓰레이터와 깊이 카메라로 한정한다.
 
-이동 베이스는 별도 selected Decision에 따라 4륜 Mecanum custom base를 사용한다.
-상부 모듈과 이동 베이스를 연결하는 프레임은 별도 Decision의 현재 선택안인 알루미늄
-프로파일을 따른다. 해당 Decision의 status 승격은 PR 검토 뒤 수행한다.
+이동 베이스는 별도 Decision에 따라 4륜 Mecanum custom base를 사용한다.
+상부 모듈과 이동 베이스를 연결하는 프레임은 별도 Decision에서 정한 알루미늄
+프로파일을 따른다.
 
 ## 2. 이유
 
@@ -28,8 +26,8 @@ XLeRobot 전체 조립체를 그대로 채택하지 않고, XLeRobot에서 유�
 
 | 대안 | 선택 결과 또는 선택하지 않은 이유 |
 |---|---|
-| XLeRobot 전체 구성을 그대로 사용한다 | 플랫폼 제약이 있고, 별도 selected Decision인 4륜 Mecanum base와 일치하지 않아 선택하지 않았다. |
-| XLeRobot 상부 모듈과 4륜 Mecanum base를 조합한다 | 듀얼 매니퓰레이터와 깊이 카메라를 유지하면서 이동 베이스를 분리하는 현재 선택안이다. |
+| XLeRobot 전체 구성을 그대로 사용한다 | 플랫폼 제약이 있고, 별도 Decision인 4륜 Mecanum base와 일치하지 않아 선택하지 않았다. |
+| XLeRobot 상부 모듈과 4륜 Mecanum base를 조합한다 | 듀얼 매니퓰레이터와 깊이 카메라를 유지하면서 이동 베이스를 분리하는 선택한 구성이다. |
 | 상부 모듈까지 전부 새로 구성한다 | 현재 검토에서는 XLeRobot의 듀얼 매니퓰레이터와 깊이 카메라를 유지하기로 했으므로 선택하지 않았다. |
 
 ## 4. 가정

@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "[기획서]"
 related_decisions:

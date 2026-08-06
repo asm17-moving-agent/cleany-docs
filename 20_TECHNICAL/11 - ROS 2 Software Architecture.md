@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "20_TECHNICAL/09 - Mission Lifecycle.md"
 related_decisions:

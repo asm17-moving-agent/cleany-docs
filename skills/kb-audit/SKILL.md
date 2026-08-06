@@ -18,7 +18,7 @@ compatibility: Python 3.11 이상, 외부 패키지 불필요
 |---|---|
 | `scripts/review_flags_report.py` | `검토 필요`, `추가 확인 필요`, `placeholder`, `미정` 등 검토 플래그 수집 |
 | `scripts/source_refs_report.py` | Planning/Technical/Decision 문서의 source_refs 상태 점검 |
-| `scripts/decision_inventory.py` | Decision 문서 inventory 생성 |
+| `scripts/decision_inventory.py` | Decision 날짜와 `supersedes`·`superseded_by` inventory 생성 |
 | `scripts/audit_all.py` | 위 리포트를 한 번에 생성 |
 
 ## 전체 audit 실행

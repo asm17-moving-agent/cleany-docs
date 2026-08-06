@@ -38,11 +38,6 @@ def generate(root: Path, include_guides: bool = False) -> str:
                 rows.append((relative_path, line_no, match.group(0), snippet))
 
     lines = [
-        "---",
-        "status: draft",
-        "ingest_status: raw",
-        "---",
-        "",
         "# Review Flags Report",
         "",
         "| 파일 | 줄 | 플래그 | 내용 |",

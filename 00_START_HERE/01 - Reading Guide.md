@@ -1,7 +1,3 @@
----
-status: draft
----
-
 # 읽기 가이드(Reading Guide)
 
 ## 15분 안에 이해하기
@@ -64,6 +60,6 @@ Jira에 복사하지 않고 관련 문서 링크만 연결한다.
 
 ## 외부 공유 전
 
-1. `draft`를 확정 사실처럼 공유하지 않는다.
-2. Decision status와 GitHub PR 승인 이력을 확인한다.
+1. `main` 문서인지 작업 브랜치의 변경안인지 확인한다.
+2. Decision 대체 관계와 GitHub PR 승인 이력을 확인한다.
 3. `$kb-quality-checks`, `$kb-audit`, 필요 시 `$kb-review-pack`을 실행한다.

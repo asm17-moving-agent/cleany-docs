@@ -1,6 +1,6 @@
 ---
 name: kb-review-pack
-description: 끌리니 KB의 사람 검토 준비 패키지를 만든다. 품질 검사, audit 결과, Decision 상태, 미해결 질문, 다음 리뷰 액션을 한 번에 정리할 때 사용한다.
+description: 끌리니 KB의 사람 검토 준비 패키지를 만든다. 품질 검사, audit 결과, Decision 목록·대체 관계, 미해결 질문, 다음 리뷰 액션을 한 번에 정리할 때 사용한다.
 tags:
   - skill
   - review
@@ -17,8 +17,8 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
 
 - `.codex/prompts` custom prompt를 사용하지 않고 repo skill로 리뷰 흐름을 관리한다.
 - `$kb-quality-checks`와 `$kb-audit` 결과를 기반으로 검토 패키지를 만든다.
-- Planning, Technical, Decision, Raw의 상태를 분리해 사람이 판단할 수 있게 정리한다.
-- 문서 내용을 자동 확정하거나 Decision을 `selected`로 승격하지 않는다.
+- Planning, Technical, Decision, Raw의 성격과 작업 브랜치 변경을 분리해 사람이 판단할 수 있게 정리한다.
+- 문서 내용을 자동 확정하거나 실제로 확인되지 않은 Decision을 만들지 않는다.
 
 ## 입력
 
@@ -45,7 +45,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - 결정적 검사 결과
    - Blocking issues
    - 사람 검토 필요 항목
-   - Decision 후보와 draft Decision 상태
+   - Decision 목록·대체 관계와 작업 브랜치의 Decision 변경
    - Planning/Technical `Questions`에서 닫아야 할 질문
    - Jira issue 후보
    - 다음 작업 제안
@@ -63,7 +63,7 @@ Blocking issues
 사람 검토 필요 항목
 - ...
 
-Decision 상태
+Decision 변경·이력
 - ...
 
 다음 리뷰 액션
@@ -72,7 +72,7 @@ Decision 상태
 
 ## 금지 사항
 
-- 사람 검토 없이 `status: reviewed` 또는 `status: selected`로 바꾸지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
+- 작업 브랜치와 PR의 변경을 `main`의 현재 기준처럼 취급하지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 - Raw 문서를 공식 결정처럼 취급하지 않는다.
 - 기획/기술 판단을 임의로 확정하지 않는다.
 - Jira issue 본문에 문서 내용을 복붙하지 않는다.

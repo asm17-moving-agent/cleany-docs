@@ -1,5 +1,4 @@
 ---
-status: selected
 date: 2026-07-14
 source_refs:
   - "40_RAW/기획서 원문 요약.md"

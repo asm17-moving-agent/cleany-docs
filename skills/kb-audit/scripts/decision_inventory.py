@@ -19,15 +19,10 @@ def first_heading(text: str) -> str:
 
 def generate(root: Path) -> str:
     lines = [
-        "---",
-        "status: draft",
-        "ingest_status: raw",
-        "---",
-        "",
         "# Decision Inventory",
         "",
-        "| 파일 | 제목 | status | date |",
-        "|---|---|---|---|",
+        "| 파일 | 제목 | date | supersedes | superseded_by |",
+        "|---|---|---|---|---|",
     ]
     count = 0
     for path in iter_markdown(root):
@@ -37,10 +32,14 @@ def generate(root: Path) -> str:
         text = path.read_text(encoding="utf-8")
         data, _ = parse_frontmatter(text)
         title = first_heading(text).replace("|", "\\|")
-        lines.append(f"| {r} | {title} | {data.get('status', '')} | {data.get('date', '')} |")
+        supersedes = data.get("supersedes", "").replace("|", "\\|")
+        superseded_by = data.get("superseded_by", "").replace("|", "\\|")
+        lines.append(
+            f"| {r} | {title} | {data.get('date', '')} | {supersedes} | {superseded_by} |"
+        )
         count += 1
     if count == 0:
-        lines.append("|  |  |  | Decision 문서 없음 |")
+        lines.append("|  | Decision 문서 없음 |  |  |  |")
     return "\n".join(lines).rstrip() + "\n"
 
 

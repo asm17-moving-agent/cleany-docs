@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "비공개 Raw 원본: 끌리니 하드웨어 구성 및 부품 목록"
 related_decisions:
@@ -15,10 +14,11 @@ related_decisions:
 
 끌리니는 XLeRobot 상부 모듈의 듀얼 매니퓰레이터와 깊이 카메라를 유지하고,
 알루미늄 프로파일 프레임과 4륜 Mecanum 이동 베이스를 결합하는 모바일
-매니퓰레이터다. 알루미늄 프로파일은 현재 팀이 선택한 프레임 방향이며 Decision
-status는 PR 검토 뒤 승격한다.
+매니퓰레이터다. 알루미늄 프로파일은 현재 팀이 선택한 프레임 방향이다.
 
-이 문서는 부품의 역할, 배치 개념, 전원·데이터 연결 관계를 공유하기 위한 `draft` 기술 문서다. 실제 기구 치수, 배선, 전력 정격, 통신 계약 및 실장 위치는 별도 검토가 필요하다.
+이 문서는 부품의 역할, 배치 개념, 전원·데이터 연결 관계에 대한 현재 기술 기준을
+공유한다. 실제 기구 치수, 배선, 전력 정격, 통신 계약 및 실장 위치는 별도 검증이
+필요하다.
 
 | 구성부 | 담당 기능 | 대표 부품 |
 | --- | --- | --- |
@@ -38,7 +38,7 @@ status는 PR 검토 뒤 승격한다.
 
 ## 3. 컴퓨팅·제어부
 
-로봇 내부에서 센서 데이터를 처리하고 ROS 2 기반 자율주행과 매니퓰레이터 제어를 실행하는 중심 연산부다. 메인 엣지 컴퓨팅은 selected Decision에 따라 Jetson Orin NX 16GB를 기준으로 둔다.
+로봇 내부에서 센서 데이터를 처리하고 ROS 2 기반 자율주행과 매니퓰레이터 제어를 실행하는 중심 연산부다. 메인 엣지 컴퓨팅은 관련 Decision에 따라 Jetson Orin NX 16GB를 기준으로 둔다.
 
 | 품목 | 모델·세부사항 | 수량 | 사용 위치 | 역할 |
 | --- | --- | ---: | --- | --- |
@@ -206,7 +206,7 @@ flowchart LR
 
 ## 14. 관련 결정
 
-- [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]: 듀얼 매니퓰레이터와 깊이 카메라를 유지하는 `selected` Decision이다.
-- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]: 4륜 Mecanum custom base를 사용하는 `selected` Decision이다.
-- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]: 메인 엣지 컴퓨팅 장치를 정한 `selected` Decision이다.
-- [[30_DECISIONS/Technical/260715 - 로봇 프레임 구조|로봇 프레임 구조]]: 알루미늄 프로파일 선택 내용을 반영하며 PR 검토 대기 중이다.
+- [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]: 듀얼 매니퓰레이터와 깊이 카메라를 유지한 결정이다.
+- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]: 4륜 Mecanum custom base를 사용한 결정이다.
+- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]: 메인 엣지 컴퓨팅 장치를 정한 결정이다.
+- [[30_DECISIONS/Technical/260715 - 로봇 프레임 구조|로봇 프레임 구조]]: 알루미늄 프로파일을 선택한 결정이다.

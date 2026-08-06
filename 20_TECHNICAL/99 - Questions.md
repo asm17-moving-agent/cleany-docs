@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "20_TECHNICAL/00 - Technical Overview.md"
 related_decisions:

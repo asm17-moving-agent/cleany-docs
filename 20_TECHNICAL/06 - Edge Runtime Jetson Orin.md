@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 related_decisions:

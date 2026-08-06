@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "[기획서]"
 related_decisions:
@@ -47,11 +46,3 @@ related_decisions:
 운영자 문제와 제품 가치는 팀이 선택한 가설이다. 실제 스터디카페 운영자 인터뷰나
 현장 관찰로 검증한 결과는 아직 없다. 분실물 처리 정책과 정확한 MVP 물체 목록도
 열린 질문으로 관리한다.
-
-## 다음 문서
-
-- [[10_PLANNING/01 - Problem and Users|Problem and Users]]
-- [[10_PLANNING/02 - Target Scenario|Target Scenario]]
-- [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]
-- [[10_PLANNING/05 - Success Criteria|Success Criteria]]
-- [[20_TECHNICAL/00 - Technical Overview|Technical Overview]]

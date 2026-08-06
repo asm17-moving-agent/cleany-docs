@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "10_PLANNING/05 - Success Criteria.md"
 related_decisions:

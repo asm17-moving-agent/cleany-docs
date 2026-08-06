@@ -1,9 +1,8 @@
 ---
-status: dropped
 date: 2026-07-08
 source_refs:
   - "40_RAW/기획서 원문 요약.md"
-supersedes:
+superseded_by: "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 ---
 
 # 260708 - Jetson AGX Orin 64GB

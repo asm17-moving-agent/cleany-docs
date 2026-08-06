@@ -1,5 +1,4 @@
 ---
-status: draft
 source_refs:
   - "[ros2_ws/src/cleany_mission_manager/README.md]"
   - "[ros2_ws/src/cleany_mission_manager/cleany_mission_manager/core/manager.py]"

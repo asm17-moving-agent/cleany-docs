@@ -46,15 +46,10 @@ def cell(value: str) -> str:
 
 def generate(root: Path) -> str:
     lines = [
-        "---",
-        "status: draft",
-        "ingest_status: raw",
-        "---",
-        "",
         "# Metadata Report",
         "",
-        "| 파일 | status | ingest_status | date |",
-        "|---|---|---|---|",
+        "| 파일 | date | metadata keys |",
+        "|---|---|---|",
     ]
     for path in iter_markdown(root):
         rel = str(path.relative_to(root)).replace("\\", "/")
@@ -64,9 +59,8 @@ def generate(root: Path) -> str:
             + " | ".join(
                 [
                     cell(rel),
-                    cell(data.get("status", "")),
-                    cell(data.get("ingest_status", "")),
                     cell(data.get("date", "")),
+                    cell(", ".join(sorted(data))),
                 ]
             )
             + " |"
