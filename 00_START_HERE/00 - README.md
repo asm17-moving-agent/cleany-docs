@@ -25,7 +25,7 @@ status: selected
 
 ### 3.1 Raw 작성과 보존
 
-`40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료와 임시 메모를 자유롭게 두는 비공식 작업 공간이다. 독립 문서는 `40_RAW` 루트에 두고, 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둔다. 자료 종류별 고정 분류 폴더는 두지 않는다.
+`40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료와 임시 메모를 자유롭게 두는 비공식 작업 공간이다. 독립 문서는 `40_RAW` 루트에, 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`에 보존하고, 첨부 자료는 해당 묶음의 `assets/`에 둔다. 자료 종류별 고정 분류 폴더는 두지 않는다.
 
 Raw의 내용만으로 프로젝트 결론을 확정하지 않는다. 공식 지식으로 사용할 내용은 Planning·Technical·Decision에 반영하고 GitHub PR에서 검토한다.
 
@@ -65,10 +65,12 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 ### 4.1 새 원본 자료가 들어오면
 
 1. 독립적인 Markdown 초안과 메모는 `40_RAW` 루트에 둔다.
-2. 여러 문서와 첨부 자료가 하나의 작업 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둔다. 첨부 파일은 해당 묶음의 `assets/`에 보존하고 필요하면 `$office-to-markdown`으로 변환한다.
-3. Raw 문서는 최종 결정으로 취급하지 않는다.
-4. 공식 문서에 반영할 후보가 있으면 `$kb-ingest`를 사용한다.
-5. 계층 간 링크는 Planning·Technical → Decision → Raw 순서로만 남긴다. Planning·Technical에는 `related_decisions`, Decision에는 Raw `source_refs`를 사용한다.
+2. 독립 문서의 Office/PDF/이미지 첨부 자료는 `40_RAW/assets/`에 보존한다.
+3. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`에 보존하고, 첨부 파일은 해당 묶음의 `assets/`에 둔다.
+4. 필요한 경우 `$office-to-markdown`으로 Office/PDF 파일을 변환한다.
+5. Raw 문서는 최종 결정으로 취급하지 않는다.
+6. 공식 문서에 반영할 후보가 있으면 `$kb-ingest`를 사용한다.
+7. 계층 간 링크는 Planning·Technical → Decision → Raw 순서로만 남긴다. Planning·Technical에는 `related_decisions`, Decision에는 Raw `source_refs`를 사용한다.
 
 예시 요청:
 
