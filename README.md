@@ -41,10 +41,11 @@
 ### 새 자료를 받았을 때
 
 1. 독립적인 Markdown 초안과 메모는 `40_RAW` 루트에 둡니다.
-2. 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`에 함께 둡니다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않습니다.
-3. Office/PDF 파일이면 `$office-to-markdown`으로 Markdown 변환을 요청합니다.
-4. Planning 또는 Decision으로 반영해야 하면 `$kb-ingest`를 사용합니다.
-5. 반영 후 `source_refs`, `related_decisions`를 갱신합니다.
+2. 독립 문서의 Office/PDF/이미지 첨부 자료는 `40_RAW/assets/`에 둡니다.
+3. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`에 보존하고, 해당 묶음의 첨부 자료는 하위 `assets/`에 둡니다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않습니다.
+4. Office/PDF 파일이면 `$office-to-markdown`으로 Markdown 변환을 요청합니다.
+5. Planning 또는 Decision으로 반영해야 하면 `$kb-ingest`를 사용합니다.
+6. 반영 후 `source_refs`, `related_decisions`를 갱신합니다.
 
 ### 기획 내용을 정리할 때
 

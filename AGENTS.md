@@ -24,7 +24,7 @@
 - 기획 문서와 기술 문서를 섞지 않는다.
 - `30_DECISIONS`는 무엇을 왜 결정했는지 기록한다.
 - `40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료, 임시 메모와 첨부 원본을 두는 비공식 작업 공간이며 최종 결정이 아니다.
-- 독립적인 Raw Markdown은 `40_RAW` 루트에 둔다. 여러 문서와 첨부 자료가 하나의 학습·조사 묶음이면 `40_RAW/YYMMDD - 주제/`로 관리할 수 있다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
+- 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
 - 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning·Technical 문서와 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
 - 초안·검토·채택 상태는 각 문서의 YAML metadata(`status`, `ingest_status`)로 표현한다.
 - 문서 상태는 `draft`, `reviewed`, `selected`, `dropped`를 사용한다. Raw에서 처리 상태가 꼭 필요할 때만 `ingest_status`를 선택적으로 사용한다.
