@@ -13,11 +13,11 @@ related_decisions:
 
 ## 1. 요약
 
-Cleany의 CI는 모든 변경에 같은 최소 검증을 반복해 문서 형식 오류와 ROS 2
+Cleany의 CI는 모든 변경에 같은 최소 검증을 반복해 KB 무결성 오류와 ROS 2
 빌드·단위 테스트 실패를 조기에 발견하는 장치다. CI는 개발자의 로컬 테스트와 실제
 장비 검증을 대체하지 않는다.
 
-현재 `cleany-docs`는 GitHub Actions에서 결정적 문서 품질 검사를 실행한다.
+현재 `cleany-docs`는 GitHub Actions에서 최소 KB 무결성 검사를 실행한다.
 `cleany`의 native ROS 2 빌드·테스트 CI는 별도 PR에서 검토 중이다. 두 CI 모두
 GitHub가 제공하는 일회성 가상 머신인 GitHub-hosted runner를 사용하므로 팀원의
 개인 PC나 Jetson에서 실행되지 않는다.
@@ -54,7 +54,7 @@ flowchart LR
         direction TB
 
         subgraph DOCS["cleany-docs"]
-            DQ["문서 품질 검사<br/>구조 · Markdown · YAML<br/>metadata · 링크 · skill"]
+            DQ["KB 무결성 검사<br/>핵심 구조 · YAML · 상태값<br/>참조 · skill 진입점"]
         end
 
         subgraph ROBOT["cleany"]
@@ -87,14 +87,14 @@ flowchart LR
 
 | 저장소 | 상태 | 실행 환경 | 제한 시간 | 주요 결과 |
 |---|---|---|---|---|
-| `cleany-docs` | `main` 적용 완료 | GitHub-hosted Ubuntu 24.04, Python 3.11 | 5분 | 결정적 KB 품질 검사와 추적 파일 무변경 확인 |
+| `cleany-docs` | `main` 적용 완료 | GitHub-hosted Ubuntu 24.04, Python 3.11 | 5분 | 최소 KB 무결성 검사와 추적 파일 무변경 확인 |
 | `cleany` | [PR #20](https://github.com/asm17-moving-agent/cleany/pull/20) 검토 중 | GitHub-hosted Ubuntu 22.04, ROS 2 Humble, Python 3.10 | 30분 | rosdep 의존성 설치, native build와 전체 colcon test |
 
 `cleany` CI의 최종 workflow 내용은 분리 전
 [GitHub Actions 실행](https://github.com/asm17-moving-agent/cleany/actions/runs/30334523875)에서
 성공했다. PR #20이 병합되기 전에는 적용 완료로 취급하지 않는다.
 
-### 3.3 `cleany-docs` 문서 품질 검사
+### 3.3 `cleany-docs` KB 무결성 검사
 
 실행 조건:
 
@@ -106,19 +106,22 @@ flowchart LR
 
 1. 저장소를 checkout한다.
 2. 고정된 `uv`와 Python 3.11 환경을 준비한다.
-3. `uv sync --locked`로 lockfile과 일치하는 의존성을 준비한다.
-4. 아래 명령으로 KB의 전체 결정적 검사를 실행한다.
+3. 아래 명령으로 lockfile의 경량 `quality` dependency group만 준비해 검사를 실행한다.
 
 ```bash
-uv run python skills/kb-quality-checks/scripts/run_checks.py .
+uv run --locked --only-group quality python skills/kb-quality-checks/scripts/run_checks.py .
 ```
 
-5. `git diff --exit-code`로 검사가 추적 파일을 의도치 않게 변경하지 않았는지
+4. `git diff --exit-code`로 검사가 추적 파일을 의도치 않게 변경하지 않았는지
    확인한다.
 
-검사 대상은 필수 폴더·파일 구조, Markdown formatting, YAML 문법과 metadata,
-내부 링크, repo skill 구조다. 문서의 기술 판단이 옳은지나 사람이 검토했는지는
-자동 판정하지 않는다.
+실패 조건은 핵심 계층과 루트 안내 문서, YAML 문법과 중복 key, 공식 문서의 최소
+`status`, Markdown 링크·이미지와 wiki link·embed, YAML 내부 경로, 발견된 repo
+skill 원본과 Codex entrypoint의 불일치다.
+
+개별 문서·폴더 이름, 공백·줄바꿈·표 정렬 같은 Markdown 스타일, 특정 skill 목록이나
+본문 문구는 강제하지 않는다. 문서의 사실성, 검토 완료 여부와 결정 승인은 사람이
+검토한다.
 
 ### 3.4 `cleany` native ROS 2 검사
 
@@ -148,7 +151,7 @@ Python 3.10과 Makefile 기반 개발 흐름을 따른다. Docker build는 기�
 
 ```mermaid
 flowchart TB
-    L1["1. 문서 결정적 검사<br/>구조 · formatting · YAML · 링크"]:::auto
+    L1["1. KB 무결성 검사<br/>핵심 구조 · YAML · 상태값 · 참조"]:::auto
     L2["2. ROS 2 build · unit test<br/>rosdep · colcon · package test"]:::autoCandidate
     L3["3. Runtime · simulation 통합<br/>launch · topic pub/sub · headless scenario"]:::local
     L4["4. Jetson · 실제 장비<br/>sensor value · motor · encoder · servo feedback"]:::hardware
@@ -169,7 +172,7 @@ flowchart TB
 
 | 검증 대상 | 자동 CI | 수동 또는 별도 통합 검사 | 경계와 이유 |
 |---|---|---|---|
-| KB 구조, Markdown, YAML, metadata, 링크, skill | `cleany-docs` | 내용의 사실성·결정 상태는 사람 검토 | 결정적 형식만 자동 판정 |
+| KB 핵심 구조, YAML, 최소 상태값, 내부 참조, skill 진입점 | `cleany-docs` | 스타일·사실성·결정 승인은 사람 검토 | 공유 가능성을 깨는 무결성만 자동 판정 |
 | ROS package build와 단위 테스트 | `cleany` | 패키지 간 runtime 연결 | 빠르고 반복 가능한 검사를 CI에 포함 |
 | Gazebo 구조·parameter test | `cleany`의 `make test` | 장시간 world 실행과 시나리오 완주 | 단위 수준 구조 검증과 runtime 검증을 분리 |
 | ROS launch와 topic publish/subscribe | 미포함 | 개발 PC의 native ROS 2 환경 | node 간 timing과 실행 상태 확인 필요 |
@@ -189,9 +192,7 @@ CI에 포함되지 않았다는 것은 중요하지 않다는 뜻이 아니다. 
 문서 변경:
 
 ```bash
-uv sync --locked
-uv run python skills/kb-quality-checks/scripts/run_checks.py .
-git diff --exit-code
+uv run --locked --only-group quality python skills/kb-quality-checks/scripts/run_checks.py .
 ```
 
 ROS 2 구현 변경:

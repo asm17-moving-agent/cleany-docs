@@ -52,7 +52,7 @@ Raw에서 Planning 또는 Decision으로 옮길 내용이 보이면 `$kb-ingest`
 
 ### 3.4 검사와 리뷰
 
-문서를 고친 뒤에는 `$kb-quality-checks`를 실행한다. 이 검사는 구조, formatting, YAML metadata, 내부 링크, repo skill 구조를 확인한다.
+문서를 고친 뒤에는 `$kb-quality-checks`를 실행한다. 이 검사는 핵심 구조, YAML, 최소 상태값, 내부 참조와 repo skill 진입점을 확인한다.
 
 검토 준비가 필요하면 `$kb-audit`를 실행한다. 이 리포트는 제품 문서의 `검토 필요`, `추가 확인 필요`, `추가 정의 필요`, Decision inventory, source_refs 상태를 요약한다.
 
@@ -100,7 +100,7 @@ $kb-ingest "40_RAW/260708 - MVP 범위 회의.md"를 근거로 Planning 반영 �
 
 ### 4.4 문서를 고쳤으면
 
-1. `$kb-quality-checks`로 구조, metadata, 링크를 확인한다.
+1. `$kb-quality-checks`로 핵심 구조, YAML, 최소 상태값과 내부 참조를 확인한다.
 2. `$kb-audit`로 검토 플래그와 Decision 상태를 확인한다.
 3. 실패 항목이 기획 판단을 요구하면 임의 수정하지 않고 질문으로 남긴다.
 

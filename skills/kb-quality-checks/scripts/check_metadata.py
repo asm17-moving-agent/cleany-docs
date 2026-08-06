@@ -4,46 +4,20 @@ from __future__ import annotations
 import sys
 
 sys.dont_write_bytecode = True
-from pathlib import Path
 
-from common import frontmatter_block, iter_markdown_files, print_errors, read_text, rel, repo_root_from_args
-
-SKIP_FRONTMATTER = {
-    "README.md",
-    "AGENTS.md",
-    "skills/kb-quality-checks/skill.md",
-}
-
-SKIP_PREFIXES = (
-    "skills/kb-quality-checks/scripts/",
+from common import (
+    iter_markdown_files,
+    load_frontmatter,
+    print_errors,
+    read_text,
+    rel,
+    repo_root_from_args,
 )
 
-COMMON_STATUS_VALUES = {"", "draft", "reviewed", "selected", "dropped"}
-COMMON_INGEST_VALUES = {"", "raw", "triaged", "converted", "reflected", "blocked"}
-
-
-def required_keys_for(path: str) -> list[str]:
-    if path.startswith("10_PLANNING/"):
-        return ["status", "source_refs", "related_decisions"]
-    if path.startswith("20_TECHNICAL/"):
-        return ["status", "source_refs", "related_decisions"]
-    if path.startswith("00_START_HERE/"):
-        return ["status"]
-    if path == "30_DECISIONS/00 - Decision Index.md":
-        return ["status"]
-    if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
-        return ["status", "date", "source_refs"]
-    if path.startswith("40_RAW/"):
-        return []
-    if path.startswith("90_TEMPLATES/"):
-        if path.endswith(("Template - Planning Doc.md", "Template - Technical Doc.md")):
-            return ["status", "source_refs", "related_decisions"]
-        if path.endswith("Template - Decision.md"):
-            return ["status", "date", "source_refs"]
-        return ["ingest_status"]
-    if (path.startswith("skills/") or path.startswith(".agents/skills/")) and path.endswith("/SKILL.md"):
-        return ["name", "description", "tags"]
-    return []
+OFFICIAL_PREFIXES = ("10_PLANNING/", "20_TECHNICAL/", "30_DECISIONS/")
+STATUS_VALUES = {"draft", "reviewed", "selected", "dropped"}
+INGEST_STATUS_VALUES = {"raw", "triaged", "converted", "reflected", "blocked"}
+LIST_FIELDS = ("source_refs", "related_decisions")
 
 
 def main() -> int:
@@ -52,32 +26,47 @@ def main() -> int:
 
     for path in iter_markdown_files(root):
         r = rel(path, root)
-        if r in SKIP_FRONTMATTER or any(r.startswith(prefix) for prefix in SKIP_PREFIXES):
-            continue
-
-        required = required_keys_for(r)
-        if not required:
-            continue
-
         text, err = read_text(path)
         if err:
             errors.append(f"{r}: {err}")
             continue
         assert text is not None
 
-        data, _, fm_err = frontmatter_block(text)
+        data, fm_err = load_frontmatter(text)
         if fm_err:
             errors.append(f"{r}: {fm_err}")
             continue
 
-        for key in required:
-            if key not in data:
-                errors.append(f"{r}: frontmatter 필수 key 누락: {key}")
+        is_official = r.startswith(OFFICIAL_PREFIXES)
+        if data is None:
+            if is_official:
+                errors.append(f"{r}: 공식 문서에 status frontmatter가 없음")
+            continue
 
-        if "status" in data and data.get("status", "") not in COMMON_STATUS_VALUES:
+        if is_official and "status" not in data:
+            errors.append(f"{r}: 공식 문서의 frontmatter에 status가 없음")
+
+        if "status" in data and data["status"] not in STATUS_VALUES:
             errors.append(f"{r}: 허용되지 않은 status 값: {data.get('status')}")
-        if "ingest_status" in data and data.get("ingest_status", "") not in COMMON_INGEST_VALUES:
+        if "ingest_status" in data and data["ingest_status"] not in INGEST_STATUS_VALUES:
             errors.append(f"{r}: 허용되지 않은 ingest_status 값: {data.get('ingest_status')}")
+
+        for key in LIST_FIELDS:
+            value = data.get(key)
+            if value is not None and not isinstance(value, list):
+                errors.append(f"{r}: {key}는 list여야 함")
+            elif isinstance(value, list) and any(
+                item is not None and not isinstance(item, str) for item in value
+            ):
+                errors.append(f"{r}: {key} 항목은 문자열이어야 함")
+
+        source_file = data.get("source_file")
+        if source_file is not None and not isinstance(source_file, str):
+            errors.append(f"{r}: source_file은 문자열이어야 함")
+
+        supersedes = data.get("supersedes")
+        if supersedes is not None and not isinstance(supersedes, (str, list)):
+            errors.append(f"{r}: supersedes는 문자열 또는 list여야 함")
 
     return print_errors("metadata", errors)
 

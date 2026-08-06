@@ -3,7 +3,7 @@ status: selected
 date: 2026-07-08
 source_refs:
   - 40_RAW/기획서 원문 요약.md
-  - 40_RAW/지출신청서_관리.md
+  - "[지출신청서 관리 원본: 로컬 Inbox]"
 supersedes:
 ---
 

@@ -4,6 +4,8 @@ import os
 import re
 import sys
 
+import yaml
+
 sys.dont_write_bytecode = True
 from pathlib import Path
 from typing import Iterable
@@ -16,7 +18,6 @@ EXCLUDED_DIRS = {
     "__pycache__",
     ".obsidian",
     ".codex",
-    "50_WORKING",
 }
 
 
@@ -45,34 +46,36 @@ def read_text(path: Path) -> tuple[str | None, str | None]:
         return None, f"UTF-8로 읽을 수 없음: {exc}"
 
 
-def frontmatter_block(text: str) -> tuple[dict[str, str], list[str], str | None]:
-    """Return (top-level key/value map, raw lines, error). Simple YAML frontmatter parser."""
+def frontmatter_text(text: str) -> tuple[str | None, str | None]:
+    """Return the YAML frontmatter text and a delimiter error, if any."""
     if not text.startswith("---\n") and not text.startswith("---\r\n"):
-        return {}, [], "YAML frontmatter가 파일 시작에 없음"
+        if text.startswith("---"):
+            return None, "YAML frontmatter 시작 구분자는 단독 '---' 라인이어야 함"
+        return None, None
 
     lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
-        return {}, [], "YAML frontmatter 시작 구분자 오류"
-
-    end_idx = None
     for idx in range(1, len(lines)):
         if lines[idx].strip() == "---":
-            end_idx = idx
-            break
-    if end_idx is None:
-        return {}, [], "YAML frontmatter 종료 구분자 없음"
+            return "\n".join(lines[1:idx]) + "\n", None
+    return None, "YAML frontmatter 종료 구분자 없음"
 
-    raw = lines[1:end_idx]
-    data: dict[str, str] = {}
-    for line in raw:
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        if line.startswith(" ") or line.startswith("-"):
-            continue
-        if ":" in line:
-            key, value = line.split(":", 1)
-            data[key.strip()] = value.strip().strip('"').strip("'")
-    return data, raw, None
+
+def load_frontmatter(text: str) -> tuple[dict[str, object] | None, str | None]:
+    """Parse YAML frontmatter as a top-level mapping."""
+    raw, error = frontmatter_text(text)
+    if error or raw is None:
+        return None, error
+
+    try:
+        data = yaml.safe_load(raw)
+    except yaml.YAMLError as exc:
+        return None, f"YAML 문법 오류: {exc}"
+
+    if data is None:
+        return {}, None
+    if not isinstance(data, dict):
+        return None, "YAML frontmatter 최상위 값은 mapping이어야 함"
+    return data, None
 
 
 def strip_fenced_code(lines: list[str]) -> list[tuple[int, str]]:
