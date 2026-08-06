@@ -25,7 +25,7 @@ base를 결합한 모바일 매니퓰레이터다. 이 문서는 로봇의 capab
 | Gripper | 물체 접촉·파지·해제 | 물체 손상과 파지력 제한 필요 |
 | RGB-D / Arm Camera | 장면·근접 관찰과 작업 전후 기록 | 의미 판단은 Perception·Planner가 담당 |
 | LiDAR / IMU / Encoder | 주행 관측과 상태 추정 | Mission 판단을 수행하지 않음 |
-| Jetson Orin NX | ROS 2, sensor, adapter와 로컬 guard 실행 | 클라우드 ER 2 추론 자체는 수행하지 않음 |
+| Jetson Orin NX | ROS 2, sensor, adapter와 로컬 실행 검증 | 클라우드 ER 2 추론 자체는 수행하지 않음 |
 
 ## 플랫폼 선택의 의미
 

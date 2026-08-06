@@ -14,7 +14,7 @@ supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 ## 2. 이유
 
 - 프로젝트 검토 시점의 메모리 가격 상승으로 AGX Orin 64GB의 조달 비용 부담이 커졌다.
-- ROS 2, sensor 처리, 로컬 Guard와 robot adapter를 로봇에서 실행하는 방향은 유지한다.
+- ROS 2, sensor 처리, 로컬 실행 검증과 robot adapter를 로봇에서 실행하는 방향은 유지한다.
 - Orin NX 16GB의 base software stack은 JetPack 6.2를 사용한다.
 - ROS 2 Humble을 로봇 엣지의 ROS 2 배포판으로 사용한다.
 - 실제 AI 모델과 ROS 2 workload가 16GB 메모리에서 목표 성능을 만족하는지는 별도 benchmark로 검증한다.
@@ -29,7 +29,7 @@ supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 
 ## 4. 가정
 
-- ROS 2, sensor 처리, Navigation, 로컬 Perception·VLA adapter와 안전 Guard는 Orin에서 실행한다.
+- ROS 2, sensor 처리, Navigation, 로컬 Perception·VLA adapter와 실행 검증은 Orin에서 수행한다.
 - ER 2 같은 cloud Planner를 사용해도 고주기 제어와 안전 정지는 Orin에 남긴다.
 - 실제 로컬 AI workload와 node별 memory budget은 후보 adapter를 정한 뒤 측정한다.
 - 정확한 carrier board, storage, power mode와 cooling 구성은 추가 확인한다.

@@ -13,5 +13,4 @@
 | VLA | Vision-Language-Action. 영상·언어 입력을 로봇의 물리 action과 연결하는 learned policy |
 | Robot Capability | Navigation, Observation, Manipulation처럼 로봇이 제공하는 목표 지향 기능의 중립적 상위 용어 |
 | Manipulation Skill | 좌석 도착 후 arm·gripper로 수행하는 high-level 물리 작업. 내부에 VLA policy를 포함할 수 있음 |
-| Local Guard | Planner·VLA 출력의 schema, 상태, workspace, collision과 limit을 실행 전에 검증하는 로컬 경계 |
 | Safe stop / Emergency stop | Safe stop은 timeout·fault·로컬 위험에서 동작을 안전 상태로 전환하는 제어 경로이고, Emergency stop은 AI와 일반 ROS 실행보다 우선해 구동을 차단하는 물리적 경로 |

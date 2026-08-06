@@ -22,6 +22,7 @@ related_decisions:
 | ER 2, 로컬 VLM과 detector 후보를 어떤 실험 결과로 최종 선택할 것인가? | [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>), [Edge Runtime](<06 - Edge Runtime Jetson Orin.md>) |
 | ER 2 일반 API와 Streaming을 각각 어느 단계에 사용하고 cloud 장애 시 미션을 어떻게 끝낼 것인가? | [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>), [Edge Runtime](<06 - Edge Runtime Jetson Orin.md>) |
 | 작업 후 재관찰을 Mission lifecycle과 ROS interface에 어떻게 추가할 것인가? | [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>), [Mission Lifecycle](<09 - Mission Lifecycle.md>) |
+| Manipulation 실행 중 물체 낙하·전도와 예상 밖 장면 변화를 어떤 local signal로 감지하고 언제 동작을 중단·재관찰할 것인가? | [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>), [Safety and Risk](<08 - Safety and Risk.md>), [Verification and Simulation Strategy](<13 - Verification and Simulation Strategy.md>) |
 | 사람 존재·접근 시 감지 거리, 정지, 재개와 운영자 승인 정책은 무엇인가? | [Safety and Risk](<08 - Safety and Risk.md>) |
 | base·arm의 속도·힘·workspace·timeout과 e-stop 우선순위를 어떤 값과 계층에서 강제할 것인가? | [Safety and Risk](<08 - Safety and Risk.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>) |
 | 좌석 ID→접근 pose mapping 형식과 책상 조작에 적합한 도착 조건은 무엇인가? | [Navigation and Mapping](<05 - Navigation and Mapping.md>) |

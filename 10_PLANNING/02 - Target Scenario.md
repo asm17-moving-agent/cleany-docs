@@ -13,6 +13,31 @@ related_decisions:
 좌석으로 이동한다. 로봇은 작업 전후 책상 상태를 관찰하고, 책상 위 여러 물체를
 정한 정책과 허용된 동작 안에서 처리한 뒤 대기 위치로 복귀한다.
 
+## 시나리오 흐름
+
+```mermaid
+flowchart LR
+    request["좌석 선택<br/>미션 요청"]
+    navigate["대상 좌석으로<br/>자율 이동"]
+    before["작업 전<br/>장면 관찰"]
+    decide["대상 의미·처리 가능 여부<br/>다음 순서 판단"]
+    execute["허용된 동작<br/>하나씩 실행"]
+    verify["실행 결과<br/>재관찰"]
+    record["보류·미처리<br/>결과에 기록"]
+    after["작업 후<br/>장면 관찰"]
+    home["대기 위치로<br/>복귀"]
+    report["전후 관찰·처리 결과<br/>Dashboard 전달"]
+
+    request --> navigate --> before --> decide
+    decide -->|처리 허용| execute --> verify
+    verify -->|다음 대상| decide
+    decide -->|보류·실행 불가| record --> decide
+    decide -->|모든 대상 확인| after --> home --> report
+```
+
+물체별 실행은 한 번에 끝나는 일괄 동작이 아니라 판단·실행·재관찰을 반복하는
+폐루프다. 분실물이나 불확실한 물체는 정책을 추측해 처리하지 않고 결과에 남긴다.
+
 ## 기본 시나리오
 
 1. 운영자가 Dashboard에서 대상 좌석을 선택해 미션을 요청한다.

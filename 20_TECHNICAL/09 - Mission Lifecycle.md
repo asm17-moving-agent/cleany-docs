@@ -4,6 +4,7 @@ source_refs:
   - "[ros2_ws/src/cleany_mission_manager/cleany_mission_manager/core/manager.py]"
 related_decisions:
   - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
+  - "30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md"
 ---
 
 # Mission Lifecycle
@@ -16,20 +17,58 @@ state를 직접 바꾸지 않는다.
 
 ## 목표 제품 흐름
 
-```text
-대기
-  → 좌석 미션 수락
-  → 대상 좌석 이동
-  → 작업 전 관찰
-  → 책상 작업 계획
-  → Manipulation 실행·부분 결과
-  → 작업 후 관찰
-  → 대기 위치 복귀
-  → 전후 결과 보고
-  → 대기
+```mermaid
+sequenceDiagram
+    participant UI as 외부 시스템
+    participant Mission as Mission Manager
+    participant Nav as Navigator
+    participant Perception
+    participant Planner as Task Planner
+    participant Capability as Robot Capability
+
+    UI->>Mission: 좌석 선택·Mission Request
+    Mission->>Nav: 대상 좌석 이동
+    Nav-->>Mission: 도착 결과
+    Mission->>Perception: 작업 전 관찰
+    Perception-->>Mission: Scene State
+
+    loop 모든 대상 확인까지
+        Mission->>Planner: Mission Goal + Scene + 실행 결과
+        Planner-->>Mission: 다음 Task / Tool Proposal
+        Mission->>Mission: 상태·허용 Capability·인자 검증
+        alt 실행 허용
+            Mission->>Capability: 검증된 요청 실행
+            Capability-->>Mission: success / failed / blocked
+            Mission->>Perception: 결과 재관찰
+            Perception-->>Mission: Updated Scene
+        else 보류·실행 불가
+            Mission->>Mission: 차단 이유 기록
+        end
+    end
+
+    Mission->>Perception: 작업 후 관찰
+    Perception-->>Mission: After Observation
+    Mission->>Nav: 대기 위치 복귀
+    Nav-->>Mission: 복귀 결과
+    Mission-->>UI: 전후 관찰·부분 실패·최종 상태
 ```
 
 실패·차단·취소는 어느 단계에서든 보고 가능한 종료 경로로 연결되어야 한다.
+
+## 준정적 장면과 행동 checkpoint
+
+책상 도착 뒤의 작업 구역에는 사람이나 외부 물체가 개입하지 않는다고 가정하지만,
+로봇 행동이 장면을 바꿀 수 있다. Mission Manager는 다음 경계를 소유한다.
+
+1. 작업 전 Scene으로 Planner를 최초 호출한다.
+2. Planner가 제안한 high-level 행동 하나만 검증·실행한다.
+3. 행동이 success·failed·blocked로 끝날 때마다 결과를 기록하고 Scene을 재관찰한다.
+4. 실행 결과와 최신 Scene으로 Planner를 다시 호출한다.
+5. Planner가 완료를 제안하고 최종 관찰이 일치하면 책상 작업을 종료한다.
+
+고정 시간 주기로 VLM을 호출하거나 실행 중 trajectory를 새 proposal로 교체하지
+않는다. 물체 낙하·전도 같은 즉시 변화는 Capability가 동작을 종료·차단하고,
+Mission Manager가 이후 재관찰과 재계획을 시작한다.
 
 ## 현재 구현과 차이
 

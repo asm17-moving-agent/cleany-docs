@@ -21,9 +21,9 @@ Scene State는 최소한 다음 의미를 제공해야 한다.
 |---|---|---|
 | 관찰 ID·시점·camera frame | Mission·Logger | 작업 전후 관찰 구분 |
 | object ID와 image region | Planner·Segmentation | 장면 내 대상 식별 |
-| 의미 후보와 신뢰 정보 | Planner·Guard | 쓰레기·분실물 후보·불확실 구분 |
+| 의미 후보와 신뢰 정보 | Planner·Mission Manager | 쓰레기·분실물 후보·불확실 구분 |
 | mask 또는 object extent | 3D Estimation·Manipulation | 물체 영역과 배경 분리 |
-| base 기준 위치·품질 | Manipulation Guard | 접근 가능성·좌표 유효성 확인 |
+| base 기준 위치·품질 | Manipulation Capability·Robot backend | 접근 가능성·좌표 유효성 확인 |
 | 처리 가능 여부와 이유 | Planner·Reporter | 실행·skip·실패 구분 |
 
 정확한 ROS message와 schema는 구현 시 code·package README에서 관리한다.
@@ -50,11 +50,13 @@ RGB image
 - Planner가 낸 의미 판단을 최종 좌표·grasp 가능성으로 사용하지 않는다.
 - 장면이 바뀌면 오래된 mask·depth·object ID를 재사용하지 않는다.
 
-## 작업 전후 관찰
+## 작업 전후와 행동 checkpoint 관찰
 
 작업 전 관찰은 대상과 초기 상태를, 작업 후 관찰은 실제 변화와 남은 대상을
 증명한다. 두 관찰은 Dashboard 결과와 Planner 폐루프에서 같은 ID 체계로 연결되어야
-한다. 현재 Mission Manager 구현에는 작업 후 재관찰 단계가 없어 추가 통합이 필요하다.
+한다. 각 high-level 행동의 success·failed·blocked 뒤에도 최신 Scene을 생성해 다음
+VLM 판단의 checkpoint로 사용한다. 현재 Mission Manager 구현에는 작업 후·행동별
+재관찰 단계가 없어 추가 통합이 필요하다.
 
 ## 모델 평가 관점
 

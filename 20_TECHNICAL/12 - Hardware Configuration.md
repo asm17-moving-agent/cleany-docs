@@ -22,7 +22,7 @@ related_decisions:
 
 | 구성부 | 담당 기능 | 대표 부품 |
 | --- | --- | --- |
-| 컴퓨팅·제어부 | ROS 2, Nav2, 센서 처리, 로컬 Guard·VLA adapter | Jetson Orin NX 16GB, USB 3.0 hub |
+| 컴퓨팅·제어부 | ROS 2, Nav2, 센서 처리, 로컬 실행 검증·VLA adapter | Jetson Orin NX 16GB, USB 3.0 hub |
 | 인지·센서부 | 주변 환경과 작업 대상 인식, 거리·위치 추정 | RealSense D435, RPLIDAR A1M8, 매니퓰레이터 카메라 |
 | 모바일 베이스 | 전후·좌우 이동, 제자리 회전, odometry 생성 | Mecanum wheel, DC gear motor, Cytron MDD20A |
 | 작업용 매니퓰레이터 | 쓰레기 접근, 파지, 운반, 투입 | Feetech STS3215, STS3250 |
@@ -42,7 +42,7 @@ related_decisions:
 
 | 품목 | 모델·세부사항 | 수량 | 사용 위치 | 역할 |
 | --- | --- | ---: | --- | --- |
-| 엣지 AI 개발 플랫폼 | Seeed reComputer J4012, Jetson Orin NX 16GB, 128GB NVMe SSD | 1대 | 로봇 내부 메인 컴퓨팅부 | RGB-D·LiDAR 처리, ROS 2·Nav2, 로컬 Guard와 VLA·Capability adapter 실행 |
+| 엣지 AI 개발 플랫폼 | Seeed reComputer J4012, Jetson Orin NX 16GB, 128GB NVMe SSD | 1대 | 로봇 내부 메인 컴퓨팅부 | RGB-D·LiDAR 처리, ROS 2·Nav2, 로컬 실행 검증과 VLA·Capability adapter 실행 |
 | USB 3.0 hub | NEXT-704U3, 4포트, 유·무전원 | 1개 | Jetson USB 확장부 | RGB-D 카메라, LiDAR, 서보 통신 보드 등 다수 USB 장치 연결 |
 
 ## 4. 인지·센서부
