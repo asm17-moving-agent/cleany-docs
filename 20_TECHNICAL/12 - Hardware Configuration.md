@@ -6,19 +6,23 @@ related_decisions:
   - "30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md"
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
   - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
+  - "30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md"
 ---
 
 # 하드웨어 구성(Hardware Configuration)
 
 ## 1. 요약
 
-끌리니는 XLeRobot 상부 모듈의 듀얼 매니퓰레이터와 깊이 카메라를 유지하고, 알루미늄 프로파일 기반 트롤리 프레임 및 4륜 Mecanum 이동 베이스를 결합하는 모바일 매니퓰레이터를 예비 구성으로 둔다.
+끌리니는 XLeRobot 상부 모듈의 듀얼 매니퓰레이터와 깊이 카메라를 유지하고,
+알루미늄 프로파일 프레임과 4륜 Mecanum 이동 베이스를 결합하는 모바일
+매니퓰레이터다. 알루미늄 프로파일은 현재 팀이 선택한 프레임 방향이며 Decision
+status는 PR 검토 뒤 승격한다.
 
 이 문서는 부품의 역할, 배치 개념, 전원·데이터 연결 관계를 공유하기 위한 `draft` 기술 문서다. 실제 기구 치수, 배선, 전력 정격, 통신 계약 및 실장 위치는 별도 검토가 필요하다.
 
 | 구성부 | 담당 기능 | 대표 부품 |
 | --- | --- | --- |
-| 컴퓨팅·제어부 | ROS 2, Nav2, 센서 처리, 객체 인식, 경량 VLA 추론 | Jetson Orin NX 16GB, USB 3.0 hub |
+| 컴퓨팅·제어부 | ROS 2, Nav2, 센서 처리, 로컬 Guard·VLA adapter | Jetson Orin NX 16GB, USB 3.0 hub |
 | 인지·센서부 | 주변 환경과 작업 대상 인식, 거리·위치 추정 | RealSense D435, RPLIDAR A1M8, 매니퓰레이터 카메라 |
 | 모바일 베이스 | 전후·좌우 이동, 제자리 회전, odometry 생성 | Mecanum wheel, DC gear motor, Cytron MDD20A |
 | 작업용 매니퓰레이터 | 쓰레기 접근, 파지, 운반, 투입 | Feetech STS3215, STS3250 |
@@ -38,7 +42,7 @@ related_decisions:
 
 | 품목 | 모델·세부사항 | 수량 | 사용 위치 | 역할 |
 | --- | --- | ---: | --- | --- |
-| 엣지 AI 개발 플랫폼 | Seeed reComputer J4012, Jetson Orin NX 16GB, 128GB NVMe SSD | 1대 | 로봇 내부 메인 컴퓨팅부 | RGB-D·LiDAR 처리, ROS 2·Nav2 실행, 객체 탐지와 경량 VLA 추론 |
+| 엣지 AI 개발 플랫폼 | Seeed reComputer J4012, Jetson Orin NX 16GB, 128GB NVMe SSD | 1대 | 로봇 내부 메인 컴퓨팅부 | RGB-D·LiDAR 처리, ROS 2·Nav2, 로컬 Guard와 VLA·Capability adapter 실행 |
 | USB 3.0 hub | NEXT-704U3, 4포트, 유·무전원 | 1개 | Jetson USB 확장부 | RGB-D 카메라, LiDAR, 서보 통신 보드 등 다수 USB 장치 연결 |
 
 ## 4. 인지·센서부
@@ -174,7 +178,7 @@ flowchart LR
     end
 
     subgraph runtime["로봇 런타임"]
-        J["Jetson Orin NX<br/>ROS 2 · Nav2 · AI"]
+        J["Jetson Orin NX<br/>ROS 2 · Nav2 · Local AI Adapter"]
     end
 
     subgraph actuators["구동 장치"]
@@ -205,3 +209,4 @@ flowchart LR
 - [[30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼|XLeRobot 기반 플랫폼]]: 듀얼 매니퓰레이터와 깊이 카메라를 유지하는 `selected` Decision이다.
 - [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]: 4륜 Mecanum custom base를 사용하는 `selected` Decision이다.
 - [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]: 메인 엣지 컴퓨팅 장치를 정한 `selected` Decision이다.
+- [[30_DECISIONS/Technical/260715 - 로봇 프레임 구조|로봇 프레임 구조]]: 알루미늄 프로파일 선택 내용을 반영하며 PR 검토 대기 중이다.

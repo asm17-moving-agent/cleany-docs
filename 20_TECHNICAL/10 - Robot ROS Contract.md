@@ -2,7 +2,6 @@
 status: draft
 source_refs:
   - "40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
-  - "40_RAW/지출신청서_관리.md"
 related_decisions:
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
 ---
@@ -11,15 +10,23 @@ related_decisions:
 
 ## 1. 요약
 
-이 문서는 Cleany 상위 소프트웨어가 MuJoCo simulation과 실제 로봇을 같은 방식으로 사용할 수 있도록 로봇 경계의 ROS 2 topic, message type, frame, QoS, 시간 및 안전 의미를 정의하는 초안이다.
+이 문서는 Cleany 상위 소프트웨어가 Gazebo 주행, MuJoCo 조작과 실제 로봇을 같은
+의미로 사용할 수 있도록 robot boundary의 command, state, frame, 시간과 안전
+원칙을 정의하는 초안이다.
 
-4륜 Mecanum base와 `base_link` 기준 `linear.x`, `linear.y`, `angular.z` 지원은 selected Decision으로 채택됐다. 그 밖의 MVP 핵심 계약은 구현과 팀 검토를 위한 권고안이며, 실제 wheel geometry와 센서 구성이 확인되기 전까지 수치와 세부 frame 이름을 확정하지 않는다.
+4륜 Mecanum base와 `base_link` 기준 `linear.x`, `linear.y`, `angular.z` 지원은
+selected Decision으로 채택됐다. 나머지 표는 의미 경계를 위한 초안이며 정확한 topic,
+QoS, 수치와 frame 이름은 실제 package 구현과 robot description에서 확정한다.
 
 ## 2. 기획 맥락
 
-Cleany는 같은 Mission Manager, Navigator, Perception, Planner, Skill Executor를 유지하면서 하위 robot backend만 Sim 또는 Real로 교체하는 구조가 필요하다. 상위 모듈은 MuJoCo 내부 actuator나 실제 motor driver를 직접 알지 않고, 이 문서의 공통 ROS 2 계약에만 의존한다.
+Cleany는 같은 Mission Manager, Navigator, Perception, Planner와 Skill Executor를
+유지하면서 하위 backend를 Gazebo, MuJoCo 또는 Real로 교체하는 구조가 필요하다.
+상위 모듈은 simulation actuator나 실제 motor driver를 직접 알지 않고 공통 의미
+계약에만 의존한다.
 
-1차 MVP는 사전에 정한 소수의 쓰레기 물체를 인식·분류·집기하는 흐름을 우선한다. 분실물 후보와 저신뢰 물체는 조작하지 않는다. 자율주행, RGB-D, arm/gripper의 현장 시연 범위는 별도 검토가 필요하다.
+Navigation contract는 주로 Gazebo·Real base 사이를, manipulation contract는
+MuJoCo·Real arm 사이를 연결한다. 분실물 후보의 물리 행동은 이 문서에서 정하지 않는다.
 
 ## 3. 기술 개념
 
@@ -154,8 +161,7 @@ map
 
 ### 3.8 Arm / Gripper 계약 후보
 
-- 현재 `cleany_mujoco_sim`의 private `~/joint_cmd`는 qpos를 직접 바꾸는 simulation test hook으로만 유지한다.
-- private test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
+- simulation 전용 qpos·joint test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
 - arm 공통 계약은 ROS 표준 `control_msgs/action/FollowJointTrajectory` 사용을 우선 검토한다.
 - gripper 공통 계약은 `control_msgs/action/GripperCommand` 또는 실제 gripper driver가 제공하는 표준 호환 action을 검토한다.
 - MoveIt 또는 Skill Executor가 표준 action을 호출하고, Sim/Real controller가 같은 joint 의미를 구현하는 구조를 목표로 한다.
@@ -178,7 +184,8 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 | 구성요소 | 책임 | 경계 |
 |---|---|---|
 | Navigator/Nav2 | 목적지 해석, 경로 계획, base 속도 생성 | actuator와 motor protocol을 직접 다루지 않음 |
-| Sim base backend | 공통 명령을 MuJoCo actuator로 변환하고 상태 발행 | 실제 hardware protocol을 포함하지 않음 |
+| Gazebo base backend | 공통 명령을 simulation base로 변환하고 상태 발행 | 실제 hardware protocol을 포함하지 않음 |
+| MuJoCo manipulation backend | 공통 arm·gripper 의미를 simulation actuator로 변환 | Navigation과 실제 hardware protocol을 포함하지 않음 |
 | Real base backend | 공통 명령을 wheel target으로 변환하고 MCU feedback을 ROS 상태로 발행 | mission과 navigation 판단을 수행하지 않음 |
 | Mentor-supported MCU | encoder feedback 수집, wheel velocity 제어와 MDD20A PWM/DIR 출력 | ROS 상위 계약과 mission 판단을 소유하지 않음 |
 | Robot description | joint/link 이름과 정적·관절 TF 제공 | 동적 odometry를 소유하지 않음 |

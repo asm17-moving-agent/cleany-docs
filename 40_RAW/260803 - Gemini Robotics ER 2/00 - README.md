@@ -4,76 +4,67 @@ ingest_targets:
   - technical
   - decision
 decision_candidates:
-  - "Gemini Robotics ER 2 기반 책상 정리 로봇 아키텍처"
+  - "Gemini Robotics ER 2와 Robot Capability의 책임 경계"
 date: 2026-08-03
-source_type: ai-conversation-answer
-source_title: "브랜치 · 브랜치 · Gemini Robotics ER 2"
+source_type: official-docs-and-project-analysis
+source_title: "Gemini Robotics ER 2 공식 발표·API 문서·모델 카드"
 ---
 
 # 260803 - Gemini Robotics ER 2
 
-## 출처
+## 공식 출처
 
-- [ChatGPT 공유 문서: Gemini Robotics ER 2](https://chatgpt.com/share/6a6f8bd0-8ab8-83ee-bee5-081c013dd3bc)
+- [Google DeepMind: Gemini Robotics 2 발표](https://deepmind.google/blog/gemini-robotics-2-brings-whole-body-intelligence-to-robots/)
+- [Google: Introducing Gemini Robotics ER 2](https://blog.google/innovation-and-ai/models-and-research/google-deepmind/gemini-robotics-er-2/)
+- [Gemini API Robotics 문서](https://ai.google.dev/gemini-api/docs/robotics-overview)
+- [Gemini Robotics ER 2 Model Card](https://deepmind.google/models/model-cards/gemini-robotics-er-2/)
 
-## 1. 문서화 기준
+공식 발표일은 미국 기준 2026년 7월 30일이며 한국 시간으로는 7월 31일이다.
+이 묶음은 위 공식 자료와 Cleany 적용 검토를 분리해 기록한다.
 
-이 문서 묶음은 아직 프로젝트의 확정 기술 결정이 아니다.
+## 확인된 사실
 
-- `ingest_status: raw`이며 사람 검토 전이다.
-- 공유 답변 외의 독립적인 사실 검증은 수행하지 않았다.
-- 프리뷰 API 이름·필드·가격·성능 수치는 공식 문서 재확인이 필요하다.
-- ER 2의 확률적 출력은 로봇 실행의 유일한 안전 근거로 취급하지 않는다.
+- ER 2는 Gemini 3.5 Flash 기반의 embodied reasoning VLM이다.
+- 텍스트·이미지·비디오·오디오를 입력으로 받고 텍스트·함수 호출을 출력한다.
+- 공간 추론, 비디오 진행도·성공 탐지, 다단계 tool orchestration을 지원한다.
+- `gemini-robotics-er-2-preview`와 Live API용
+  `gemini-robotics-er-2-streaming-preview`가 제공된다.
+- ER 2는 motor action을 직접 내는 VLA가 아니라, 하위 VLA나 Navigation API 같은
+  개발자 제공 도구를 호출하는 고수준 에이전트다.
+- Gemini Robotics 2와 On-Device 2 VLA는 공개 API가 아니라 early-access 대상이다.
+- 모델 판단은 물리적 안전장치와 로컬 제어 검증을 대체하지 않는다.
 
-## 2. 문서 지도
-
-| 문서                                                         | 중심 내용                         | 상대 난이도 |
-| ---------------------------------------------------------- | ----------------------------- | ------ |
-| [ER 2 역할·기능·한계](01%20-%20ER%202%20역할·기능·한계.md)             | 모델 구분, 영상 이해, 오케스트레이션, 안전 한계  | 개념     |
-| [클라우드 API·비용·운영 조건](02%20-%20클라우드%20API·비용·운영%20조건.md)     | 인터넷 의존성, 엔드포인트, 비용, 1FPS 제약   | 운영     |
-| [시스템 아키텍처와 책임 경계](03%20-%20시스템%20아키텍처와%20책임%20경계.md)       | ER 2·Edge·안전 계층 분리      | 중간     |
-| [다중 객체 폐루프 정리 시나리오](05%20-%20다중%20객체%20폐루프%20정리%20시나리오%20예시.md) | ER 2를 사용한 최초 미인지 상태부터 최종 검증까지 | 중간~높음  |
-
-상대 난이도는 API 운영, schema 검증, 도구 실행과 폐루프 상태 관리 부담을 기준으로 문서를 읽기 쉽게 나눈 것이다.
-팀의 일정이나 구현 역량을 반영한 확정 공수 산정은 아니다.
-
-## 3. ER 2 적용 시 연결 관계
+## Cleany 적용 가설
 
 ```text
-사용자 명령·정리 정책
+작업 목표 + 책상 관찰
         ↓
-ER 2 장면 이해·의미 분류·다음 고수준 행동 선택
-        ↓ Tool Call
-Edge Orchestrator·로컬 정책 검증
+ER 2: 장면 해석·대상 선택·처리 순서·진행 판단
+        ↓ 검증된 tool request
+Robot Capabilities
+├─ Navigation
+├─ Manipulation Skills (VLA-backed 포함 가능)
+└─ Safety Controls (계획 경로와 독립)
         ↓
-로컬 인식 → Depth·3D → 파지 후보 → MoveIt 2 → SO-101
-        ↓
-실행 결과·최신 이미지·검증 결과
-        └──────────────────────────────► ER 2 재계획
+실행 결과 + 최신 관찰 → ER 2 재계획
 ```
 
-핵심 경계는 다음과 같다.
+ER 2가 Navigation까지 직접 호출할지, 책상 도착 후 작업에만 관여할지는 아직
+결정하지 않았다. 현재 Mission Manager 구현은 Navigation과 책상 작업 실행을
+분리한다.
 
-- ER 2는 “무엇을 왜, 어떤 순서로 처리할지” 판단한다.
-- 로컬 시스템은 “어떻게 측정하고 안전하게 움직일지” 결정한다.
-- 한 번에 한 물체와 한 고수준 행동만 실행한다.
-- 실행 결과를 다시 관찰한 뒤 다음 행동을 정하는 폐루프를 사용한다.
-- 사람 접근, 좌표 유효성, 충돌, 관절 한계와 비상 정지는 로컬에서 강제한다.
+## 문서 지도
 
-## 4. 다른 인식·판단 방안과의 관계
+| 문서 | 내용 |
+|---|---|
+| [역할·기능·한계](01%20-%20ER%202%20역할·기능·한계.md) | 공식 모델 구분과 Cleany 적용 경계 |
+| [클라우드 API·운영 조건](02%20-%20클라우드%20API·비용·운영%20조건.md) | 엔드포인트, 네트워크와 도입 판단 |
+| [시스템 아키텍처와 책임 경계](03%20-%20시스템%20아키텍처와%20책임%20경계.md) | ER 2, Capability, 안전 계층 관계 |
+| [다중 객체 폐루프 시나리오](05%20-%20다중%20객체%20폐루프%20정리%20시나리오%20예시.md) | 여러 물체의 관찰·실행·재관찰 예시 |
 
-ER 2는 현재 검토할 세 가지 방안 중 하나다.
-`YOLOE + VLM`, `VLM + segmentation`, `ER 2 + segmentation` 중 어떤 구성을 사용할지는 아직 선택하지 않았다.
-세 후보의 비교와 공통 후속 파이프라인 문서화는 현재 단계에서 진행하지 않는다.
+## 검증 상태
 
-## 5. 사람 검토가 필요한 핵심 항목
-
-- ER 2 Preview와 Streaming Preview의 실제 사용 가능 지역·쿼터·가격
-- 공유 답변의 함수 선언과 Interactions/Live API 필드가 현재 SDK와 일치하는지
-- 최대 1FPS 영상 입력 제약과 프로젝트 지연시간 요구의 적합성
-- ER 2 최초 인벤토리의 누락·환각·분류 일관성
-- 무료·유료 API 사용 시 영상·음성·로그의 개인정보 처리 기준
-
-## 6. 원본
-
-- [ChatGPT 공유 대화](https://chatgpt.com/share/6a6f8bd0-8ab8-83ee-bee5-081c013dd3bc)
+공식 모델 설명과 실제 Cleany 적합성은 구분한다. 정지 이미지 기반 ER 2→SAM2→Depth
+실측은 [[40_RAW/260804 - 인식 파이프라인 로컬 실측 검증/00 - README|별도 Raw 묶음]]에
+기록되어 있다. Streaming, 실제 VLA tool orchestration과 실제 로봇 폐루프는 아직
+검증하지 않았다.

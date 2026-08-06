@@ -8,65 +8,64 @@ related_decisions:
 
 # 내비게이션과 매핑(Navigation and Mapping)
 
-## 1. 요약
+## 요약
 
-끌리니는 selected Decision에 따라 4륜 Mecanum holonomic base를 사용한다. 사전 지도 또는 초기 세팅 결과를 바탕으로 작업 대상 구역까지 이동하고 복귀하는 구조를 검토한다. 1차 시연에서 지도 생성과 자율주행을 현장 실물 시연할지는 공간 변화와 소요 시간을 검증한 뒤 결정한다.
+MVP에서 로봇은 사전에 제작한 지도를 사용해 대기 위치와 운영자가 지정한 개별
+좌석 사이를 자율 왕복한다. Mapping은 환경 준비 과정이며 데모 기능이 아니다.
 
-## 2. 기획 맥락
+## 지도와 좌석
 
-이용 종료 후 로봇이 지정 공간으로 이동해야 정리 작업을 시작할 수 있다. 따라서 주행 안정성은 쓰레기 수거와 공간 정돈보다 먼저 보장되어야 하는 기반 기능이다.
+- 지도는 데모 전에 제작·검증한다.
+- Backend의 좌석 ID는 Robot이 사용할 목표 pose로 해석되어야 한다.
+- 목표 pose는 단순 도착점이 아니라 책상을 관찰·조작할 수 있는 접근 자세를
+  고려해야 한다.
+- 좌석 배치가 바뀌면 map 전체보다 좌석 pose mapping을 우선 갱신할 수 있어야 한다.
 
-## 3. 기술 개념
+정확한 pose map 형식과 관리 위치는 구현 시 정한다.
 
-### 3.1 지도 생성
+## 주행 흐름
 
-- SLAM으로 실내 지도를 생성한다.
-- 무인 스터디카페/공간대여 시설의 방, 책상, 통로, 대기 위치, 수거함 위치를 지도 또는 작업 구역으로 표현해야 한다.
-- 초기 세팅에서 사용자가 지도 위에 방, 책상, 작업 구역을 지정하는 UI 후보가 논의됐다.
-- 지도 갱신 방식, 사용자의 세팅 부담, 운영 중 변경 대응은 검토 필요다.
+```text
+target seat id
+  → target pose lookup
+  → Nav2 goal
+  → localization / planning / control
+  → arrival result
+  → desk work
+  → home pose Nav2 goal
+```
 
-### 3.2 자율주행
+Mission Manager는 도착·실패·취소 결과만 소비하며 wheel command를 직접 만들지 않는다.
 
-- Nav2 기반으로 작업 대상 구역까지 이동하는 방향을 검토한다.
-- Mecanum base의 전후·좌우 병진과 제자리 회전을 활용하되 Nav2 controller와 실제 base backend가 같은 `cmd_vel` 의미를 사용해야 한다.
-- encoder 기반 wheel odometry와 IMU를 융합하고 SLAM/localization으로 누적 오차를 보정하는 방향을 검토한다. 정확한 filter 구성과 검증 기준은 추가 정의가 필요하다.
-- 이동 중 장애물을 회피한다.
-- 작업 완료 후 대기 위치로 복귀한다.
-- 시연 공간의 책상·칸막이 배치가 사전 지도와 달라질 수 있으므로, 현장 시연이 불안정하면 영상으로 전체 주행 흐름을 보완한다.
+## Gazebo 역할
 
-### 3.3 작업 위치 접근
+Gazebo는 다음 Navigation 경계를 검증한다.
 
-- 로봇은 물체를 조작할 수 있는 위치까지 접근해야 한다.
-- 매니퓰레이터 도달 범위와 베이스 위치 정밀도가 함께 고려되어야 한다.
+- 4륜 Mecanum base command와 odometry
+- LiDAR·IMU·camera sensor 연결
+- map·localization·Nav2 goal과 복귀
+- 좌석 접근 pose와 장애물 조건
+- timeout·cancel·safe stop 전달
 
-## 4. 인터페이스 / 경계
+MuJoCo는 좌석 도착 후 tabletop manipulation을 주로 검증하며 Navigation의 공식
+시뮬레이터로 사용하지 않는다.
 
-| 구성요소 | 책임 | 경계 |
-|---|---|---|
-| SLAM | 지도 생성과 위치 추정 기반 제공 | 물체 정리 행동을 결정하지 않음 |
-| Nav2 | 경로 계획, 추종, 장애물 회피 | 조작 가능한 최종 자세 보장은 별도 검토 |
-| Mecanum Base Backend | `cmd_vel`을 4개 wheel target으로 변환하고 MCU feedback으로 wheel odometry 제공 | 전역 경로와 작업 목표를 결정하지 않음 |
-| Mentor-supported MCU | encoder feedback 수집과 MDD20A PWM/DIR 출력 | 지도, 경로와 작업 목표를 결정하지 않음 |
-| Sensor Suite | LiDAR, RGB-D, IMU 입력 제공 | 센서 캘리브레이션 세부는 미정 |
-| Task Planner | 목적지와 작업 구역 지정 | 저수준 주행 제어를 직접 수행하지 않음 |
-| Safety Layer | 장애물 및 위험 조건 감지 | 구체 기준 추가 정의 필요 |
+## 현재와 목표 경계
 
-## 5. 가정
+현재 Mission Manager는 Navigator를 Planner와 별도 port로 호출한다. ER 2가 향후
+Navigation Capability까지 직접 선택할지는 열린 질문이며, 그 전까지 기존 경계를
+유지한다.
 
-- 대상 공간은 실내이며 사전 지도화 또는 초기 세팅이 가능하다.
-- 로봇이 이동할 수 있는 통로 폭과 작업 공간이 확보된다.
-- 4륜 Mecanum base는 `linear.x`, `linear.y`, `angular.z`를 지원한다.
-- encoder feedback과 motor output은 멘토 지원 MCU가 담당한다.
-- 작업 구역과 대기 위치는 사전 정의하거나 대시보드에서 지정할 수 있다.
+## 위험과 확인 사항
 
-## 6. 리스크
+- Mecanum slip과 geometry 오차로 인한 localization·도킹 오차
+- 의자·가방 등 임시 장애물과 좁은 통로
+- 책상 조작에 부적합한 최종 base pose
+- map과 실제 좌석 배치 불일치
+- Navigation 성공과 안전한 조작 자세를 같은 의미로 처리하는 오류
 
-- 좁은 통로, 의자 위치 변화, 사람 또는 임시 장애물로 주행 실패가 발생할 수 있다.
-- 작업 대상에 접근했지만 매니퓰레이터가 닿지 않는 위치일 수 있다.
-- 지도와 실제 공간이 달라지는 경우 작업 안정성이 낮아질 수 있다.
-- Mecanum wheel slip과 wheel geometry 오차로 odometry drift가 커질 수 있으며, IMU 융합만으로 평면 병진 slip이 제거되지는 않는다.
-- 지도 생성 또는 3D 기반 평면도 변환이 시연 시간 안에 완료되지 않을 수 있다.
+## 관련 문서
 
-## 7. 관련 결정
-
-- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 `selected` Decision이다.
+- [[20_TECHNICAL/04 - Robot Platform XLeRobot|Robot Platform XLeRobot]]
+- [[20_TECHNICAL/10 - Robot ROS Contract|Robot ROS Contract]]
+- [[20_TECHNICAL/13 - Verification and Simulation Strategy|Verification and Simulation Strategy]]

@@ -4,27 +4,28 @@ status: draft
 
 # 용어집(Glossary)
 
-| 용어                    | 정의                                                                                | 상태               |
-| --------------------- | --------------------------------------------------------------------------------- | ---------------- |
-| 끌리니(Cleany)           | 무인 점포 및 공간 대여 시설의 이용 후 정리·점검 업무를 자동화하기 위한 관리 로봇 프로젝트명.                            | 기획서 기반           |
-| 무인 점포                 | 상주 인력이 없거나 적은 방식으로 운영되는 매장. 청결, 정돈, 시설 상태 유지 공백이 문제로 제기된다.                        | 기획서 기반           |
-| 공간 대여 시설              | 이용자가 일정 시간 공간을 사용한 뒤 퇴실하는 시설. 무인 스터디카페, 공간 공유 서비스가 1차 타깃 맥락에 포함된다.                | 기획서 기반           |
-| Embodied AI           | 물리 환경에서 센서 입력을 해석하고 행동을 수행하는 AI 개념. 끌리니에서는 로봇의 인식·이동·조작과 연결된다.                    | 검토 필요            |
-| VLA                   | Vision-Language-Action. 시각 정보와 의미 해석을 바탕으로 행동을 선택하는 구조.                           | 검토 필요            |
-| Rule-based VLA        | VLA가 생성한 행동 후보를 규칙 기반으로 검증해 수거, 보관, 밀기, 정렬, 대기 등의 행동으로 변환하는 접근.                   | 기획서 기반           |
-| XLeRobot              | 끌리니의 기반 모바일 매니퓰레이터 플랫폼으로 기획서에 명시된 로봇. 정확한 사양은 추가 확인 필요.                           | 기획서 기반, 세부 검토 필요 |
-| SLAM                  | Simultaneous Localization and Mapping. 실내 지도를 만들고 로봇 위치를 추정하는 기술.                 | 기획서 기반           |
-| ROS 2 Navigation/Nav2 | ROS 2 기반 자율주행 프레임워크. 끌리니에서는 작업 대상 구역 이동, 장애물 회피, 대기 위치 복귀에 사용되는 것으로 이해한다.         | 기획서 기반           |
-| Jetson AGX Orin       | 기획서에 명시된 온디바이스 추론용 메인 컴퓨팅 장치. 64GB 모델로 기재되어 있다.                                   | 기획서 기반           |
-| RGB-D                 | RGB 영상과 깊이 정보를 함께 제공하는 센서 유형. 물체 후보 탐지와 위치 추정에 사용되는 것으로 이해한다.                     | 기획서 기반           |
-| 2D LiDAR              | 2차원 거리 측정 센서. 실내 주행과 장애물 감지에 활용되는 것으로 이해한다.                                       | 기획서 기반           |
-| IMU                   | 관성 측정 장치. 로봇 자세와 움직임 추정에 활용되는 센서.                                                 | 기획서 기반           |
-| Isaac Sim             | 로봇 시뮬레이션 및 검증 환경으로 기획서에 포함된 도구. 표기 `IssacSim`은 원문 표기이며, 문서에서는 `Isaac Sim`으로 정리한다. | 기획서 기반, 표기 검토 필요 |
-| MuJoCo                | 로봇 작업을 가상으로 재현하고 검증하기 위한 시뮬레이션 환경으로 기획서에 포함됨.                                     | 기획서 기반           |
-| TensorRT              | Jetson 환경에서 AI 추론 최적화를 위해 기획서에 포함된 기술.                                            | 기획서 기반           |
-| Decision              | 프로젝트 방향, 기술 리스크, Sprint 구조 등에 영향을 주는 중요한 결정과 그 이유를 기록하는 문서.                       | KB 규칙            |
-| Raw                   | 초안, 개인 학습 노트, 회의록, 조사 자료, 임시 메모와 첨부 원본을 두는 비공식 작업 공간. 최종 결론이 아니다.                    | KB 규칙            |
-| Planning 문서           | 문제, 사용자, 가치, 범위, 타깃 시나리오, 성공 기준 등 기획 이해를 현재형으로 정리하는 문서.                           | KB 규칙            |
-| Technical 문서          | 시스템 개념, 아키텍처, 인터페이스, 제약, 가정, 리스크, 평가를 현재형으로 정리하는 예비 기술 문서.                        | KB 규칙            |
-| Jira Issue            | 작업, Sprint, 담당자, 상태, 일정 관리를 위한 항목. 문서 본문이 아니라 관련 문서 링크를 둔다.                       | KB 규칙            |
-| Sprint                | 일정 기간 동안 수행할 작업 목표와 범위를 정하는 Scrum 단위. 구체 운영 방식은 추가 확인 필요.                         | 검토 필요            |
+| 용어 | 이 KB에서의 의미 |
+|---|---|
+| Cleany | 무인 스터디카페에서 퇴실 후 책상 위 물체를 처리하는 모바일 매니퓰레이터 프로젝트 |
+| Mission | Dashboard 요청 하나에서 좌석 왕복·책상 작업·결과 보고까지 이어지는 실행 단위 |
+| Mission Manager | Mission 단계 전이와 최종 결과의 Source of Truth |
+| Scene State | 관찰 ID, 물체 후보·영역·의미·3D 위치와 품질을 묶은 Perception 출력 의미 |
+| Task Planner | Scene과 Mission 목표로 처리 대상·순서·Capability를 제안하는 계층 |
+| Gemini Robotics ER 2 | 장면·시간·물리 맥락을 이해하고 tool·VLA를 호출하는 cloud embodied-reasoning VLM |
+| VLA | Vision-Language-Action. 영상·언어 입력을 로봇의 물리 action과 연결하는 learned policy |
+| RuleBasedPlanner | AI Planner 연결 전 같은 high-level 계약을 검증하는 규칙 기반 통합 구현 |
+| Robot Capability | Navigation, Observation, Manipulation처럼 로봇이 제공하는 목표 지향 기능의 중립적 상위 용어 |
+| Manipulation Skill | 좌석 도착 후 arm·gripper로 수행하는 high-level 물리 작업. 내부에 VLA policy를 포함할 수 있음 |
+| Local Guard | Planner·VLA 출력의 schema, 상태, workspace, collision과 limit을 실행 전에 검증하는 로컬 경계 |
+| Navigation | 사전 제작 지도에서 대기 위치와 지정 좌석 사이를 왕복하는 기능 |
+| Nav2 | ROS 2 기반 localization·planning·control framework |
+| Safe stop | timeout·fault·로컬 위험에서 현재 동작을 안전 상태로 전환하는 독립 제어 경로 |
+| Emergency stop | AI와 일반 ROS 실행보다 우선해 구동을 차단하는 물리적 비상 정지 경로 |
+| XLeRobot | Cleany가 상부 듀얼 매니퓰레이터와 깊이 카메라 구성을 활용하는 기반 플랫폼 |
+| Gazebo | Mobile base, sensor, localization과 Nav2를 검증하는 simulator |
+| MuJoCo | 좌석 도착 후 tabletop arm·gripper와 Manipulation Skill을 검증하는 simulator |
+| Planning | 문제, 사용자, 가치, 범위, 시나리오와 성공 기준을 관리하는 KB 계층 |
+| Technical | 시스템 개념, 경계, 제약, 리스크와 검증 전략을 관리하는 KB 계층 |
+| Decision | 무엇을 왜 선택했는지와 재검토 조건을 기록하는 문서 |
+| Raw | 초안, 개인 학습 노트, 회의록, 조사 자료와 임시 메모를 두는 비공식 작업 공간 |
+| Jira | 일정, 담당자, 우선순위와 작업 상태의 Source of Truth |

@@ -15,7 +15,7 @@ supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 ## 2. 이유
 
 - 프로젝트 검토 시점의 메모리 가격 상승으로 AGX Orin 64GB의 조달 비용 부담이 커졌다.
-- Jetson 기반 온디바이스 추론과 ROS 2 runtime 방향은 유지한다.
+- ROS 2, sensor 처리, 로컬 Guard와 robot adapter를 로봇에서 실행하는 방향은 유지한다.
 - Orin NX 16GB의 base software stack은 JetPack 6.2를 사용한다.
 - ROS 2 Humble을 로봇 엣지의 ROS 2 배포판으로 사용한다.
 - 실제 AI 모델과 ROS 2 workload가 16GB 메모리에서 목표 성능을 만족하는지는 별도 benchmark로 검증한다.
@@ -26,19 +26,20 @@ supersedes: "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
 | -------------------- | ----------------------------------------- |
 | Jetson Orin NX 16GB  | 비용을 고려한 현재 기준 장치로 선택한다.                   |
 | Jetson AGX Orin 64GB | 메모리 가격 상승에 따른 조달 비용 증가로 선택하지 않는다.         |
-| 서버 추론 중심 구성          | 네트워크를 실시간 판단의 필수 의존성으로 두지 않기 위해 선택하지 않는다. |
+| 서버 전용 robot runtime | 안전·sensor·hardware integration을 네트워크에 의존하므로 선택하지 않는다. |
 
 ## 4. 가정
 
-- 객체 탐지, 위치 추정, 장애물 회피와 경량 VLM/VLA 추론은 Orin NX 16GB에서 실행하는 방향이다.
-- 모델 경량화, TensorRT 최적화와 node별 memory budget을 적용할 수 있다고 가정한다.
+- ROS 2, sensor 처리, Navigation, 로컬 Perception·VLA adapter와 안전 Guard는 Orin에서 실행한다.
+- ER 2 같은 cloud Planner를 사용해도 고주기 제어와 안전 정지는 Orin에 남긴다.
+- 실제 로컬 AI workload와 node별 memory budget은 후보 adapter를 정한 뒤 측정한다.
 - 정확한 carrier board, storage, power mode와 cooling 구성은 추가 확인한다.
 - base software stack은 JetPack 6.2, Jetson Linux 36.4.3의 Ubuntu 22.04 기반 root filesystem, CUDA 12.6과 TensorRT 10.3 조합을 사용한다.
 - JetPack 6.2와 ROS 2 Humble의 프로젝트별 Python·AI package 조합은 추가 검증한다.
 
 ## 5. 리스크
 
-- 16GB 메모리에서 perception, navigation, manipulation과 AI 추론을 동시에 실행할 때 메모리 부족이나 성능 저하가 발생할 수 있다.
+- 16GB 메모리에서 perception, navigation, manipulation과 로컬 VLA adapter를 동시에 실행할 때 메모리 부족이나 성능 저하가 발생할 수 있다.
 - JetPack 6.2의 Orin NX 16GB 지원은 확인됐지만, ROS 2 Humble과 프로젝트별 Python·AI package 조합에서 추가 호환성 문제가 발생할 수 있다.
 - carrier board, 전원과 방열 구성이 로봇 탑재 및 현장 운영 요구를 만족하지 못할 수 있다.
 

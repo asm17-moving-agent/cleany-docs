@@ -3,7 +3,7 @@ status: selected
 date: 2026-07-08
 source_refs:
   - 40_RAW/기획서 원문 요약.md
-  - 40_RAW/지출신청서_관리.md
+  - "비공개 Raw 원본: 끌리니 하드웨어 구성 및 부품 목록"
 supersedes:
 ---
 
@@ -13,14 +13,16 @@ supersedes:
 
 XLeRobot 전체 조립체를 그대로 채택하지 않고, XLeRobot에서 유지하는 범위를 상부 모듈인 듀얼 매니퓰레이터와 깊이 카메라로 한정한다.
 
-이동 베이스는 별도 selected Decision에 따라 4륜 Mecanum custom base를 그대로 사용한다. 상부 모듈과 이동 베이스를 연결하는 프레임은 이 결정의 범위에 포함하지 않는다. XLeRobot 기본 구성인 IKEA RÅSKOG와 알루미늄 프로파일을 별도 Technical Decision에서 비교하며, 해당 Decision이 selected 상태가 되기 전까지 프레임 구조를 확정하지 않는다.
+이동 베이스는 별도 selected Decision에 따라 4륜 Mecanum custom base를 사용한다.
+상부 모듈과 이동 베이스를 연결하는 프레임은 별도 Decision의 현재 선택안인 알루미늄
+프로파일을 따른다. 해당 Decision의 status 승격은 PR 검토 뒤 수행한다.
 
 ## 2. 이유
 
 - Raw 요약에는 모바일 매니퓰레이터로 XLeRobot과 RGB-D가 기재되어 있다.
 - 전체 플랫폼의 제약을 수용하는 대신 필요한 조작·인식 구성인 듀얼 매니퓰레이터와 깊이 카메라를 유지한다.
 - 이동 베이스는 표준 XLeRobot base와 분리해 이미 선택한 4륜 Mecanum 구성을 사용한다.
-- 프레임은 매니퓰레이터 도달 범위, 작업 높이, 상부와 base 사이의 기구학 모델에 영향을 주므로 별도 결정으로 관리한다.
+- 프레임은 매니퓰레이터 도달 범위, 작업 높이, 상부와 base 사이의 기구학 모델에 영향을 주므로 별도 Decision으로 관리한다.
 
 ## 3. 대안
 

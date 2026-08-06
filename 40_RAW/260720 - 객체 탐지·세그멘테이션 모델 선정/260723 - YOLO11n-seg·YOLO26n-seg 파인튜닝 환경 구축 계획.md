@@ -36,7 +36,7 @@ source_type: implementation-plan
 - [[260722 - YOLO 방법론 정리 - 탐지·세그·NMS·버전 변천|YOLO 방법론 정리]]: YOLO11과 YOLO26의 구조 및 NMS 차이
 - [[260722 - 객체 탐지·세그멘테이션 클래스 정의 및 라벨링 가이드라인|클래스 정의 및 라벨링 가이드라인]]: segmentation annotation과 클래스 경계 초안
 - [[260723 - 클래스별 공개 데이터셋 매핑 및 데이터 확보 방안|공개 데이터셋 매핑 및 데이터 확보 방안]]: 외부 데이터 후보와 확보 절차
-- [[20_TECHNICAL/07 - Data and Evaluation|Data and Evaluation]]: 데이터·평가 후보와 미확정 평가 기준
+- [[20_TECHNICAL/07 - Perception and Scene Understanding|Perception and Scene Understanding]]: 인식 adapter와 미확정 평가 기준
 
 기존 계획을 다시 검토하면서 다음 보완점이 확인됐다.
 
@@ -527,7 +527,7 @@ Mac에서는 synthetic fixture로 MPS 1-epoch smoke를 실행해 checkpoint, met
 7. CUDA container와 Slurm+Apptainer template 정적 검증
 8. 대학 cluster 정책 확인 후 RTX 3080 단일 GPU preflight
 9. 외부 dataset 준비(12장 직접 촬영·라벨링 포함) 후 동일 조건 comparison run 실행
-10. 결과를 Data and Evaluation 및 모델 선정 Decision 후보에 연결
+10. 결과를 Perception and Scene Understanding 및 모델 선정 Decision 후보에 연결
 11. 선정 모델만 ROS inference·Jetson 배포 후속 작업으로 전달
 
 ## 14. 참고자료
@@ -550,5 +550,5 @@ Mac에서는 synthetic fixture로 MPS 1-epoch smoke를 실행해 checkpoint, met
 - [[260722 - YOLO 방법론 정리 - 탐지·세그·NMS·버전 변천]]
 - [[260722 - 객체 탐지·세그멘테이션 클래스 정의 및 라벨링 가이드라인]]
 - [[260723 - 클래스별 공개 데이터셋 매핑 및 데이터 확보 방안]]
-- [[20_TECHNICAL/07 - Data and Evaluation]]
+- [[20_TECHNICAL/07 - Perception and Scene Understanding]]
 - [[20_TECHNICAL/99 - Questions]]
