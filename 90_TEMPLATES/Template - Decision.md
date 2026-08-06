@@ -1,7 +1,5 @@
 ---
 date:
-source_refs:
-  -
 ---
 
 # YYMMDD - 결정 제목
@@ -9,7 +7,7 @@ source_refs:
 ## 결정
 
 실제로 선택한 내용을 명확히 적는다. 아직 선택 전인 내용은 Decision을 만들지 않고
-Planning·Technical Questions에서 관리한다.
+Planning과 Technical Questions에서 관리한다.
 
 ## 이유
 
@@ -24,3 +22,5 @@ Planning·Technical Questions에서 관리한다.
 ## 재검토 조건
 
 ## 출처
+
+- 근거 Raw 및 외부 자료를 표준 Markdown 링크로 둔다.

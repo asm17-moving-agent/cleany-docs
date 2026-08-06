@@ -1,10 +1,3 @@
----
-source_refs:
-  - "[기획서]"
-related_decisions:
-  - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
----
-
 # 성공 기준(Success Criteria)
 
 ## 요약
@@ -37,8 +30,8 @@ Rule-based 통합 검증 흐름을 유지하면서 다음 조건을 추가로 �
   완료 여부를 판단한다.
 - 실패하거나 처리할 수 없는 물체를 성공으로 보고하지 않는다.
 
-ER 2는 현재 목표 AI 경로지만, 클라우드 API의 지연·정확도·실패·비용 검증 결과에
-따라 adapter 선택은 바뀔 수 있다.
+로컬 VLM, API 기반 VLM, YOLO와 SAM 계열, YOLO segmentation은 모두 후보이며,
+지연, 정확도, 실패, 비용과 조작 적합성 실험 뒤 경로를 선택한다.
 
 ## 3. 승인된 축소 범위
 
@@ -56,6 +49,14 @@ ER 2는 현재 목표 AI 경로지만, 클라우드 API의 지연·정확도·�
 
 ## 관련 문서
 
-- [[10_PLANNING/02 - Target Scenario|Target Scenario]]
-- [[20_TECHNICAL/03 - Task Planning and Robot Capabilities|Task Planning and Robot Capabilities]]
-- [[20_TECHNICAL/13 - Verification and Simulation Strategy|Verification and Simulation Strategy]]
+- [Target Scenario](<02 - Target Scenario.md>)
+- [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
+- [Verification and Simulation Strategy](<../20_TECHNICAL/13 - Verification and Simulation Strategy.md>)
+
+## 출처
+
+- [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
+
+## 관련 결정
+
+- [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)

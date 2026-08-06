@@ -1,10 +1,3 @@
----
-source_refs:
-  -
-related_decisions:
-  -
----
-
 # 문서 제목
 
 ## 요약
@@ -22,4 +15,12 @@ Technical 문서에 같은 섹션을 강제하지 않는다.
 
 ## 관련 문서
 
-- 필요한 Planning·Technical·Decision 링크만 둔다.
+- 필요한 Planning과 Technical 링크를 표준 Markdown 링크로 둔다.
+
+## 출처
+
+- 근거 문서를 표준 Markdown 링크로 둔다.
+
+## 관련 결정
+
+- 관련 Decision을 표준 Markdown 링크로 둔다.

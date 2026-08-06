@@ -2,23 +2,23 @@
 
 ## 15분 안에 이해하기
 
-1. [[10_PLANNING/00 - Project Brief|Project Brief]]
-2. [[10_PLANNING/02 - Target Scenario|Target Scenario]]
-3. [[10_PLANNING/05 - Success Criteria|Success Criteria]]
-4. [[20_TECHNICAL/00 - Technical Overview|Technical Overview]]
-5. [[10_PLANNING/99 - Questions|Planning Questions]]과
-   [[20_TECHNICAL/99 - Questions|Technical Questions]]
-6. [[30_DECISIONS/00 - Decision Index|Decision Index]]
+1. [Project Brief](<../10_PLANNING/00 - Project Brief.md>)
+2. [Target Scenario](<../10_PLANNING/02 - Target Scenario.md>)
+3. [Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
+4. [Technical Overview](<../20_TECHNICAL/00 - Technical Overview.md>)
+5. [Planning Questions](<../10_PLANNING/99 - Questions.md>)과
+   [Technical Questions](<../20_TECHNICAL/99 - Questions.md>)
+6. [Decision Index](<../30_DECISIONS/00 - Decision Index.md>)
 
 이 순서로 읽으면 제품 목표, 데모 흐름, 기술 경계와 실제 열린 질문을 구분할 수 있다.
 
 ## 기획 리뷰
 
-1. [[10_PLANNING/01 - Problem and Users|Problem and Users]]
-2. [[10_PLANNING/02 - Target Scenario|Target Scenario]]
-3. [[10_PLANNING/04 - Scope and Non-Goals|Scope and Non-Goals]]
-4. [[10_PLANNING/05 - Success Criteria|Success Criteria]]
-5. [[10_PLANNING/99 - Questions|Planning Questions]]
+1. [Problem and Users](<../10_PLANNING/01 - Problem and Users.md>)
+2. [Target Scenario](<../10_PLANNING/02 - Target Scenario.md>)
+3. [Scope and Non-Goals](<../10_PLANNING/04 - Scope and Non-Goals.md>)
+4. [Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
+5. [Planning Questions](<../10_PLANNING/99 - Questions.md>)
 
 확인할 점:
 
@@ -28,34 +28,34 @@
 
 ## 기술 리뷰
 
-1. [[20_TECHNICAL/01 - System Context|System Context]]
-2. [[20_TECHNICAL/03 - Task Planning and Robot Capabilities|Task Planning and Robot Capabilities]]
-3. [[20_TECHNICAL/07 - Perception and Scene Understanding|Perception and Scene Understanding]]
-4. [[20_TECHNICAL/09 - Mission Lifecycle|Mission Lifecycle]]
-5. [[20_TECHNICAL/08 - Safety and Risk|Safety and Risk]]
+1. [System Context](<../20_TECHNICAL/01 - System Context.md>)
+2. [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
+3. [Perception and Scene Understanding](<../20_TECHNICAL/07 - Perception and Scene Understanding.md>)
+4. [Mission Lifecycle](<../20_TECHNICAL/09 - Mission Lifecycle.md>)
+5. [Safety and Risk](<../20_TECHNICAL/08 - Safety and Risk.md>)
 6. 필요한 subsystem 문서
-   - [[20_TECHNICAL/05 - Navigation and Mapping|Navigation and Mapping]]
-   - [[20_TECHNICAL/10 - Robot ROS Contract|Robot ROS Contract]]
-   - [[20_TECHNICAL/11 - ROS 2 Software Architecture|ROS 2 Software Architecture]]
-   - [[20_TECHNICAL/12 - Hardware Configuration|Hardware Configuration]]
-   - [[20_TECHNICAL/13 - Verification and Simulation Strategy|Verification and Simulation Strategy]]
+   - [Navigation and Mapping](<../20_TECHNICAL/05 - Navigation and Mapping.md>)
+   - [Robot ROS Contract](<../20_TECHNICAL/10 - Robot ROS Contract.md>)
+   - [ROS 2 Software Architecture](<../20_TECHNICAL/11 - ROS 2 Software Architecture.md>)
+   - [Hardware Configuration](<../20_TECHNICAL/12 - Hardware Configuration.md>)
+   - [Verification and Simulation Strategy](<../20_TECHNICAL/13 - Verification and Simulation Strategy.md>)
 
 확인할 점:
 
 - ER 2의 고수준 판단과 Skill 내부 VLA 실행이 구분되는가?
-- Navigation, Manipulation과 Safety Control의 책임이 섞이지 않는가?
+- Navigation과 Manipulation의 책임이 섞이지 않고 안전 정지가 일반 skill과 구분되는가?
 - 목표 구조, 현재 구현과 실험 후보가 구분되는가?
 
 ## Decision과 Raw
 
-Decision은 [[30_DECISIONS/00 - Decision Index|Decision Index]]에서 시작한다.
-Decision의 이유나 실험 근거가 필요할 때만 연결된 Raw를 읽는다. Raw는 초안·개인
-학습·회의·조사 공간이며 공식 결론이 아니다.
+Decision은 [Decision Index](<../30_DECISIONS/00 - Decision Index.md>)에서 시작한다.
+Decision의 이유나 실험 근거가 필요할 때만 연결된 Raw를 읽는다. Raw는 초안, 개인
+학습, 회의, 조사 공간이며 공식 결론이 아니다.
 
 ## Sprint와 구현
 
-Jira는 작업 상태·담당자·일정의 Source of Truth다. 구현 사실, ROS interface,
-실행·검증 명령은 Cleany 구현 레포와 각 package README에서 확인한다. KB 본문을
+Jira는 작업 상태, 담당자, 일정의 Source of Truth다. 구현 사실, ROS interface,
+실행 및 검증 명령은 Cleany 구현 레포와 각 package README에서 확인한다. KB 본문을
 Jira에 복사하지 않고 관련 문서 링크만 연결한다.
 
 ## 외부 공유 전

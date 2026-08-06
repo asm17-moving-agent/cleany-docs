@@ -1,6 +1,6 @@
 # 끌리니(Cleany) 기획 KB
 
-끌리니(Cleany)는 무인 점포와 공간 대여 시설의 이용 후 정리·점검 업무를 자동화하기 위한 XLeRobot 기반 관리 로봇 프로젝트입니다.
+끌리니(Cleany)는 무인 점포와 공간 대여 시설의 이용 후 정리, 점검 업무를 자동화하기 위한 XLeRobot 기반 관리 로봇 프로젝트입니다.
 
 이 저장소는 구현 레포가 아닙니다. 팀원이 기획서, 회의록, 조사 자료, 의사결정 기록을 함께 관리하는 **기획/예비설계 중심 Markdown KB**입니다.
 
@@ -14,7 +14,7 @@
 4. 결정 이력을 확인한다: [30_DECISIONS/00 - Decision Index.md](30_DECISIONS/00%20-%20Decision%20Index.md)
 
 현재 가장 중요한 일은 문서를 더 많이 만드는 것이 아니라, 두 `Questions` 문서의
-실제 질문을 사람 검토로 닫고 결정된 내용을 Planning·Technical·Decision에
+실제 질문을 사람 검토로 닫고 결정된 내용을 Planning, Technical 및 Decision에
 반영하는 것입니다.
 
 ## 처음 작업하는 사람을 위한 10분 흐름
@@ -22,7 +22,7 @@
 이 저장소에서 가장 먼저 구분해야 할 것은 `비공식 기록`, `현재 기준`, `결정 이력`입니다.
 
 1. `40_RAW`는 비공식 작업 공간입니다. 초안, 개인 학습 노트, 회의록, 조사 자료와 원본을 자유롭게 보관합니다.
-2. `main`의 `10_PLANNING`과 `20_TECHNICAL`은 현재 팀이 합의한 제품·기술 기준입니다.
+2. `main`의 `10_PLANNING`과 `20_TECHNICAL`은 현재 팀이 합의한 제품, 기술 기준입니다.
 3. `main`의 `30_DECISIONS`는 실제로 내린 중요한 선택과 대체 이력을 추적합니다.
 4. 불확실한 내용은 바로 결론으로 쓰지 않고 기획 질문은 `10_PLANNING/99 - Questions.md`, 기술 질문은 `20_TECHNICAL/99 - Questions.md`에 남깁니다.
 5. 문서를 고친 뒤에는 `$kb-quality-checks`로 깨진 구조와 링크를 확인합니다.
@@ -44,10 +44,10 @@
 
 1. 독립적인 Markdown 초안과 메모는 `40_RAW` 루트에 둡니다.
 2. 독립 문서의 Office/PDF/이미지 첨부 자료는 `40_RAW/assets/`에 둡니다.
-3. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`에 보존하고, 해당 묶음의 첨부 자료는 하위 `assets/`에 둡니다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않습니다.
+3. 팀원이 폴더 단위로 관리하는 학습, 조사 자료는 `40_RAW/YYMMDD - 주제/`에 보존하고, 해당 묶음의 첨부 자료는 하위 `assets/`에 둡니다. Meetings, Research 같은 자료 종류별 분류 폴더는 만들지 않습니다.
 4. Office/PDF 파일이면 `$office-to-markdown`으로 Markdown 변환을 요청합니다.
 5. Planning 또는 Decision으로 반영해야 하면 `$kb-ingest`를 사용합니다.
-6. 반영 후 `source_refs`, `related_decisions`를 갱신합니다.
+6. 반영 후 본문의 `출처`, `관련 결정` 표준 Markdown 링크를 갱신합니다.
 
 ### 기획 내용을 정리할 때
 
@@ -59,7 +59,7 @@
 
 1. 시스템 개념, 아키텍처, 인터페이스, 제약, 리스크는 `20_TECHNICAL`에 둡니다.
 2. 실제 구현 코드, 빌드 설정, 배포 설정은 만들지 않습니다.
-3. 하드웨어·런타임·모델 후보는 합의된 기준과 실제 미결정 사항을 구분합니다.
+3. 하드웨어, 런타임, 모델 후보는 합의된 기준과 실제 미결정 사항을 구분합니다.
 4. 팀이 실제로 제기한 기술 판단은 [Technical Questions](20_TECHNICAL/99%20-%20Questions.md)에 남깁니다.
 
 ### 결정을 남길 때
@@ -67,12 +67,12 @@
 1. 결정 전 선택지와 질문은 Raw 또는 Questions에서 관리합니다.
 2. 팀이 실제 결정을 내리면 `$kb-ingest` 또는 Decision 템플릿으로 작업 브랜치에 기록합니다.
 3. 검토와 승인 이력은 GitHub PR에 남기고, 병합된 Decision을 결정 이력으로 사용합니다.
-4. 이전 결정을 바꾸면 기존 문서를 삭제하지 않고 `supersedes`·`superseded_by`로 연결합니다.
+4. 이전 결정을 바꾸면 기존 문서를 삭제하지 않고 `supersedes`, `superseded_by`로 연결합니다.
 
 ### 문서 수정 후
 
 1. `$kb-quality-checks`로 구조, formatting, metadata, 링크를 확인합니다.
-2. `$kb-audit`로 검토 플래그와 Decision 목록·대체 관계를 요약합니다.
+2. `$kb-audit`로 검토 플래그와 Decision 목록, 대체 관계를 요약합니다.
 3. 실패 항목이 판단을 요구하면 기획 항목은 Planning Questions, 기술 항목은 Technical Questions에 남깁니다.
 
 ### Codex에게 요청할 때
@@ -108,7 +108,7 @@ $kb-review-pack 전체 KB를 사람 검토 전에 점검하고 다음 리뷰 액
 
 ## Source of Truth
 
-`main`의 Planning·Technical을 현재 기준으로 사용하고, Decision에서 그 이유와 변경
+`main`의 Planning과 Technical을 현재 기준으로 사용하고, Decision에서 그 이유와 변경
 이력을 확인합니다. 두 계층이 충돌하면 임의로 우선순위를 정하지 말고 문서 반영
 누락이나 Decision 대체 관계를 확인합니다. 해결되지 않으면 기획 판단은
 [Planning Questions](10_PLANNING/99%20-%20Questions.md), 기술 판단은

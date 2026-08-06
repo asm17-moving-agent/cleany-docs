@@ -107,7 +107,7 @@ REQUIRED_FILES = [
     "skills/kb-audit/SKILL.md",
     "skills/kb-audit/scripts/common.py",
     "skills/kb-audit/scripts/review_flags_report.py",
-    "skills/kb-audit/scripts/source_refs_report.py",
+    "skills/kb-audit/scripts/references_report.py",
     "skills/kb-audit/scripts/decision_inventory.py",
     "skills/kb-audit/scripts/audit_all.py",
     "skills/kb-review-pack/SKILL.md",

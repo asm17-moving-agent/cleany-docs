@@ -18,21 +18,15 @@ SKIP_PREFIXES = (
     "skills/kb-quality-checks/scripts/",
 )
 
-FORBIDDEN_STATE_KEYS = {"status", "ingest_status"}
+FORBIDDEN_METADATA_KEYS = {"status", "ingest_status", "source_refs", "related_decisions"}
 
 
 def required_keys_for(path: str) -> list[str]:
-    if path.startswith("10_PLANNING/"):
-        return ["source_refs", "related_decisions"]
-    if path.startswith("20_TECHNICAL/"):
-        return ["source_refs", "related_decisions"]
     if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
-        return ["date", "source_refs"]
+        return ["date"]
     if path.startswith("90_TEMPLATES/"):
-        if path.endswith(("Template - Planning Doc.md", "Template - Technical Doc.md")):
-            return ["source_refs", "related_decisions"]
         if path.endswith("Template - Decision.md"):
-            return ["date", "source_refs"]
+            return ["date"]
         return []
     if (path.startswith("skills/") or path.startswith(".agents/skills/")) and path.endswith("/SKILL.md"):
         return ["name", "description", "tags"]
@@ -68,9 +62,9 @@ def main() -> int:
             if key not in data:
                 errors.append(f"{r}: frontmatter 필수 key 누락: {key}")
 
-        for key in sorted(FORBIDDEN_STATE_KEYS):
+        for key in sorted(FORBIDDEN_METADATA_KEYS):
             if key in data:
-                errors.append(f"{r}: 폴더와 Git으로 상태를 관리하므로 metadata key를 사용하지 않음: {key}")
+                errors.append(f"{r}: 상태와 문서 관계를 폴더, Git과 본문 링크로 관리하므로 metadata key를 사용하지 않음: {key}")
 
     return print_errors("metadata", errors)
 

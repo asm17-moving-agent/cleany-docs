@@ -1,12 +1,12 @@
 ---
-source_refs:
-  -
 created_by: codex
 ---
 
 # YYMMDD - Raw Ingest Summary
 
 ## 1. 출처
+
+- 원본을 표준 Markdown 링크로 둔다.
 
 ## 2. 핵심 논의
 

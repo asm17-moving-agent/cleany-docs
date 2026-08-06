@@ -1,10 +1,3 @@
----
-source_refs:
-  - "40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md"
-related_decisions:
-  - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"
----
-
 # 로봇 ROS 2 공통 계약(Robot ROS Contract)
 
 ## 1. 요약
@@ -24,8 +17,8 @@ Cleany는 같은 Mission Manager, Navigator, Perception, Planner와 Skill Execut
 상위 모듈은 simulation actuator나 실제 motor driver를 직접 알지 않고 공통 의미
 계약에만 의존한다.
 
-Navigation contract는 주로 Gazebo·Real base 사이를, manipulation contract는
-MuJoCo·Real arm 사이를 연결한다. 분실물 후보의 물리 행동은 이 문서에서 정하지 않는다.
+Navigation contract는 주로 Gazebo와 Real base 사이를, manipulation contract는
+MuJoCo와 Real arm 사이를 연결한다. 분실물 후보의 물리 행동은 이 문서에서 정하지 않는다.
 
 ## 3. 기술 개념
 
@@ -73,7 +66,7 @@ create_publisher(Odometry, "odom", ...)
 |---|---|---|---|---|
 | `cmd_vel` | `geometry_msgs/msg/Twist` | Nav2 controller 또는 수동 제어기 | 활성 base backend | 차체 기준 속도 명령 |
 | `odom` | `nav_msgs/msg/Odometry` | 활성 odometry backend | localization, Nav2, logger | `odom` 기준 차체 pose와 twist |
-| `joint_states` | `sensor_msgs/msg/JointState` | 활성 robot backend | `robot_state_publisher`, MoveIt, logger | 관절 위치·속도·effort 상태 |
+| `joint_states` | `sensor_msgs/msg/JointState` | 활성 robot backend | `robot_state_publisher`, MoveIt, logger | 관절 위치, 속도, effort 상태 |
 | `scan` | `sensor_msgs/msg/LaserScan` | LiDAR driver 또는 Sim | SLAM, localization, Nav2 | `laser` 기준 2D 거리 측정 |
 | `tf` | `tf2_msgs/msg/TFMessage` | transform 소유 node | 전체 시스템 | 동적 frame 변환 |
 | `tf_static` | `tf2_msgs/msg/TFMessage` | `robot_state_publisher` 등 | 전체 시스템 | 정적 frame 변환 |
@@ -83,7 +76,7 @@ create_publisher(Odometry, "odom", ...)
 
 | 필드 | 단위 | 의미 | 상태 |
 |---|---|---|---|
-| `linear.x` | m/s | `base_link` 기준 전진·후진 속도 | MVP 후보 |
+| `linear.x` | m/s | `base_link` 기준 전진, 후진 속도 | MVP 후보 |
 | `linear.y` | m/s | `base_link` 기준 좌우 속도 | 4륜 Mecanum base 지원 대상 |
 | `angular.z` | rad/s | `base_link` 기준 yaw 회전 속도 | MVP 후보 |
 | 나머지 필드 | - | 모바일 베이스에서 사용하지 않음 | 0을 요구하는 안 검토 필요 |
@@ -160,7 +153,7 @@ map
 
 ### 3.8 Arm / Gripper 계약 후보
 
-- simulation 전용 qpos·joint test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
+- simulation 전용 qpos, joint test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
 - arm 공통 계약은 ROS 표준 `control_msgs/action/FollowJointTrajectory` 사용을 우선 검토한다.
 - gripper 공통 계약은 `control_msgs/action/GripperCommand` 또는 실제 gripper driver가 제공하는 표준 호환 action을 검토한다.
 - MoveIt 또는 Skill Executor가 표준 action을 호출하고, Sim/Real controller가 같은 joint 의미를 구현하는 구조를 목표로 한다.
@@ -184,10 +177,10 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 |---|---|---|
 | Navigator/Nav2 | 목적지 해석, 경로 계획, base 속도 생성 | actuator와 motor protocol을 직접 다루지 않음 |
 | Gazebo base backend | 공통 명령을 simulation base로 변환하고 상태 발행 | 실제 hardware protocol을 포함하지 않음 |
-| MuJoCo manipulation backend | 공통 arm·gripper 의미를 simulation actuator로 변환 | Navigation과 실제 hardware protocol을 포함하지 않음 |
+| MuJoCo manipulation backend | 공통 arm과 gripper 의미를 simulation actuator로 변환 | Navigation과 실제 hardware protocol을 포함하지 않음 |
 | Real base backend | 공통 명령을 wheel target으로 변환하고 MCU feedback을 ROS 상태로 발행 | mission과 navigation 판단을 수행하지 않음 |
 | Mentor-supported MCU | encoder feedback 수집, wheel velocity 제어와 MDD20A PWM/DIR 출력 | ROS 상위 계약과 mission 판단을 소유하지 않음 |
-| Robot description | joint/link 이름과 정적·관절 TF 제공 | 동적 odometry를 소유하지 않음 |
+| Robot description | joint/link 이름과 정적, 관절 TF 제공 | 동적 odometry를 소유하지 않음 |
 | Sensor driver/Sim sensor | 표준 sensor message 발행 | 물체 의미와 행동을 결정하지 않음 |
 | Skill Executor/MoveIt | high-level skill과 manipulation motion 실행 | private simulation hook에 의존하지 않음 |
 
@@ -199,7 +192,7 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 - 실제 base는 4륜 Mecanum holonomic kinematics를 사용한다.
 - 실제 motor encoder와 MDD20A는 멘토 지원 MCU를 통해 제어한다.
 - MCU 모델, firmware 책임, Jetson 연결 방식과 command/feedback 주기는 추가 확인 필요다.
-- wheel radius, wheelbase, track width, wheel 순서·회전 방향, joint 이름과 sensor 장착 위치는 추가 확인 필요다.
+- wheel radius, wheelbase, track width, wheel 순서, 회전 방향, joint 이름과 sensor 장착 위치는 추가 확인 필요다.
 - 모든 node가 simulation에서 `use_sim_time`을 일관되게 적용할 수 있다고 가정한다.
 
 ## 6. 리스크
@@ -213,7 +206,10 @@ arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 �
 
 ## 7. 관련 결정
 
-- [[30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스|4륜 메카넘 베이스]]는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 Decision이다.
+- [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 Decision이다.
 - `/cmd_vel`, frame, arm/gripper, sensor naming의 최종 채택은 Technical Decision 또는 팀 검토가 필요하다.
-- 관련 미해결 항목은 [[20_TECHNICAL/99 - Questions|Technical Questions]]에서 관리한다.
-- 회의 준비 근거는 [[40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비|Docs 검증 및 ROS 2 Contract 회의 준비]]다.
+- 관련 미해결 항목은 [Technical Questions](<99 - Questions.md>)에서 관리한다.
+
+## 8. 출처
+
+- [260710 - Docs 검증 및 ROS 2 Contract 회의 준비](<../40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md>)

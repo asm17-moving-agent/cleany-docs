@@ -31,8 +31,8 @@ compatibility: Python 3.11 이상, uv project 환경 사용, 외부 패키지 �
 | 구조 검사 | `scripts/check_structure.py` | 필수 폴더/파일 존재, 금지 파일 부재 |
 | Formatting 검사 | `scripts/check_formatting.py` | UTF-8, 최종 newline, trailing whitespace, fence 균형 등 |
 | YAML 검사 | `scripts/check_yaml.py` | Markdown frontmatter YAML 기본 문법, 중복 key, tab, quote 오류 |
-| Metadata 검사 | `scripts/check_metadata.py` | 필수 관계 key와 `status`·`ingest_status` 부재 |
-| 링크 검사 | `scripts/check_links.py` | Markdown 링크와 Obsidian wiki link 대상 존재 |
+| Metadata 검사 | `scripts/check_metadata.py` | Decision 날짜와 금지된 상태, 관계 metadata 부재 |
+| 링크 검사 | `scripts/check_links.py` | 표준 Markdown 링크 대상 존재와 공식 문서의 Obsidian wiki link 부재 |
 | Skill 검사 | `scripts/check_skills.py` | repo skill entrypoint, 필수 skill, deprecated `.codex/prompts` 부재 |
 
 ## 사용법

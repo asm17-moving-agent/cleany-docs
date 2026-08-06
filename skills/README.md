@@ -21,9 +21,9 @@ Codex가 자동 탐지하는 repo-scoped skill 위치는 `.agents/skills`이다.
 | `office-to-markdown` | `.agents/skills/office-to-markdown` | `skills/office-to-markdown` | DOCX, PPTX, XLSX, PDF를 Markdown으로 변환 |
 | `kb-doc-factory` | `.agents/skills/kb-doc-factory` | `skills/kb-doc-factory` | 템플릿 기반 Planning/Technical/Decision/회의록 문서 생성 |
 | `kb-maintenance` | `.agents/skills/kb-maintenance` | `skills/kb-maintenance` | Markdown normalize, 파일 색인, metadata report 생성 |
-| `kb-ingest` | `.agents/skills/kb-ingest` | `skills/kb-ingest` | Raw 회의록/조사자료에서 Planning·Technical 반영안과 실제 결정을 정리 |
-| `kb-audit` | `.agents/skills/kb-audit` | `skills/kb-audit` | 검토 플래그, source_refs, Decision inventory 리포트 생성 |
-| `kb-review-pack` | `.agents/skills/kb-review-pack` | `skills/kb-review-pack` | 품질 검사, audit, Decision 목록·대체 관계, 미해결 질문을 묶은 사람 검토 패키지 작성 |
+| `kb-ingest` | `.agents/skills/kb-ingest` | `skills/kb-ingest` | Raw 회의록/조사자료에서 Planning과 Technical 반영안 및 실제 결정을 정리 |
+| `kb-audit` | `.agents/skills/kb-audit` | `skills/kb-audit` | 검토 플래그, 본문 출처, Decision inventory 리포트 생성 |
+| `kb-review-pack` | `.agents/skills/kb-review-pack` | `skills/kb-review-pack` | 품질 검사, audit, Decision 목록, 대체 관계, 미해결 질문을 묶은 사람 검토 패키지 작성 |
 | `kb-quality-checks` | `.agents/skills/kb-quality-checks` | `skills/kb-quality-checks` | 구조, formatting, metadata, 링크, skill 구조 검사 |
 | `kb-pr` | `.agents/skills/kb-pr` | `skills/kb-pr` | 검증, 커밋, push, GitHub draft PR 생성 |
 
@@ -64,7 +64,7 @@ $kb-audit 전체 audit 리포트를 "40_RAW"에 생성해.
 사람 검토 패키지:
 
 ```text
-$kb-review-pack 전체 KB를 사람 검토 전에 점검하고 Blocking issue, 검토 필요 항목, Decision 변경·이력, 다음 리뷰 액션을 요약해.
+$kb-review-pack 전체 KB를 사람 검토 전에 점검하고 Blocking issue, 검토 필요 항목, Decision 변경, 이력, 다음 리뷰 액션을 요약해.
 ```
 
 품질 검사:

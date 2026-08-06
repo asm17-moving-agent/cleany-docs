@@ -1,8 +1,8 @@
 # 결정 인덱스(Decision Index)
 
 `main`에 반영된 실제 Decision을 날짜순으로 표시한다. 결정 후보와 열린 질문은
-Planning·Technical Questions에서 관리하고, 검토와 승인 이력은 GitHub PR에 남긴다.
-대체된 결정도 삭제하지 않고 각 문서의 `supersedes`·`superseded_by`로 연결한다.
+Planning과 Technical Questions에서 관리하고, 검토와 승인 이력은 GitHub PR에 남긴다.
+대체된 결정도 삭제하지 않고 각 문서의 `supersedes`, `superseded_by`로 연결한다.
 
 ## Planning Decisions
 

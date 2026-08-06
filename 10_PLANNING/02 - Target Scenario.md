@@ -1,10 +1,3 @@
----
-source_refs:
-  - "[기획서]"
-related_decisions:
-  - "30_DECISIONS/Planning/260708 - MVP 기능 범위.md"
----
-
 # 타깃 시나리오(Target Scenario)
 
 ## 요약
@@ -20,22 +13,22 @@ flowchart LR
     request["좌석 선택<br/>미션 요청"]
     navigate["대상 좌석으로<br/>자율 이동"]
     before["작업 전<br/>장면 관찰"]
-    decide["대상 의미·처리 가능 여부<br/>다음 순서 판단"]
+    decide["대상 의미, 처리 가능 여부<br/>다음 순서 판단"]
     execute["허용된 동작<br/>하나씩 실행"]
     verify["실행 결과<br/>재관찰"]
-    record["보류·미처리<br/>결과에 기록"]
+    record["보류, 미처리<br/>결과에 기록"]
     after["작업 후<br/>장면 관찰"]
     home["대기 위치로<br/>복귀"]
-    report["전후 관찰·처리 결과<br/>Dashboard 전달"]
+    report["전후 관찰, 처리 결과<br/>Dashboard 전달"]
 
     request --> navigate --> before --> decide
     decide -->|처리 허용| execute --> verify
     verify -->|다음 대상| decide
-    decide -->|보류·실행 불가| record --> decide
+    decide -->|보류, 실행 불가| record --> decide
     decide -->|모든 대상 확인| after --> home --> report
 ```
 
-물체별 실행은 한 번에 끝나는 일괄 동작이 아니라 판단·실행·재관찰을 반복하는
+물체별 실행은 한 번에 끝나는 일괄 동작이 아니라 판단, 실행, 재관찰을 반복하는
 폐루프다. 분실물이나 불확실한 물체는 정책을 추측해 처리하지 않고 결과에 남긴다.
 
 ## 기본 시나리오
@@ -48,7 +41,7 @@ flowchart LR
 6. 허용된 물체를 하나씩 처리하고 각 실행 결과를 확인한다.
 7. 로봇은 작업 후 장면을 다시 관찰해 처리 결과를 남긴다.
 8. 로봇은 대기 위치로 자율 복귀한다.
-9. Backend·Dashboard는 전후 관찰, 처리 결과와 실패·미처리 정보를 표시한다.
+9. Backend와 Dashboard는 전후 관찰, 처리 결과, 실패 및 미처리 정보를 표시한다.
 
 지도 제작 과정 자체는 데모 시나리오에 포함하지 않는다.
 
@@ -73,7 +66,15 @@ flowchart LR
 
 ## 관련 문서
 
-- [[10_PLANNING/05 - Success Criteria|Success Criteria]]
-- [[20_TECHNICAL/01 - System Context|System Context]]
-- [[20_TECHNICAL/03 - Task Planning and Robot Capabilities|Task Planning and Robot Capabilities]]
-- [[20_TECHNICAL/05 - Navigation and Mapping|Navigation and Mapping]]
+- [Success Criteria](<05 - Success Criteria.md>)
+- [System Context](<../20_TECHNICAL/01 - System Context.md>)
+- [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
+- [Navigation and Mapping](<../20_TECHNICAL/05 - Navigation and Mapping.md>)
+
+## 출처
+
+- [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
+
+## 관련 결정
+
+- [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)

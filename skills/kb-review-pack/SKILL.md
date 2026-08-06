@@ -1,6 +1,6 @@
 ---
 name: kb-review-pack
-description: 끌리니 KB의 사람 검토 준비 패키지를 만든다. 품질 검사, audit 결과, Decision 목록·대체 관계, 미해결 질문, 다음 리뷰 액션을 한 번에 정리할 때 사용한다.
+description: 끌리니 KB의 사람 검토 준비 패키지를 만든다. 품질 검사, audit 결과, Decision 목록, 대체 관계, 미해결 질문, 다음 리뷰 액션을 한 번에 정리할 때 사용한다.
 tags:
   - skill
   - review
@@ -17,7 +17,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
 
 - `.codex/prompts` custom prompt를 사용하지 않고 repo skill로 리뷰 흐름을 관리한다.
 - `$kb-quality-checks`와 `$kb-audit` 결과를 기반으로 검토 패키지를 만든다.
-- Planning, Technical, Decision, Raw의 성격과 작업 브랜치 변경을 분리해 사람이 판단할 수 있게 정리한다.
+- Planning, Technical, Decision 및 Raw의 성격과 작업 브랜치 변경을 분리해 사람이 판단할 수 있게 정리한다.
 - 문서 내용을 자동 확정하거나 실제로 확인되지 않은 Decision을 만들지 않는다.
 
 ## 입력
@@ -32,7 +32,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
 2. 먼저 `$kb-quality-checks`를 실행해 결정적 오류를 확인한다.
 3. 이어서 `$kb-audit`를 실행해 다음 항목을 확인한다.
    - 검토 플래그
-   - source_refs 상태
+   - 본문 `출처` 상태
    - Decision inventory
 4. 필요한 경우 관련 문서를 읽어 리뷰 맥락을 확인한다.
    - `00_START_HERE/00 - README.md`
@@ -45,7 +45,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - 결정적 검사 결과
    - Blocking issues
    - 사람 검토 필요 항목
-   - Decision 목록·대체 관계와 작업 브랜치의 Decision 변경
+   - Decision 목록, 대체 관계와 작업 브랜치의 Decision 변경
    - Planning/Technical `Questions`에서 닫아야 할 질문
    - Jira issue 후보
    - 다음 작업 제안
@@ -63,7 +63,7 @@ Blocking issues
 사람 검토 필요 항목
 - ...
 
-Decision 변경·이력
+Decision 변경, 이력
 - ...
 
 다음 리뷰 액션

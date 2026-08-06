@@ -12,6 +12,7 @@ from common import iter_markdown_files, print_errors, read_text, rel, repo_root_
 
 MD_LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 WIKI_LINK_RE = re.compile(r"\[\[([^\]]+)\]\]")
+STANDARD_LINK_PREFIXES = ("00_START_HERE/", "10_PLANNING/", "20_TECHNICAL/", "30_DECISIONS/")
 
 
 def is_external(target: str) -> bool:
@@ -87,6 +88,11 @@ def main() -> int:
                     errors.append(f"{r}:{line_no}: Markdown 링크 대상 없음: {target}")
             for match in WIKI_LINK_RE.finditer(line):
                 target = match.group(1)
+                if r.startswith(STANDARD_LINK_PREFIXES):
+                    errors.append(
+                        f"{r}:{line_no}: 공식 문서는 Obsidian wiki link 대신 표준 Markdown 링크 사용: [[{target}]]"
+                    )
+                    continue
                 if not wiki_target_exists(root, path, target):
                     errors.append(f"{r}:{line_no}: Wiki 링크 대상 없음: [[{target}]]")
 

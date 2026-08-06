@@ -16,6 +16,7 @@
 
 - 모든 문서와 repo skill 안내는 한국어로 작성한다.
 - YAML frontmatter key, 폴더명, 파일명, 명령 파일명, 기술 고유명사, 코드 블록 안의 구조 예시는 영어를 허용한다.
+- 복수 항목은 문맥에 맞게 쉼표와 `와/과`, `및`, `또는`으로 연결하고 가운데점을 목록 구분자로 사용하지 않는다.
 
 ## 3. 문서 계층 규칙
 
@@ -24,10 +25,10 @@
 - 기획 문서와 기술 문서를 섞지 않는다.
 - `30_DECISIONS`는 무엇을 왜 결정했는지 기록한다.
 - `40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료, 임시 메모와 첨부 원본을 두는 비공식 작업 공간이며 최종 결정이 아니다.
-- 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습·조사 자료는 `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다. Meetings·Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
-- 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning·Technical 문서와 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
+- 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습, 조사 자료는 `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다. Meetings, Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
+- 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning과 Technical 문서 및 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
 - 폴더는 지식의 성격을, Git은 검토 상태를 나타낸다. YAML `status`와 `ingest_status`는 사용하지 않는다.
-- `main`의 Planning·Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과 변경 이력이다.
+- `main`의 Planning과 Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과 변경 이력이다.
 - Raw와 작업 브랜치의 변경은 공식 기준이 아니다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 - Decision 후보는 Raw 또는 Questions에서 관리하고, 실제 결정이 확인된 뒤 작업 브랜치에서 Decision 문서를 작성한다.
 
@@ -35,9 +36,9 @@
 
 `main`의 `10_PLANNING`과 `20_TECHNICAL`을 현재 기준으로 사용한다. `30_DECISIONS`는
 그 기준을 선택한 이유와 대체 이력을 설명하며, 이전 결정은
-`supersedes`·`superseded_by`로 연결한다.
+`supersedes`, `superseded_by`로 연결한다.
 
-Planning·Technical과 Decision이 충돌하면 어느 한쪽을 임의로 우선하지 않는다.
+Planning이나 Technical이 Decision과 충돌하면 어느 한쪽을 임의로 우선하지 않는다.
 문서 반영 누락이나 대체 관계를 확인하고, 기획 판단은
 `10_PLANNING/99 - Questions.md`, 기술 판단은 `20_TECHNICAL/99 - Questions.md`에
 질문으로 남긴다. `40_RAW`는 근거와 맥락을 확인할 때만 참고한다.
@@ -52,14 +53,15 @@ Planning·Technical과 Decision이 충돌하면 어느 한쪽을 임의로 우�
 
 ## 6. 공식 문서 갱신 규칙
 
-- 공식 문서를 갱신할 때 `source_refs`, `related_decisions`를 가능한 한 갱신한다.
-- 계층 간 링크는 `10_PLANNING`·`20_TECHNICAL` → `30_DECISIONS` → `40_RAW` 단방향으로 둔다. Planning·Technical 문서는 관련 Decision을, Decision 문서는 `source_refs`로 Raw를 참조한다.
+- 공식 문서를 갱신할 때 본문의 `출처`와 `관련 결정`을 가능한 한 갱신한다.
+- 관계는 YAML 경로 문자열이나 Obsidian wiki link가 아니라 표준 Markdown 링크로 작성한다.
+- Planning과 Technical 문서는 직접 근거를 `출처`에, 관련 Decision을 `관련 결정`에 둔다. Decision은 Raw 및 외부 근거를 `출처`에서 참조한다. Raw 문서는 상위 계층을 역링크하지 않는다.
 - Jira issue에는 문서 본문을 복붙하지 않고 관련 문서 링크만 둔다.
 - 결과물은 사람이 읽기 쉬운 구조로 작성한다.
 
 ## 7. AI 작업 규칙
 
-- AI가 만든 Planning·Technical 변경은 작업 브랜치에 두고 GitHub PR에서 사람이 검토한다.
+- AI가 만든 Planning과 Technical 변경은 작업 브랜치에 두고 GitHub PR에서 사람이 검토한다.
 - AI는 팀이 실제로 내린 결정이 확인된 경우에만 작업 브랜치에 Decision 문서를 작성한다.
 - 공식 문서 직접 수정은 명시적으로 요청받았거나 사람 검토가 끝난 경우에만 수행한다.
 - 근거 없는 rationale, 가정, 수치를 만들지 않는다.

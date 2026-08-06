@@ -10,6 +10,7 @@ sys.dont_write_bytecode = True
 EXCLUDED_DIRS = {".git", ".venv", "node_modules", "__pycache__", ".obsidian", ".agents", ".codex", "skills", "50_WORKING"}
 EXCLUDED_PATHS = {
     "40_RAW/decision-inventory.md",
+    "40_RAW/references-report.md",
     "40_RAW/review-flags-report.md",
     "40_RAW/source-refs-report.md",
 }
