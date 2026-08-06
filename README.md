@@ -23,7 +23,7 @@
 2. `10_PLANNING`과 `20_TECHNICAL`은 검토 가능한 공식 문서 초안입니다. 검토와 승인 이력은 GitHub PR에 남깁니다.
 3. `30_DECISIONS`는 중요한 선택을 따로 추적하는 곳입니다. `selected`가 아니면 아직 확정 결정이 아닙니다.
 4. 불확실한 내용은 바로 결론으로 쓰지 않고 기획 질문은 `10_PLANNING/99 - Questions.md`, 기술 질문은 `20_TECHNICAL/99 - Questions.md`에 남깁니다.
-5. 문서를 고친 뒤에는 `$kb-quality-checks`로 깨진 구조와 링크를 확인합니다.
+5. 문서를 고친 뒤에는 `$kb-quality-checks`로 핵심 구조, YAML과 내부 참조를 확인합니다.
 
 작업할 때는 아래 질문으로 시작하면 됩니다.
 
@@ -70,7 +70,7 @@
 
 ### 문서 수정 후
 
-1. `$kb-quality-checks`로 구조, formatting, metadata, 링크를 확인합니다.
+1. `$kb-quality-checks`로 핵심 구조, YAML, 최소 상태값과 내부 참조를 확인합니다.
 2. `$kb-audit`로 검토 플래그와 Decision 상태를 요약합니다.
 3. 실패 항목이 판단을 요구하면 기획 항목은 Planning Questions, 기술 항목은 Technical Questions에 남깁니다.
 

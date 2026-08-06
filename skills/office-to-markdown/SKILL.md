@@ -1,11 +1,6 @@
 ---
 name: office-to-markdown
 description: DOCX, PPTX, XLSX, PDF 파일을 LLM 없이 결정적으로 읽어 Markdown으로 변환한다. 기획서, 발표자료, 스프레드시트, 외부 산출물을 Raw 문서로 ingest할 때 사용한다.
-tags:
-  - skill
-  - raw
-  - conversion
-compatibility: Python 3.11 이상, uv project dependencies 사용
 ---
 
 # Office to Markdown
@@ -26,7 +21,7 @@ compatibility: Python 3.11 이상, uv project dependencies 사용
 - 변환은 deterministic하게 수행한다.
 - 내용을 요약하거나 해석하지 않는다.
 - 원문에 없는 내용을 추가하지 않는다.
-- 변환 결과는 기본적으로 Raw 또는 Working 계층에 둔다.
+- 변환 결과는 기본적으로 `40_RAW`에 둔다.
 - 변환 후 공식 문서 반영 여부는 사람 검토를 거친다.
 
 ## 단일 파일 변환
@@ -34,19 +29,19 @@ compatibility: Python 3.11 이상, uv project dependencies 사용
 저장소 루트에서 실행한다.
 
 ```bash
-uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets/자료.docx" --output "40_RAW/자료 원문 변환.md"
+uv run --locked --only-group office python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets/자료.docx" --output "40_RAW/자료 원문 변환.md"
 ```
 
 stdout으로 확인하려면 `--output`을 생략한다.
 
 ```bash
-uv run python skills/office-to-markdown/scripts/office_to_markdown.py "파일.docx"
+uv run --locked --only-group office python skills/office-to-markdown/scripts/office_to_markdown.py "파일.docx"
 ```
 
 ## 폴더 일괄 변환
 
 ```bash
-uv run python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets" --output "40_RAW"
+uv run --locked --only-group office python skills/office-to-markdown/scripts/office_to_markdown.py "40_RAW/assets" --output "40_RAW"
 ```
 
 입력이 폴더인 경우 `--output`은 출력 폴더로 해석된다.

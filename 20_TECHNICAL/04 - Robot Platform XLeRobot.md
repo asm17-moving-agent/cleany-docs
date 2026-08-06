@@ -2,7 +2,7 @@
 status: draft
 source_refs:
   - "[기획서]"
-  - "40_RAW/지출신청서_관리.md"
+  - "[지출신청서 관리 원본: 로컬 Inbox]"
 related_decisions:
   - "30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md"
   - "30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md"

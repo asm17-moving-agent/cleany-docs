@@ -80,9 +80,11 @@
 
 검사 범위는 다음과 같다.
 
-- 필수 폴더/파일 구조
-- Markdown formatting
-- Obsidian YAML metadata
-- 내부 Markdown 링크와 Obsidian wiki link
+- 핵심 계층과 루트 안내 문서
+- YAML frontmatter 문법과 공식 문서의 최소 `status`
+- Markdown 링크·이미지, Obsidian wiki link·embed, YAML 내부 경로
+- 발견된 repo skill 원본과 Codex entrypoint의 일치
+
+개별 문서·폴더 이름, 공백·줄바꿈 같은 스타일, 특정 skill 목록이나 본문 문구는 CI에서 강제하지 않는다.
 
 검사 실패를 무시하고 공식 문서를 확정하지 않는다. 실패 항목이 판단을 요구하면 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.

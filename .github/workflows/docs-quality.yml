@@ -40,11 +40,8 @@ jobs:
           enable-cache: true
           cache-dependency-glob: uv.lock
 
-      - name: Sync locked dependencies
-        run: uv sync --locked
-
-      - name: Run deterministic quality checks
-        run: uv run python skills/kb-quality-checks/scripts/run_checks.py .
+      - name: Run KB integrity checks
+        run: uv run --locked --only-group quality python skills/kb-quality-checks/scripts/run_checks.py .
 
       - name: Verify checks do not modify tracked files
         run: git diff --exit-code

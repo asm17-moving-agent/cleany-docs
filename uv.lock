@@ -6,22 +6,28 @@ requires-python = ">=3.11"
 name = "cleany-docs"
 version = "0.1.0"
 source = { virtual = "." }
-dependencies = [
+
+[package.dev-dependencies]
+office = [
     { name = "openpyxl" },
     { name = "pypdf" },
     { name = "python-docx" },
     { name = "python-pptx" },
+]
+quality = [
     { name = "pyyaml" },
 ]
 
 [package.metadata]
-requires-dist = [
+
+[package.metadata.requires-dev]
+office = [
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "pypdf", specifier = ">=6.14.2" },
     { name = "python-docx", specifier = ">=1.2.0" },
     { name = "python-pptx", specifier = ">=1.0.2" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
 ]
+quality = [{ name = "pyyaml", specifier = ">=6.0.3" }]
 
 [[package]]
 name = "et-xmlfile"

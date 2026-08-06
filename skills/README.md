@@ -24,7 +24,7 @@ Codex가 자동 탐지하는 repo-scoped skill 위치는 `.agents/skills`이다.
 | `kb-ingest` | `.agents/skills/kb-ingest` | `skills/kb-ingest` | Raw 회의록/조사자료를 Planning/Decision 초안으로 변환 |
 | `kb-audit` | `.agents/skills/kb-audit` | `skills/kb-audit` | 검토 플래그, source_refs, Decision inventory 리포트 생성 |
 | `kb-review-pack` | `.agents/skills/kb-review-pack` | `skills/kb-review-pack` | 품질 검사, audit, Decision 상태, 미해결 질문을 묶은 사람 검토 패키지 작성 |
-| `kb-quality-checks` | `.agents/skills/kb-quality-checks` | `skills/kb-quality-checks` | 구조, formatting, metadata, 링크, skill 구조 검사 |
+| `kb-quality-checks` | `.agents/skills/kb-quality-checks` | `skills/kb-quality-checks` | 핵심 구조, YAML, 최소 상태값, 내부 참조, 동적 skill 진입점 검사 |
 | `kb-pr` | `.agents/skills/kb-pr` | `skills/kb-pr` | 검증, 커밋, push, GitHub draft PR 생성 |
 
 Codex custom prompt(`.codex/prompts`)는 deprecated이므로 이 저장소에서는 유지하지 않는다. 재사용 가능한 워크플로우는 repo skill로 관리한다.
