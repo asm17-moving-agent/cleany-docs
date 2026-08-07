@@ -13,6 +13,7 @@
 | MVP 데모에 배치할 쓰레기와 분실물 후보의 정확한 종류와 개수는 무엇인가? | [Target Scenario](<02 - Target Scenario.md>), [Scope and Non-Goals](<04 - Scope and Non-Goals.md>) |
 | 분실물 후보를 발견했을 때 로봇이 수행할 물리적 행동과 운영자 인계 흐름은 무엇인가? | [Target Scenario](<02 - Target Scenario.md>) |
 | 실패, 저신뢰, 미처리 결과를 Dashboard에서 어떻게 보여줄 것인가? | [Target Scenario](<02 - Target Scenario.md>), [Success Criteria](<05 - Success Criteria.md>) |
+| 작업 전후 관찰 자료의 보관 기간, 접근 권한과 삭제 기준은 무엇인가? | [Target Scenario](<02 - Target Scenario.md>), [Robot Operations and Mission Dispatch](<../20_TECHNICAL/02 - Robot Operations and Mission Dispatch.md>) |
 | 실제 데모의 좌석, 지도, 초기 물체 배치와 작업 구역 경계는 무엇인가? | [Target Scenario](<02 - Target Scenario.md>), [Success Criteria](<05 - Success Criteria.md>) |
 | 전체 목표 MVP를 축소해야 할 때 어떤 단계까지를 승인 가능한 데모로 볼 것인가? | [Scope and Non-Goals](<04 - Scope and Non-Goals.md>), [Success Criteria](<05 - Success Criteria.md>) |
 

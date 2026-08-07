@@ -19,7 +19,8 @@
 | base와 arm의 속도, 힘, workspace, timeout과 e-stop 우선순위를 어떤 값과 계층에서 강제할 것인가? | [Safety and Risk](<08 - Safety and Risk.md>), [Robot ROS Contract](<10 - Robot ROS Contract.md>) |
 | 좌석 ID→접근 pose mapping 형식과 책상 조작에 적합한 도착 조건은 무엇인가? | [Navigation and Mapping](<05 - Navigation and Mapping.md>) |
 | 실제 전력 예산, battery, fuse, 배선 정격과 USB 장치 배치는 어떻게 확정할 것인가? | [Hardware Configuration](<12 - Hardware Configuration.md>) |
-| Dashboard 및 Backend와 Robot 사이 Mission Request, Progress, Result 최소 계약은 무엇인가? | [System Context](<01 - System Context.md>), [Mission Lifecycle](<09 - Mission Lifecycle.md>) |
+| Backend와 Robot의 논리 관제 계약을 어떤 transport, API 또는 event schema로 구현하고 heartbeat와 offline 판정 기준을 어떻게 정할 것인가? | [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>), [System Context](<01 - System Context.md>) |
+| 원격 reset을 허용할 복구 가능 오류와 대기 위치 복귀를 수락할 안전 조건은 무엇인가? | [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>), [Safety and Risk](<08 - Safety and Risk.md>) |
 
 제품 선택이 필요한 질문은 [Planning Questions](<../10_PLANNING/99 - Questions.md>)에서 관리한다.
 
