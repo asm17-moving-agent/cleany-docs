@@ -14,7 +14,7 @@ Jetson이다.
 ```mermaid
 flowchart TB
     dashboard["Dashboard"]
-    backend["Backend"]
+    backend["Backend<br/>관제, 미션 할당, 상태, 결과"]
 
     subgraph runtime[" "]
         direction TB
@@ -61,6 +61,7 @@ Reporter는 Mission Manager에 관찰과 결과를 반환하며, Backend에는 M
 | 주제 | 문서 | 소유하는 질문 |
 |---|---|---|
 | 외부 경계 | [System Context](<01 - System Context.md>) | Dashboard, Backend, Robot은 무엇을 주고받는가? |
+| 관제 | [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>) | Backend는 미션을 어떻게 할당하고 Robot 상태와 결과를 관리하는가? |
 | 판단과 실행 | [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>) | 누가 작업을 고르고 어떤 Capability가 실행하는가? |
 | 로봇 형태 | [Robot Platform XLeRobot](<04 - Robot Platform XLeRobot.md>) | 로봇의 신체와 subsystem 경계는 무엇인가? |
 | 주행 | [Navigation and Mapping](<05 - Navigation and Mapping.md>) | 좌석까지 어떻게 왕복하는가? |

@@ -2,9 +2,9 @@
 
 ## 요약
 
-Cleany 시스템은 운영자가 사용하는 Dashboard, 요청과 결과를 중계하는 Backend,
-물리 미션을 수행하는 Robot으로 나뉜다. 이 문서는 세 영역의 경계만 다루며 로봇
-내부 package, topic은 다루지 않는다.
+Cleany 시스템은 운영자가 사용하는 Dashboard, 미션을 할당하고 외부 상태를 관리하는
+Backend, 물리 미션을 수행하는 Robot으로 나뉜다. 이 문서는 세 영역의 경계만 다루며
+관제 lifecycle과 로봇 내부 package, topic은 다루지 않는다.
 
 ## 시스템 경계
 
@@ -29,7 +29,7 @@ flowchart LR
 | 구성요소 | 책임 | 책임 밖 |
 |---|---|---|
 | Dashboard | 대상 좌석 선택, 수동 요청, 진행, 최종 결과 표시 | 로봇 상태 전이와 motor 제어 |
-| Backend | 요청 전달, Robot 상태, 결과 중계, Dashboard 연동 | Robot 내부 planning 판단 |
+| Backend | 우선순위 대기열, 미션 할당, Robot 상태와 결과 관리, Dashboard 연동 | Robot 내부 planning과 물리 안전 판단 |
 | Robot | 이동, 관찰, 계획, 물리 실행, 복귀와 MissionReport 생성 | 점포 운영 정책 임의 확정 |
 | 운영자 | 미션 요청, 결과 확인, 필요 시 비상 정지 | 작업 중 로봇 구역 진입을 전제로 하지 않음 |
 
@@ -37,8 +37,9 @@ flowchart LR
 
 ### Mission Request
 
-제품 관점에서 요청은 대상 좌석을 식별할 수 있어야 한다. 정확한 API 필드와 queue
-schema는 Backend 구현 문서에서 정한다.
+제품 관점에서 요청은 대상 좌석을 식별할 수 있어야 한다. 대기열과 수락 및 거절의
+의미는 [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>)에서
+관리하고, 정확한 API 필드와 queue schema는 Backend 구현 문서에서 정한다.
 
 ### Progress
 
@@ -60,6 +61,7 @@ Dashboard는 최소한 요청 수락, 이동, 책상 작업, 복귀, 완료, 실
 ## 관련 문서
 
 - [Target Scenario](<../10_PLANNING/02 - Target Scenario.md>)
+- [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>)
 - [Mission Lifecycle](<09 - Mission Lifecycle.md>)
 - [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>)
 

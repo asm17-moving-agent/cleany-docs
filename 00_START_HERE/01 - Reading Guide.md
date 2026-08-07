@@ -20,11 +20,12 @@
 ## 기술 리뷰
 
 1. [System Context](<../20_TECHNICAL/01 - System Context.md>)
-2. [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
-3. [Perception and Scene Understanding](<../20_TECHNICAL/07 - Perception and Scene Understanding.md>)
-4. [Mission Lifecycle](<../20_TECHNICAL/09 - Mission Lifecycle.md>)
-5. [Safety and Risk](<../20_TECHNICAL/08 - Safety and Risk.md>)
-6. 필요한 subsystem 문서
+2. [Robot Operations and Mission Dispatch](<../20_TECHNICAL/02 - Robot Operations and Mission Dispatch.md>)
+3. [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
+4. [Perception and Scene Understanding](<../20_TECHNICAL/07 - Perception and Scene Understanding.md>)
+5. [Mission Lifecycle](<../20_TECHNICAL/09 - Mission Lifecycle.md>)
+6. [Safety and Risk](<../20_TECHNICAL/08 - Safety and Risk.md>)
+7. 필요한 subsystem 문서
    - [Navigation and Mapping](<../20_TECHNICAL/05 - Navigation and Mapping.md>)
    - [Robot ROS Contract](<../20_TECHNICAL/10 - Robot ROS Contract.md>)
    - [ROS 2 Software Architecture](<../20_TECHNICAL/11 - ROS 2 Software Architecture.md>)

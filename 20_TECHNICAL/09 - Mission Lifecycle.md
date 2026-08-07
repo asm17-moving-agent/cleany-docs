@@ -6,18 +6,22 @@ Mission Manager는 Cleany 전체 미션의 단계 전이와 최종 결과를 소
 Perception, Planner와 Skill Executor는 요청을 수행하고 결과를 반환하지만 Mission
 state를 직접 바꾸지 않는다.
 
+Backend는 대기열과 미션 제안을 소유하고, Mission Manager는 요청을 수락한 뒤 Robot
+내부 실행 상태를 소유한다. Backend가 수락 이후의 내부 state를 직접 전이시키지
+않는다.
+
 ## 목표 제품 흐름
 
 ```mermaid
 sequenceDiagram
-    participant UI as 외부 시스템
+    participant Control as Backend Adapter
     participant Mission as Mission Manager
     participant Nav as Navigator
     participant Perception
     participant Planner as Task Planner
     participant Capability as Robot Capability
 
-    UI->>Mission: 좌석 선택, Mission Request
+    Control->>Mission: 검증할 Mission Request
     Mission->>Nav: 대상 좌석 이동
     Nav-->>Mission: 도착 결과
     Mission->>Perception: 작업 전 관찰
@@ -41,7 +45,7 @@ sequenceDiagram
     Perception-->>Mission: After Observation
     Mission->>Nav: 대기 위치 복귀
     Nav-->>Mission: 복귀 결과
-    Mission-->>UI: 전후 관찰, 부분 실패, 최종 상태
+    Mission-->>Control: 전후 관찰, 부분 실패, 최종 상태
 ```
 
 실패, 차단, 취소는 어느 단계에서든 보고 가능한 종료 경로로 연결되어야 한다.
@@ -82,7 +86,7 @@ Source of Truth다.
 
 | 단계 | 호출 대상 | Mission Manager가 판단하는 것 |
 |---|---|---|
-| 미션 수락 | Dashboard, Backend adapter | 새 미션을 받을 수 있는가 |
+| 미션 수락 | Backend adapter | 새 미션을 받을 수 있는가 |
 | 이동, 복귀 | Navigator | 성공, 재시도, 실패, 취소 |
 | 관찰 | Perception | 유효한 Scene State인가 |
 | 계획 | 선택된 Planner adapter 또는 RuleBasedPlanner | 실행 가능한 task proposal인가 |
@@ -120,6 +124,7 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 ## 관련 문서
 
 - [System Context](<01 - System Context.md>)
+- [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>)
 - [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>)
 - [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>)
 
