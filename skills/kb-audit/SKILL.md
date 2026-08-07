@@ -1,6 +1,6 @@
 ---
 name: kb-audit
-description: 끌리니 KB의 검토 필요 항목, source_refs, Decision inventory를 LLM 없이 리포트로 생성한다. 리뷰 준비와 문서 품질 점검에 사용한다.
+description: 끌리니 KB의 검토 필요 항목, 본문 출처, Decision inventory를 LLM 없이 리포트로 생성한다. 리뷰 준비와 문서 품질 점검에 사용한다.
 tags:
   - skill
   - audit
@@ -17,8 +17,8 @@ compatibility: Python 3.11 이상, 외부 패키지 불필요
 | 스크립트 | 역할 |
 |---|---|
 | `scripts/review_flags_report.py` | `검토 필요`, `추가 확인 필요`, `placeholder`, `미정` 등 검토 플래그 수집 |
-| `scripts/source_refs_report.py` | Planning/Technical/Decision 문서의 source_refs 상태 점검 |
-| `scripts/decision_inventory.py` | Decision 문서 inventory 생성 |
+| `scripts/references_report.py` | Planning/Technical/Decision 문서의 본문 `출처` 상태 점검 |
+| `scripts/decision_inventory.py` | Decision 날짜와 `supersedes`, `superseded_by` inventory 생성 |
 | `scripts/audit_all.py` | 위 리포트를 한 번에 생성 |
 
 ## 전체 audit 실행
@@ -41,7 +41,7 @@ uv run python skills/kb-audit/scripts/audit_all.py . --output-dir "40_RAW"
 
 ```bash
 uv run python skills/kb-audit/scripts/review_flags_report.py . --output "40_RAW/review-flags-report.md"
-uv run python skills/kb-audit/scripts/source_refs_report.py . --output "40_RAW/source-refs-report.md"
+uv run python skills/kb-audit/scripts/references_report.py . --output "40_RAW/references-report.md"
 uv run python skills/kb-audit/scripts/decision_inventory.py . --output "40_RAW/decision-inventory.md"
 ```
 

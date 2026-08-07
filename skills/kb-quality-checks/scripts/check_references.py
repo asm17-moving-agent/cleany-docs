@@ -10,7 +10,6 @@ from urllib.parse import unquote
 
 from common import (
     iter_markdown_files,
-    load_frontmatter,
     print_errors,
     read_text,
     rel,
@@ -20,19 +19,12 @@ from common import (
 
 MD_LINK_RE = re.compile(r"!?\[[^\]]*\]\((<[^>]+>|.*?)\)")
 WIKI_LINK_RE = re.compile(r"!?\[\[([^\]]+)\]\]")
-METADATA_REF_FIELDS = ("source_refs", "related_decisions", "source_file", "supersedes")
-REPO_PATH_PREFIXES = (
+STANDARD_LINK_PREFIXES = (
     "00_START_HERE/",
     "10_PLANNING/",
     "20_TECHNICAL/",
     "30_DECISIONS/",
-    "40_RAW/",
-    "90_TEMPLATES/",
-    "skills/",
-    ".agents/",
-    ".github/",
 )
-ROOT_FILES = {"README.md", "AGENTS.md", "pyproject.toml", "uv.lock"}
 
 
 def is_external(target: str) -> bool:
@@ -89,69 +81,6 @@ def wiki_target_exists(root: Path, current_file: Path, raw: str) -> bool:
     return safe_exists(root, candidates)
 
 
-def metadata_values(value: object) -> list[str]:
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, list):
-        return [item for item in value if isinstance(item, str)]
-    return []
-
-
-def is_symbolic_reference(target: str) -> bool:
-    stripped = target.strip()
-    return stripped.startswith("[") and stripped.endswith("]")
-
-
-def looks_like_repo_path(target: str) -> bool:
-    return target in ROOT_FILES or target.startswith(REPO_PATH_PREFIXES)
-
-
-def looks_like_relative_path(target: str) -> bool:
-    return target.startswith(("./", "../")) or "/" in target or bool(Path(target).suffix)
-
-
-def metadata_target_exists(
-    root: Path,
-    current_file: Path,
-    field: str,
-    raw_target: str,
-) -> bool:
-    target = unquote(raw_target.strip()).split("#", 1)[0]
-    if not target or is_external(target) or is_symbolic_reference(target):
-        return True
-
-    if field == "source_file":
-        candidates = [
-            root / target,
-            current_file.parent / target,
-            current_file.parent / "assets" / target,
-        ]
-    elif field == "source_refs" and not looks_like_repo_path(target):
-        if not looks_like_relative_path(target):
-            return True
-        candidates = [current_file.parent / target]
-    else:
-        candidates = [root / target]
-    return safe_exists(root, candidates)
-
-
-def check_frontmatter_references(
-    root: Path,
-    path: Path,
-    text: str,
-    errors: list[str],
-) -> None:
-    data, fm_err = load_frontmatter(text)
-    if fm_err or data is None:
-        return
-
-    r = rel(path, root)
-    for field in METADATA_REF_FIELDS:
-        for target in metadata_values(data.get(field)):
-            if not metadata_target_exists(root, path, field, target):
-                errors.append(f"{r}: {field} 대상 없음: {target}")
-
-
 def main() -> int:
     root = repo_root_from_args(sys.argv)
     errors: list[str] = []
@@ -164,8 +93,6 @@ def main() -> int:
             continue
         assert text is not None
 
-        check_frontmatter_references(root, path, text, errors)
-
         for line_no, line in strip_fenced_code(text.splitlines()):
             for match in MD_LINK_RE.finditer(line):
                 target = normalize_markdown_target(match.group(1))
@@ -173,6 +100,12 @@ def main() -> int:
                     errors.append(f"{r}:{line_no}: Markdown 링크/이미지 대상 없음: {target}")
             for match in WIKI_LINK_RE.finditer(line):
                 target = match.group(1)
+                if r.startswith(STANDARD_LINK_PREFIXES):
+                    errors.append(
+                        f"{r}:{line_no}: 공식 문서는 Obsidian wiki link 대신 "
+                        f"표준 Markdown 링크 사용: [[{target}]]"
+                    )
+                    continue
                 if not wiki_target_exists(root, path, target):
                     errors.append(f"{r}:{line_no}: Wiki 링크/임베드 대상 없음: [[{target}]]")
 

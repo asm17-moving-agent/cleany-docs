@@ -11,7 +11,7 @@ sys.dont_write_bytecode = True
 
 REPORTS = [
     ("review_flags_report", "review-flags-report.md", "Review Flags Report"),
-    ("source_refs_report", "source-refs-report.md", "Source Refs Report"),
+    ("references_report", "references-report.md", "References Report"),
     ("decision_inventory", "decision-inventory.md", "Decision Inventory"),
 ]
 

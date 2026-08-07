@@ -1,9 +1,6 @@
 ---
-status: dropped
 date: 2026-07-08
-source_refs:
-  - "40_RAW/기획서 원문 요약.md"
-supersedes:
+superseded_by: "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
 ---
 
 # 260708 - Jetson AGX Orin 64GB
@@ -35,7 +32,7 @@ NVIDIA Jetson AGX Orin 64GB를 끌리니의 메인 엣지 컴퓨팅 장치로 �
 
 ## 5. 리스크
 
-- Orin NX 16GB의 base software stack은 JetPack 6.2로 정했지만 ROS 2와 프로젝트별 Python·AI package 조합은 추가 검증이 필요하다.
+- Orin NX 16GB의 base software stack은 JetPack 6.2로 정했지만 ROS 2와 프로젝트별 Python, AI package 조합은 추가 검증이 필요하다.
 - 16GB 메모리에서 동시 실행 workload가 메모리 또는 추론 성능 한계를 넘을 수 있다.
 - carrier board, 발열과 전력 구성이 현장 운영 요구를 만족하지 못할 수 있다.
 
@@ -46,9 +43,9 @@ NVIDIA Jetson AGX Orin 64GB를 끌리니의 메인 엣지 컴퓨팅 장치로 �
 
 ## 7. 출처
 
-- [[40_RAW/기획서 원문 요약|기획서 원문 요약]]
+- [기획서 원문 요약](<../../40_RAW/기획서 원문 요약.md>)
 - [NVIDIA JetPack 6.2 Release Notes](https://docs.nvidia.com/jetson/jetpack/6.2/release-notes/index.html)
 
 ## 8. 관련 결정
 
-- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]가 이 안을 대체한다.
+- [Jetson Orin NX 16GB](<260714 - Jetson Orin NX 16GB.md>)가 이 안을 대체한다.

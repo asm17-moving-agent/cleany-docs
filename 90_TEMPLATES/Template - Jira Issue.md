@@ -1,6 +1,4 @@
 ---
-status: draft
-ingest_status: raw
 related_docs:
   -
 ---

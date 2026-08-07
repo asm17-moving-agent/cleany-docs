@@ -1,86 +1,107 @@
----
-status: draft
-source_refs:
-  - "[기획서]"
-related_decisions:
-  - "30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB.md"
-  - "30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md"
----
-
 # Jetson Orin 엣지 런타임
 
-## 1. 요약
+## 요약
 
-기획서에는 Jetson AGX Orin 64GB가 메인 컴퓨팅 장치로 명시되어 있으나, selected Decision에 따라 현재 기준 장치는 Jetson Orin NX 16GB다. 이 문서는 온디바이스 추론, TensorRT 최적화, Docker, CUDA, JetPack 환경을 예비 기술 관점에서 정리한다.
+Jetson Orin NX 16GB는 Cleany 로봇의 ROS 2, sensor 처리, 로컬 검증, Capability
+adapter와 hardware integration을 실행하는 엣지 컴퓨터다. 특정 cloud VLM을 로컬에서
+실행하기 위해 정해진 장치는 아니며, 로컬 VLM과 detector, segmentation 후보도 측정 대상이다.
 
-## 2. 기획 맥락
+## 배포 구조
 
-끌리니는 무인 공간에서 실시간으로 객체 탐지, 위치 추정, 장애물 회피, 행동 판단을 수행해야 한다. 외부 서버 의존도가 높으면 지연, 네트워크 장애, 현장 운영 안정성 문제가 생길 수 있으므로 온디바이스 추론이 기획서에 포함되어 있다.
+```mermaid
+flowchart TB
+    subgraph cloud["Cloud, 운영자 영역"]
+        dashboard["Dashboard / Backend<br/>미션 요청, 상태, 결과"]
+        api_vlm["API 기반 VLM 후보<br/>ER 2 등"]
+    end
 
-## 3. 기술 개념
+    network["Network Boundary"]
 
-### 3.1 기획서 및 Decision 기준 개발환경
+    subgraph edge["Robot Edge, Jetson Orin NX"]
+        mission["Mission Manager<br/>state, allowlist, argument 검증"]
+        local_ai["로컬 VLM, YOLO, segmentation 후보"]
+        ros["ROS 2 Runtime<br/>Nav2, Perception, Planner<br/>Capability 물리 제약 검증 및 실행"]
+        logs["Observation, Result, Diagnostics"]
+    end
 
-| 구분 | 항목 | 현재 기준 | 상태 |
-|---|---|---|---|
-| OS | Robot Edge | JetPack 6.2, Jetson Linux 36.4.3, Ubuntu 22.04 기반 root filesystem | selected Decision, Orin NX 16GB 지원 확인 |
-| Compute runtime | Robot Edge | CUDA 12.6, TensorRT 10.3, cuDNN 9.3 | JetPack 6.2 공식 구성 |
-| ROS 2 | Robot Edge | ROS 2 Humble | JetPack 6.2의 Ubuntu 22.04 기반 root filesystem에서 사용할 기준 배포판 |
-| OS | Server, Training Server | Ubuntu 26.04 LTS, Docker, CUDA | 기획서 기반, 실제 호환성 검토 필요 |
-| 개발도구 | IDE | VS Code | 기획서 기반 |
-| 협업/CI | GitHub, GitHub Actions, Github Projects | 문서에는 GitHub Projects 표기로 기재 | 기획서 기반 |
-| 로봇 개발환경 | ROS 2, LeRobot, MuJoCo, Isaac Sim | 원문 표기 `Mujoco`, `IssacSim` 포함 | 표기 검토 필요 |
-| 개발언어 | 로봇 미들웨어 | C++(ROS 2) | 기획서 기반 |
-| 개발언어 | AI 추론 | Python(PyTorch, OpenCV, TensorRT) | 기획서 기반 |
-| HW | 메인 컴퓨팅 | NVIDIA Jetson Orin NX 16GB | selected Decision, 기획서의 AGX Orin 64GB 대체 |
+    subgraph devices["Robot Devices"]
+        sensors["Sensors<br/>D435, LiDAR, camera, encoder"]
+        controllers["Base / Arm Controller<br/>motor driver, servo interface"]
+        actuators["Physical Actuators<br/>Mecanum base, manipulator"]
+        estop["Physical e-stop"]
+    end
 
-### 3.2 온디바이스 추론 역할
+    dashboard <--> network
+    api_vlm <--> network
+    network <-->|Mission 요청, 상태, 결과| mission
+    network <-->|VLM context, proposal| ros
+    mission <--> ros
+    local_ai <--> ros
+    sensors -->|관측, 상태| ros
+    ros --> logs
+    ros -->|명령| controllers --> actuators
+    actuators -->|상태, 피드백| sensors
+    estop -.->|cloud와 일반 ROS에서 독립된 차단| controllers
+```
 
-- 객체 탐지 및 Segmentation
-- 위치 추정
-- 장애물 회피 관련 인식
-- 경량 VLM 또는 VLA 판단 보조
-- TensorRT 기반 추론 최적화
+Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 안전 권한은 Jetson과
+로봇 장치에 남는다. 네트워크가 끊겨도 새 행동을 차단하고 안전 상태를 유지할 수
+있어야 한다.
 
-### 3.3 서버와의 관계 초안
+## 로컬 책임
 
-기획서에는 서버 로그 정제 및 학습이 언급되어 있다. 따라서 초기 이해는 다음과 같다.
+- ROS 2 node와 Mission Manager 실행
+- RGB-D, LiDAR, IMU, encoder 입력 처리
+- Nav2와 base adapter 실행
+- SAM2, depth, 3D 위치 추정 등 선택된 Perception adapter 실행
+- Manipulation Skill과 VLA, MoveIt, controller adapter 실행
+- Mission 단계, Planner 출력 schema, Capability allowlist, 기본 argument 검증
+- Capability adapter의 workspace, joint, collision, timeout 검증
+- timeout, cancel, safe stop과 장치 상태 감시
+- 실행 결과, 전후 관찰, 진단 로그 생성
 
-- 로봇 엣지: 실시간 추론과 작업 실행
-- 서버/학습 환경: 로그 정제, 데이터 학습, 모델 개선
-- 구체 데이터 업로드 방식과 개인정보/보안 정책은 추가 확인 필요
+## Cloud 책임 후보
 
-## 4. 인터페이스 / 경계
+API 기반 VLM을 채택하면 장면 의미 해석, 처리 순서와 tool orchestration을 API에
+요청할 수 있다. ER 2는 이 후보 중 하나다. 클라우드는 하드웨어 안전, 고주기 제어와
+네트워크 장애 시 정지를 담당하지 않는다. VLM 호출은 고정 주기가 아니라 작업 전 관찰과
+high-level 행동의 완료, 실패, 장면 변화 checkpoint를 기준으로 한다.
 
-| 구성요소 | 책임 | 경계 |
-|---|---|---|
-| Jetson Orin NX 16GB | 온디바이스 추론 및 로봇 런타임 실행 | 학습 서버 전체 역할을 대체하지 않음 |
-| TensorRT | 모델 추론 최적화 | 모델 품질 자체를 보장하지 않음 |
-| Docker/CUDA/JetPack | 실행 환경 구성 | 실제 버전 호환성은 검토 필요 |
-| ROS 2 Runtime | 센서, 주행, 조작 노드 실행 | Jira/문서 운영과 무관 |
-| Training Server | 로그 정제와 학습 가능성 | 기획서에 상세 구조 없음 |
+## 리소스 원칙
 
-## 5. 가정
+- 동시에 필요한 모델과 node를 실제 입력으로 측정한다.
+- GPU, CPU, memory, thermal, power budget을 평균이 아니라 peak 기준으로 확인한다.
+- 사용하지 않는 모델을 상시 적재하지 않고 adapter별 lifecycle을 분리한다.
+- cloud 응답을 기다리는 동안 base와 arm의 안전 상태는 로컬에서 유지한다.
+- 모델 버전과 runtime 설치법은 구현 레포의 DEVELOPMENT_SETUP, package README가
+  관리한다.
 
-- 메인 엣지 컴퓨팅 장치는 selected Decision에 따라 Jetson Orin NX 16GB를 사용한다.
-- Orin NX 16GB의 base software stack은 JetPack 6.2를 사용한다.
-- 로봇 엣지의 ROS 2 배포판은 Humble을 사용한다.
-- 온디바이스 추론 대상 모델은 경량화와 TensorRT 최적화가 필요할 수 있다.
-- perception, navigation, manipulation과 AI 추론의 동시 실행 memory budget은 benchmark로 검증한다.
-- ROS 2 Humble과 프로젝트별 Python·AI package의 정확한 버전 조합은 통합 전에 검증한다.
+## 실패 경계
 
-## 6. 리스크
+| 실패 | 로컬 기본 책임 |
+|---|---|
+| API VLM timeout, API 오류 | 새 물리 행동을 시작하지 않고 실패 결과 반환 |
+| Perception adapter 실패 | 잘못된 scene을 Planner에 정상값으로 전달하지 않음 |
+| node 중단, command timeout | backend가 안전한 정지 상태로 전환 |
+| thermal, memory 부족 | 진단 기록 후 Capability 실행 차단 또는 종료 |
 
-- JetPack 6.2과 ROS 2 Humble 조합에서 프로젝트별 Python·AI package가 맞지 않을 수 있다.
-- 객체 탐지, VLA 판단, Nav2, 조작 제어를 동시에 실행할 때 성능 병목이 생길 수 있다.
-- 16GB memory budget, 발열과 전력 사용량이 현장 운영 안정성에 영향을 줄 수 있다.
+## 채택 판단
 
-## 7. 관련 결정
+로컬 VLM, API 기반 VLM, YOLO와 SAM 계열, YOLO segmentation 중 어떤 경로를 사용할지
+정확도, 지연, 실패 형태, 비용과 개인정보 실험 뒤 확정한다. Orin 선택 자체가
+온디바이스 VLM/VLA 채택을 의미하지 않는다.
 
-- [[30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB|Jetson Orin NX 16GB]]는 `selected` Decision이다.
-- [[30_DECISIONS/Technical/260708 - Jetson AGX Orin 64GB|Jetson AGX Orin 64GB]] 안은 메모리 가격 상승에 따른 조달 비용 증가로 `dropped`됐다.
+## 관련 문서
 
-## 8. 참고 근거
+- [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>)
+- [Safety and Risk](<08 - Safety and Risk.md>)
+- [Hardware Configuration](<12 - Hardware Configuration.md>)
 
-- [NVIDIA JetPack 6.2 Release Notes](https://docs.nvidia.com/jetson/jetpack/6.2/release-notes/index.html)
-- [ROS 2 Humble Ubuntu 22.04 arm64 지원](https://docs.ros.org/en/humble/Installation/Alternatives/Ubuntu-Install-Binary.html)
+## 출처
+
+- [260714 - Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>)
+
+## 관련 결정
+
+- [260714 - Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>)
+- [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)

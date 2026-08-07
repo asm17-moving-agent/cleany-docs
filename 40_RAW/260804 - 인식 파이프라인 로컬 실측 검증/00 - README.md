@@ -1,5 +1,4 @@
 ---
-ingest_status: raw
 ingest_targets:
   - technical
   - decision
@@ -20,7 +19,7 @@ related_docs:
 
 이 문서 묶음은 아직 프로젝트의 확정 기술 결정이 아니다.
 
-- `ingest_status: raw`이며 사람 검토 전이다.
+- Raw의 실측 기록이며 공식 기술 기준이 아니다.
 - 검증은 로봇 저장소가 아니라 **별도 실험용 디렉터리**(`~/Documents/test`, ROS 2 워크스페이스와 무관한 스파이크 코드)에서 진행했다.
   실제 로봇 코드베이스로의 통합은 아직 이뤄지지 않았다.
 - 검증 하드웨어는 **Apple M5 Pro(MPS)를 탑재한 Mac**이다.

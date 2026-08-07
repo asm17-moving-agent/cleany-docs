@@ -14,10 +14,13 @@ from common import (
     repo_root_from_args,
 )
 
-OFFICIAL_PREFIXES = ("10_PLANNING/", "20_TECHNICAL/", "30_DECISIONS/")
-STATUS_VALUES = {"draft", "reviewed", "selected", "dropped"}
-INGEST_STATUS_VALUES = {"raw", "triaged", "converted", "reflected", "blocked"}
-LIST_FIELDS = ("source_refs", "related_decisions")
+FORBIDDEN_METADATA_KEYS = {"status", "ingest_status", "source_refs", "related_decisions"}
+DECISION_PREFIXES = ("30_DECISIONS/Planning/", "30_DECISIONS/Technical/")
+RELATION_FIELDS = ("supersedes", "superseded_by")
+
+
+def requires_date(path: str) -> bool:
+    return path.startswith(DECISION_PREFIXES) or path == "90_TEMPLATES/Template - Decision.md"
 
 
 def main() -> int:
@@ -37,36 +40,26 @@ def main() -> int:
             errors.append(f"{r}: {fm_err}")
             continue
 
-        is_official = r.startswith(OFFICIAL_PREFIXES)
         if data is None:
-            if is_official:
-                errors.append(f"{r}: 공식 문서에 status frontmatter가 없음")
+            if requires_date(r):
+                errors.append(f"{r}: Decision 문서에 date frontmatter가 없음")
             continue
 
-        if is_official and "status" not in data:
-            errors.append(f"{r}: 공식 문서의 frontmatter에 status가 없음")
+        for key in sorted(FORBIDDEN_METADATA_KEYS):
+            if key in data:
+                errors.append(f"{r}: 상태와 문서 관계를 폴더, Git과 본문 링크로 관리하므로 metadata key를 사용하지 않음: {key}")
 
-        if "status" in data and data["status"] not in STATUS_VALUES:
-            errors.append(f"{r}: 허용되지 않은 status 값: {data.get('status')}")
-        if "ingest_status" in data and data["ingest_status"] not in INGEST_STATUS_VALUES:
-            errors.append(f"{r}: 허용되지 않은 ingest_status 값: {data.get('ingest_status')}")
+        if requires_date(r) and "date" not in data:
+            errors.append(f"{r}: Decision 문서의 frontmatter에 date가 없음")
+        elif r.startswith(DECISION_PREFIXES) and not data.get("date"):
+            errors.append(f"{r}: Decision 문서의 date가 비어 있음")
 
-        for key in LIST_FIELDS:
+        for key in RELATION_FIELDS:
             value = data.get(key)
-            if value is not None and not isinstance(value, list):
-                errors.append(f"{r}: {key}는 list여야 함")
-            elif isinstance(value, list) and any(
-                item is not None and not isinstance(item, str) for item in value
-            ):
+            if value is not None and not isinstance(value, (str, list)):
+                errors.append(f"{r}: {key}는 문자열 또는 list여야 함")
+            elif isinstance(value, list) and any(not isinstance(item, str) for item in value):
                 errors.append(f"{r}: {key} 항목은 문자열이어야 함")
-
-        source_file = data.get("source_file")
-        if source_file is not None and not isinstance(source_file, str):
-            errors.append(f"{r}: source_file은 문자열이어야 함")
-
-        supersedes = data.get("supersedes")
-        if supersedes is not None and not isinstance(supersedes, (str, list)):
-            errors.append(f"{r}: supersedes는 문자열 또는 list여야 함")
 
     return print_errors("metadata", errors)
 

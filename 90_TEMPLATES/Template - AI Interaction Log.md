@@ -1,5 +1,4 @@
 ---
-ingest_status: raw
 date:
 tool:
 related_docs:
