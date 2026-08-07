@@ -7,10 +7,9 @@ from pathlib import Path
 
 CHECKS = [
     "check_structure.py",
-    "check_formatting.py",
     "check_yaml.py",
     "check_metadata.py",
-    "check_links.py",
+    "check_references.py",
     "check_skills.py",
 ]
 
@@ -27,9 +26,9 @@ def main() -> int:
             failed = 1
 
     if failed:
-        print("\nFAIL deterministic checks", flush=True)
+        print("\nFAIL KB integrity checks", flush=True)
         return 1
-    print("\nOK deterministic checks", flush=True)
+    print("\nOK KB integrity checks", flush=True)
     return 0
 
 

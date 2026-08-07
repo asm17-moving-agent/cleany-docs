@@ -7,7 +7,7 @@ import yaml
 
 sys.dont_write_bytecode = True
 
-from common import iter_markdown_files, print_errors, read_text, rel, repo_root_from_args
+from common import frontmatter_text, iter_markdown_files, print_errors, read_text, rel, repo_root_from_args
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -26,20 +26,6 @@ def construct_mapping(loader: yaml.Loader, node: yaml.Node, deep: bool = False) 
 
 
 UniqueKeyLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
-
-
-def frontmatter_text(text: str) -> tuple[str | None, str | None]:
-    if not text.startswith("---\n") and not text.startswith("---\r\n"):
-        return None, None
-
-    lines = text.splitlines()
-    if not lines or lines[0].strip() != "---":
-        return None, "YAML frontmatter 시작 구분자 오류"
-
-    for idx in range(1, len(lines)):
-        if lines[idx].strip() == "---":
-            return "\n".join(lines[1:idx]) + "\n", None
-    return None, "YAML frontmatter 종료 구분자 없음"
 
 
 def main() -> int:

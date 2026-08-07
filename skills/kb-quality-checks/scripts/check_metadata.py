@@ -4,33 +4,23 @@ from __future__ import annotations
 import sys
 
 sys.dont_write_bytecode = True
-from pathlib import Path
 
-from common import frontmatter_block, iter_markdown_files, print_errors, read_text, rel, repo_root_from_args
-
-SKIP_FRONTMATTER = {
-    "README.md",
-    "AGENTS.md",
-    "skills/kb-quality-checks/skill.md",
-}
-
-SKIP_PREFIXES = (
-    "skills/kb-quality-checks/scripts/",
+from common import (
+    iter_markdown_files,
+    load_frontmatter,
+    print_errors,
+    read_text,
+    rel,
+    repo_root_from_args,
 )
 
 FORBIDDEN_METADATA_KEYS = {"status", "ingest_status", "source_refs", "related_decisions"}
+DECISION_PREFIXES = ("30_DECISIONS/Planning/", "30_DECISIONS/Technical/")
+RELATION_FIELDS = ("supersedes", "superseded_by")
 
 
-def required_keys_for(path: str) -> list[str]:
-    if path.startswith("30_DECISIONS/Planning/") or path.startswith("30_DECISIONS/Technical/"):
-        return ["date"]
-    if path.startswith("90_TEMPLATES/"):
-        if path.endswith("Template - Decision.md"):
-            return ["date"]
-        return []
-    if (path.startswith("skills/") or path.startswith(".agents/skills/")) and path.endswith("/SKILL.md"):
-        return ["name", "description", "tags"]
-    return []
+def requires_date(path: str) -> bool:
+    return path.startswith(DECISION_PREFIXES) or path == "90_TEMPLATES/Template - Decision.md"
 
 
 def main() -> int:
@@ -39,32 +29,37 @@ def main() -> int:
 
     for path in iter_markdown_files(root):
         r = rel(path, root)
-        if r in SKIP_FRONTMATTER or any(r.startswith(prefix) for prefix in SKIP_PREFIXES):
-            continue
-
-        required = required_keys_for(r)
         text, err = read_text(path)
         if err:
             errors.append(f"{r}: {err}")
             continue
         assert text is not None
 
-        has_frontmatter = text.startswith("---\n") or text.startswith("---\r\n")
-        if not required and not has_frontmatter:
-            continue
-
-        data, _, fm_err = frontmatter_block(text)
+        data, fm_err = load_frontmatter(text)
         if fm_err:
             errors.append(f"{r}: {fm_err}")
             continue
 
-        for key in required:
-            if key not in data:
-                errors.append(f"{r}: frontmatter 필수 key 누락: {key}")
+        if data is None:
+            if requires_date(r):
+                errors.append(f"{r}: Decision 문서에 date frontmatter가 없음")
+            continue
 
         for key in sorted(FORBIDDEN_METADATA_KEYS):
             if key in data:
                 errors.append(f"{r}: 상태와 문서 관계를 폴더, Git과 본문 링크로 관리하므로 metadata key를 사용하지 않음: {key}")
+
+        if requires_date(r) and "date" not in data:
+            errors.append(f"{r}: Decision 문서의 frontmatter에 date가 없음")
+        elif r.startswith(DECISION_PREFIXES) and not data.get("date"):
+            errors.append(f"{r}: Decision 문서의 date가 비어 있음")
+
+        for key in RELATION_FIELDS:
+            value = data.get(key)
+            if value is not None and not isinstance(value, (str, list)):
+                errors.append(f"{r}: {key}는 문자열 또는 list여야 함")
+            elif isinstance(value, list) and any(not isinstance(item, str) for item in value):
+                errors.append(f"{r}: {key} 항목은 문자열이어야 함")
 
     return print_errors("metadata", errors)
 

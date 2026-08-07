@@ -119,5 +119,5 @@ Discord에서 지속적으로 참고해야 할 합의가 나오면 KB에 반영�
 | 구현 방법은 어디에 쓰는가? | 구현 레포의 관련 package README에 쓴다. |
 
 문서나 구조를 수정한 뒤에는 [품질 검사 안내](skills/kb-quality-checks/SKILL.md)에 따라
-구조, Markdown formatting, metadata와 내부 링크를 검사한다. 검사를 통과해도 작업
-브랜치의 변경은 사람 검토와 PR 병합 전까지 현재 기준이 아니다.
+핵심 구조, YAML, 금지 metadata와 내부 참조를 검사한다. 검사를 통과해도 작업 브랜치의
+변경은 사람 검토와 PR 병합 전까지 현재 기준이 아니다.

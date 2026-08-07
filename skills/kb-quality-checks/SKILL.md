@@ -1,57 +1,43 @@
 ---
 name: kb-quality-checks
-description: 끌리니 기획 KB의 결정적 검사를 실행한다. Markdown formatting, Obsidian YAML metadata, 필수 폴더/파일 구조, 내부 링크, repo skill 구조를 확인할 때 사용한다.
-tags:
-  - skill
-  - quality-checks
-  - validation
-compatibility: Python 3.11 이상, uv project 환경 사용, 외부 패키지 불필요
+description: 끌리니 KB의 공유 가능한 무결성을 검사한다. 문서, metadata, 폴더와 repo skill을 바꾼 뒤 핵심 구조, YAML, 내부 참조와 skill 진입점을 확인할 때 사용한다.
 ---
 
 # KB Quality Checks
 
-이 skill은 끌리니 기획 KB에서 사람이 검토하기 전에 자동으로 확인할 수 있는 결정적 검사를 모아둔다.
-
-## 언제 사용하나
-
-다음 작업 후 사용한다.
-
-- Markdown 문서 생성 또는 수정
-- Obsidian YAML frontmatter 수정
-- 템플릿 수정
-- repo skill 생성 또는 수정
-- 폴더 구조 변경
-- Raw 문서 ingest 후 공식 문서 반영안 작성
+이 skill은 사람의 내용 검토 전에 자동 판정할 수 있는 KB 무결성만 확인한다.
 
 ## 검사 범위
 
 | 검사 | 스크립트 | 확인 내용 |
 |---|---|---|
 | 전체 검사 | `scripts/run_checks.py` | 아래 모든 검사를 순서대로 실행 |
-| 구조 검사 | `scripts/check_structure.py` | 필수 폴더/파일 존재, 금지 파일 부재 |
-| Formatting 검사 | `scripts/check_formatting.py` | UTF-8, 최종 newline, trailing whitespace, fence 균형 등 |
-| YAML 검사 | `scripts/check_yaml.py` | Markdown frontmatter YAML 기본 문법, 중복 key, tab, quote 오류 |
-| Metadata 검사 | `scripts/check_metadata.py` | Decision 날짜와 금지된 상태, 관계 metadata 부재 |
-| 링크 검사 | `scripts/check_links.py` | 표준 Markdown 링크 대상 존재와 공식 문서의 Obsidian wiki link 부재 |
-| Skill 검사 | `scripts/check_skills.py` | repo skill entrypoint, 필수 skill, deprecated `.codex/prompts` 부재 |
+| 구조 검사 | `scripts/check_structure.py` | 핵심 계층, `40_RAW/assets`, 루트 안내 문서 존재 |
+| YAML 검사 | `scripts/check_yaml.py` | frontmatter 문법, 구분자, 중복 key |
+| Metadata 검사 | `scripts/check_metadata.py` | Decision 날짜와 금지된 상태 및 관계 metadata 부재 |
+| 참조 검사 | `scripts/check_references.py` | Markdown 링크와 이미지, wiki link와 embed 대상 존재 |
+| Skill 검사 | `scripts/check_skills.py` | 발견된 repo skill manifest와 Codex 진입점 일치 |
+
+다음 항목은 CI 실패 조건으로 삼지 않는다.
+
+- 핵심 계층 밖의 개별 문서와 폴더 이름
+- 공백, 줄바꿈과 표 정렬 같은 Markdown 스타일
+- 특정 skill 목록이나 본문의 고정 문구
+- 문서 내용의 사실성, 검토 완료 여부, 결정의 승인 여부
 
 ## 사용법
 
 저장소 루트에서 실행한다.
 
 ```bash
-uv run python skills/kb-quality-checks/scripts/run_checks.py .
+uv run --locked --only-group quality python skills/kb-quality-checks/scripts/run_checks.py .
 ```
 
 개별 검사만 실행할 수도 있다.
 
 ```bash
-uv run python skills/kb-quality-checks/scripts/check_formatting.py .
-uv run python skills/kb-quality-checks/scripts/check_yaml.py .
-uv run python skills/kb-quality-checks/scripts/check_metadata.py .
-uv run python skills/kb-quality-checks/scripts/check_structure.py .
-uv run python skills/kb-quality-checks/scripts/check_links.py .
-uv run python skills/kb-quality-checks/scripts/check_skills.py .
+uv run --locked --only-group quality python skills/kb-quality-checks/scripts/check_yaml.py .
+uv run --locked --only-group quality python skills/kb-quality-checks/scripts/check_references.py .
 ```
 
 ## 결과 해석
@@ -63,7 +49,9 @@ uv run python skills/kb-quality-checks/scripts/check_skills.py .
 
 ## 작업 규칙
 
-- 검사 실패를 무시하고 공식 문서를 확정하지 않는다.
-- 검사 실패가 판단을 요구하는 경우 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
-- 검사 통과는 내용 승인과 별개다. 검토 중인 변경은 사람 검토가 끝나기 전까지 현재 기준이 아니다.
+- 무결성 검사 실패를 무시하고 공유하지 않는다.
+- 검사 실패가 판단을 요구하는 경우 기획 항목은 `10_PLANNING/99 - Questions.md`,
+  기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
+- 검사 통과는 내용 승인과 별개다. 작업 브랜치의 변경은 사람 검토 전까지 현재
+  기준이 아니다. 검토자와 승인 이력은 GitHub PR에서 관리한다.
 - 이 skill은 문서 품질을 확인할 뿐, 기획/기술 결정을 자동으로 확정하지 않는다.

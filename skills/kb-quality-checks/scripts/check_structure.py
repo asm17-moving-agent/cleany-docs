@@ -12,115 +12,15 @@ REQUIRED_DIRS = [
     "10_PLANNING",
     "20_TECHNICAL",
     "30_DECISIONS",
-    "30_DECISIONS/Planning",
-    "30_DECISIONS/Technical",
     "40_RAW",
+    "40_RAW/assets",
     "90_TEMPLATES",
-    ".agents",
-    ".agents/skills",
-    ".agents/skills/kb-quality-checks",
-    ".agents/skills/kb-ingest",
-    ".agents/skills/office-to-markdown",
-    ".agents/skills/kb-maintenance",
-    ".agents/skills/kb-doc-factory",
-    ".agents/skills/kb-audit",
-    ".agents/skills/kb-review-pack",
-    ".agents/skills/kb-pr",
-    "skills/kb-quality-checks",
-    "skills/kb-quality-checks/scripts",
-    "skills/office-to-markdown",
-    "skills/office-to-markdown/scripts",
-    "skills/kb-maintenance",
-    "skills/kb-maintenance/scripts",
-    "skills/kb-doc-factory",
-    "skills/kb-doc-factory/scripts",
-    "skills/kb-audit",
-    "skills/kb-audit/scripts",
-    "skills/kb-review-pack",
-    "skills/kb-pr",
 ]
 
 REQUIRED_FILES = [
     "README.md",
     "AGENTS.md",
-    "pyproject.toml",
-    "uv.lock",
-    ".gitignore",
-    "00_START_HERE/01 - Reading Guide.md",
-    "00_START_HERE/03 - Glossary.md",
-    "10_PLANNING/00 - Project Brief.md",
-    "10_PLANNING/01 - Problem and Users.md",
-    "10_PLANNING/02 - Target Scenario.md",
-    "10_PLANNING/04 - Scope and Non-Goals.md",
-    "10_PLANNING/05 - Success Criteria.md",
-    "10_PLANNING/99 - Questions.md",
-    "20_TECHNICAL/00 - Technical Overview.md",
-    "20_TECHNICAL/01 - System Context.md",
-    "20_TECHNICAL/03 - Task Planning and Robot Capabilities.md",
-    "20_TECHNICAL/04 - Robot Platform XLeRobot.md",
-    "20_TECHNICAL/05 - Navigation and Mapping.md",
-    "20_TECHNICAL/06 - Edge Runtime Jetson Orin.md",
-    "20_TECHNICAL/07 - Perception and Scene Understanding.md",
-    "20_TECHNICAL/08 - Safety and Risk.md",
-    "20_TECHNICAL/99 - Questions.md",
-    "30_DECISIONS/00 - Decision Index.md",
-    "30_DECISIONS/Planning/.gitkeep",
-    "30_DECISIONS/Technical/.gitkeep",
-    "40_RAW/기획서 원문 요약.md",
-    "90_TEMPLATES/Template - Planning Doc.md",
-    "90_TEMPLATES/Template - Technical Doc.md",
-    "90_TEMPLATES/Template - Decision.md",
-    "90_TEMPLATES/Template - Meeting Note.md",
-    "90_TEMPLATES/Template - Research Note.md",
-    "90_TEMPLATES/Template - Raw Ingest Summary.md",
-    "90_TEMPLATES/Template - Sprint Brief.md",
-    "90_TEMPLATES/Template - Jira Issue.md",
-    "90_TEMPLATES/Template - AI Interaction Log.md",
-    ".agents/skills/kb-quality-checks/SKILL.md",
-    ".agents/skills/kb-ingest/SKILL.md",
-    ".agents/skills/office-to-markdown/SKILL.md",
-    ".agents/skills/kb-maintenance/SKILL.md",
-    ".agents/skills/kb-doc-factory/SKILL.md",
-    ".agents/skills/kb-audit/SKILL.md",
-    ".agents/skills/kb-review-pack/SKILL.md",
-    ".agents/skills/kb-pr/SKILL.md",
-    "skills/README.md",
-    "skills/kb-ingest/SKILL.md",
-    "skills/kb-quality-checks/SKILL.md",
-    "skills/kb-quality-checks/scripts/run_checks.py",
-    "skills/kb-quality-checks/scripts/check_formatting.py",
-    "skills/kb-quality-checks/scripts/check_metadata.py",
-    "skills/kb-quality-checks/scripts/check_yaml.py",
-    "skills/kb-quality-checks/scripts/check_structure.py",
-    "skills/kb-quality-checks/scripts/check_links.py",
-    "skills/kb-quality-checks/scripts/check_skills.py",
-    "skills/kb-quality-checks/scripts/common.py",
-    "skills/office-to-markdown/SKILL.md",
-    "skills/office-to-markdown/scripts/office_to_markdown.py",
-    "skills/kb-maintenance/SKILL.md",
-    "skills/kb-maintenance/scripts/normalize_markdown.py",
-    "skills/kb-maintenance/scripts/generate_file_index.py",
-    "skills/kb-maintenance/scripts/metadata_report.py",
-    "skills/kb-doc-factory/SKILL.md",
-    "skills/kb-doc-factory/scripts/new_doc.py",
-    "skills/kb-audit/SKILL.md",
-    "skills/kb-audit/scripts/common.py",
-    "skills/kb-audit/scripts/review_flags_report.py",
-    "skills/kb-audit/scripts/references_report.py",
-    "skills/kb-audit/scripts/decision_inventory.py",
-    "skills/kb-audit/scripts/audit_all.py",
-    "skills/kb-review-pack/SKILL.md",
-    "skills/kb-pr/SKILL.md",
 ]
-
-FORBIDDEN_NAMES = {"CLAUDE.md"}
-FORBIDDEN_DIRS = {".claude", "50_WORKING", "kb-publish", "prompts"}
-SKIP_DIRS = {".git", ".venv", ".obsidian", ".codex"}
-CANONICAL_QUESTION_FILES = {
-    "10_PLANNING/99 - Questions.md",
-    "20_TECHNICAL/99 - Questions.md",
-}
-QUESTION_SECTION_DIRS = ("10_PLANNING", "20_TECHNICAL", "90_TEMPLATES")
 
 
 def main() -> int:
@@ -134,26 +34,6 @@ def main() -> int:
     for item in REQUIRED_FILES:
         if not (root / item).is_file():
             errors.append(f"필수 파일 없음: {item}")
-
-    for path in root.iterdir():
-        if path.name in SKIP_DIRS:
-            continue
-        for nested in path.rglob("*"):
-            if nested.name in FORBIDDEN_NAMES:
-                errors.append(f"금지 파일 존재: {nested.relative_to(root)}")
-            if nested.is_dir() and nested.name in FORBIDDEN_DIRS:
-                errors.append(f"금지 폴더 존재: {nested.relative_to(root)}")
-
-    for directory in QUESTION_SECTION_DIRS:
-        for path in (root / directory).glob("*.md"):
-            relative = path.relative_to(root).as_posix()
-            if relative in CANONICAL_QUESTION_FILES:
-                continue
-            for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-                if line.lstrip().startswith("#") and "미해결 질문" in line:
-                    errors.append(
-                        f"개별 문서/템플릿의 미해결 질문 섹션 금지: {relative}:{line_number}"
-                    )
 
     return print_errors("structure", errors)
 

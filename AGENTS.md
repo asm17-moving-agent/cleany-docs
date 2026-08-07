@@ -34,12 +34,21 @@
 - 기획 문서와 기술 문서를 섞지 않는다.
 - `30_DECISIONS`는 무엇을 왜 결정했는지 기록한다.
 - `40_RAW`는 초안, 개인 학습 노트, 회의록, 조사 자료, 임시 메모와 첨부 원본을 두는 비공식 작업 공간이며 최종 결정이 아니다.
-- 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습, 조사 자료는 `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다. Meetings, Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
-- 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning과 Technical 문서 및 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
-- 폴더는 지식의 성격을, Git은 검토 상태를 나타낸다. YAML `status`와 `ingest_status`는 사용하지 않는다.
-- Planning과 Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과 변경 이력이다.
-- Raw와 작업 브랜치의 변경은 공식 기준이 아니다. 검토자와 승인 이력은 GitHub PR에 남긴다.
-- Decision 후보는 Raw 또는 Questions에서 관리하고, 실제 결정이 확인된 뒤 작업 브랜치에서 Decision 문서를 작성한다.
+- 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는
+  `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습 및 조사 자료는
+  `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다.
+  Meetings, Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
+- 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은
+  `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning과 Technical
+  문서 및 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
+- 폴더는 지식의 성격을, Git은 검토 상태를 나타낸다. YAML `status`와
+  `ingest_status`는 사용하지 않는다.
+- Planning과 Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과
+  변경 이력이다.
+- Raw와 작업 브랜치의 변경은 공식 기준이 아니다. 검토자와 승인 이력은 GitHub PR에
+  남긴다.
+- Decision 후보는 Raw 또는 Questions에서 관리하고, 실제 결정이 확인된 뒤 작업
+  브랜치에서 Decision 문서를 작성한다.
 
 ## 4. 현재 기준과 결정 이력
 
@@ -79,11 +88,29 @@ Planning이나 Technical이 Decision과 충돌하면 어느 한쪽을 임의로 
 
 ## 8. Skill과 결정적 검사
 
+- 이 저장소는 Office 파일 변환, Markdown 정비, 품질 검사를 LLM 없이 실행하기 위해 `uv` project로 초기화되어 있다.
+- Python dependency는 `pyproject.toml`과 `uv.lock`으로 관리한다.
+- 재사용 가능한 작업 지침은 `.agents/skills/<skill-name>/SKILL.md`로 노출되는 repo skill에 둔다.
 - 요청에 적합한 repo skill이 있으면 해당 `SKILL.md`를 따른다. skill과 script의 위치와
   사용법은 [skills 안내](skills/README.md)에서 확인한다.
-- deterministic script는 변환, 형식 정비, 색인, 검사와 리포트만 수행하며 제품 또는
-  기술 결정을 자동 확정하지 않는다.
-- 문서, 템플릿, repo skill 또는 폴더 구조를 수정한 뒤에는 `kb-quality-checks`로 구조,
-  Markdown formatting, metadata와 내부 링크를 검사한다.
-- 검사 실패를 무시하지 않는다. 해결에 판단이 필요하면 기획 항목은 Planning
-  Questions, 기술 항목은 Technical Questions에 남긴다.
+- Codex용 skill entrypoint는 `.agents/skills/<skill-name>/SKILL.md`이며, 실행 스크립트는 `skills/<skill-name>/scripts/` 아래에 둔다.
+- Office/PDF 원본 변환, 템플릿 기반 문서 생성, Markdown 정비, Raw ingest, audit, review pack, 품질 검사는 각각 대응하는 repo skill을 우선 사용한다.
+- GitHub draft PR 생성은 `kb-pr` skill을 사용한다.
+- deterministic script는 문서 형식, 변환, 검사, 색인, 리포트와 배포 사본 생성만
+  수행하며 기획 또는 기술 결정을 자동 확정하지 않는다.
+
+## 9. 결정적 검사 규칙
+
+문서, 템플릿, repo skill, 폴더 구조를 생성하거나 수정한 경우 적합한 품질 검사 skill로 결정적 검사를 실행한다.
+
+검사 범위는 다음과 같다.
+
+- 핵심 계층과 루트 안내 문서
+- YAML frontmatter 문법, Decision의 날짜와 금지된 metadata 부재
+- Markdown 링크와 이미지, 공식 문서의 Obsidian wiki link 및 embed 부재
+- 발견된 repo skill 원본과 Codex entrypoint의 일치
+
+개별 문서와 폴더 이름, 공백과 줄바꿈 같은 스타일, 특정 skill 목록이나 본문 문구는
+CI에서 강제하지 않는다.
+
+검사 실패를 무시하고 공식 문서를 확정하지 않는다. 실패 항목이 판단을 요구하면 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.

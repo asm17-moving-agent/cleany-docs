@@ -6,47 +6,7 @@ import sys
 sys.dont_write_bytecode = True
 from pathlib import Path
 
-from common import frontmatter_block, print_errors, read_text, repo_root_from_args
-
-REQUIRED_SKILLS = [
-    "office-to-markdown",
-    "kb-doc-factory",
-    "kb-ingest",
-    "kb-review-pack",
-    "kb-quality-checks",
-    "kb-audit",
-    "kb-maintenance",
-    "kb-pr",
-]
-
-REQUIRED_SNIPPETS = {
-    "kb-ingest": [
-        "Raw 문서를 공식 지식처럼 취급하지 않는다",
-        "실제 결정이 확인되기 전에는 Decision 문서를 만들지 않는다",
-        "가능한 미결정 사항을 추측해 Questions를 채우지 않는다",
-        "검토자와 승인 이력은 GitHub PR에 남긴다.",
-    ],
-    "kb-review-pack": [
-        "$kb-quality-checks",
-        "$kb-audit",
-        ".codex/prompts",
-        "검토 중인 변경을 현재 기준처럼 취급하지 않는다",
-    ],
-    "kb-quality-checks": [
-        "Skill 검사",
-        "deprecated `.codex/prompts`",
-    ],
-    "kb-pr": [
-        "$kb-quality-checks",
-        "draft PR",
-    ],
-}
-
-FORBIDDEN_PATHS = [
-    ".codex/prompts",
-    "skills/kb-publish",
-    ".agents/skills/kb-publish",
-]
+from common import load_frontmatter, print_errors, read_text, repo_root_from_args
 
 
 def check_skill_file(root: Path, skill_name: str, errors: list[str]) -> None:
@@ -65,36 +25,51 @@ def check_skill_file(root: Path, skill_name: str, errors: list[str]) -> None:
         return
     assert text is not None
 
-    data, raw, fm_err = frontmatter_block(text)
+    data, fm_err = load_frontmatter(text)
     if fm_err:
         errors.append(f"skills/{skill_name}/SKILL.md: {fm_err}")
         return
+    if data is None:
+        errors.append(f"skills/{skill_name}/SKILL.md: YAML frontmatter가 파일 시작에 없음")
+        return
 
-    for key in ["name", "description", "tags"]:
-        if key not in data:
-            errors.append(f"skills/{skill_name}/SKILL.md: frontmatter 필수 key 누락: {key}")
+    for key in ("name", "description"):
+        if not isinstance(data.get(key), str) or not data[key].strip():
+            errors.append(f"skills/{skill_name}/SKILL.md: {key}은 비어 있지 않은 문자열이어야 함")
 
     if data.get("name") != skill_name:
         errors.append(f"skills/{skill_name}/SKILL.md: name은 '{skill_name}'이어야 함")
 
-    if not any(line.strip().startswith("-") for line in raw if "tags:" not in line):
-        errors.append(f"skills/{skill_name}/SKILL.md: tags는 하나 이상의 값을 가져야 함")
-
-    for snippet in REQUIRED_SNIPPETS.get(skill_name, []):
-        if snippet not in text:
-            errors.append(f"skills/{skill_name}/SKILL.md: 필수 workflow 안내 누락: {snippet}")
+    if entrypoint.is_file() and entrypoint.resolve() != source.resolve():
+        errors.append(f"Codex skill entrypoint가 원본을 가리키지 않음: .agents/skills/{skill_name}")
 
 
 def main() -> int:
     root = repo_root_from_args(sys.argv)
     errors: list[str] = []
 
-    for item in FORBIDDEN_PATHS:
-        if (root / item).exists():
-            errors.append(f"deprecated 또는 금지된 skill/prompt 경로 존재: {item}")
+    skills_root = root / "skills"
+    entrypoints_root = root / ".agents" / "skills"
+    if not skills_root.is_dir():
+        errors.append("skill 원본 폴더 없음: skills")
+        return print_errors("skills", errors)
+    if not entrypoints_root.is_dir():
+        errors.append("Codex skill entrypoint 폴더 없음: .agents/skills")
+        return print_errors("skills", errors)
 
-    for skill_name in REQUIRED_SKILLS:
-        check_skill_file(root, skill_name, errors)
+    source_names: set[str] = set()
+    source_directories = (
+        path
+        for path in skills_root.iterdir()
+        if path.is_dir() and not path.name.startswith((".", "__"))
+    )
+    for directory in sorted(source_directories):
+        source_names.add(directory.name)
+        check_skill_file(root, directory.name, errors)
+
+    entrypoint_names = {path.name for path in entrypoints_root.iterdir()}
+    for skill_name in sorted(entrypoint_names - source_names):
+        errors.append(f"원본 없는 Codex skill entrypoint: .agents/skills/{skill_name}")
 
     return print_errors("skills", errors)
 
