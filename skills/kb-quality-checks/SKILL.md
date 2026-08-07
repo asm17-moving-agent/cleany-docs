@@ -65,5 +65,5 @@ uv run python skills/kb-quality-checks/scripts/check_skills.py .
 
 - 검사 실패를 무시하고 공식 문서를 확정하지 않는다.
 - 검사 실패가 판단을 요구하는 경우 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
-- 검사 통과는 내용 승인과 별개다. 작업 브랜치의 변경은 사람 검토와 GitHub PR 병합 전까지 `main`의 현재 기준이 아니다.
+- 검사 통과는 내용 승인과 별개다. 검토 중인 변경은 사람 검토가 끝나기 전까지 현재 기준이 아니다.
 - 이 skill은 문서 품질을 확인할 뿐, 기획/기술 결정을 자동으로 확정하지 않는다.

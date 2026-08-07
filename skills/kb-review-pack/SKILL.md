@@ -35,7 +35,7 @@ compatibility: Codex repo-scoped skill, instruction-only workflow
    - 본문 `출처` 상태
    - Decision inventory
 4. 필요한 경우 관련 문서를 읽어 리뷰 맥락을 확인한다.
-   - `00_START_HERE/00 - README.md`
+   - `README.md`
    - `00_START_HERE/01 - Reading Guide.md`
    - `10_PLANNING/99 - Questions.md`
    - `20_TECHNICAL/99 - Questions.md`
@@ -72,7 +72,7 @@ Decision 변경, 이력
 
 ## 금지 사항
 
-- 작업 브랜치와 PR의 변경을 `main`의 현재 기준처럼 취급하지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
+- 검토 중인 변경을 현재 기준처럼 취급하지 않는다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 - Raw 문서를 공식 결정처럼 취급하지 않는다.
 - 기획/기술 판단을 임의로 확정하지 않는다.
 - Jira issue 본문에 문서 내용을 복붙하지 않는다.

@@ -46,7 +46,6 @@ REQUIRED_FILES = [
     "pyproject.toml",
     "uv.lock",
     ".gitignore",
-    "00_START_HERE/00 - README.md",
     "00_START_HERE/01 - Reading Guide.md",
     "00_START_HERE/03 - Glossary.md",
     "10_PLANNING/00 - Project Brief.md",

@@ -30,7 +30,7 @@ REQUIRED_SNIPPETS = {
         "$kb-quality-checks",
         "$kb-audit",
         ".codex/prompts",
-        "작업 브랜치와 PR의 변경을 `main`의 현재 기준처럼 취급하지 않는다",
+        "검토 중인 변경을 현재 기준처럼 취급하지 않는다",
     ],
     "kb-quality-checks": [
         "Skill 검사",

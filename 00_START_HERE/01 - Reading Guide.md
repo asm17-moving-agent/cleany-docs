@@ -1,16 +1,7 @@
 # 읽기 가이드(Reading Guide)
 
-## 15분 안에 이해하기
-
-1. [Project Brief](<../10_PLANNING/00 - Project Brief.md>)
-2. [Target Scenario](<../10_PLANNING/02 - Target Scenario.md>)
-3. [Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
-4. [Technical Overview](<../20_TECHNICAL/00 - Technical Overview.md>)
-5. [Planning Questions](<../10_PLANNING/99 - Questions.md>)과
-   [Technical Questions](<../20_TECHNICAL/99 - Questions.md>)
-6. [Decision Index](<../30_DECISIONS/00 - Decision Index.md>)
-
-이 순서로 읽으면 제품 목표, 데모 흐름, 기술 경계와 실제 열린 질문을 구분할 수 있다.
+루트 [README.md](../README.md)의 기본 읽기 순서를 확인한 뒤, 아래에서 목적에 맞는
+경로를 고른다.
 
 ## 기획 리뷰
 
@@ -42,9 +33,20 @@
 
 확인할 점:
 
-- ER 2의 고수준 판단과 Skill 내부 VLA 실행이 구분되는가?
+- 후보 Planner의 고수준 제안과 Skill 내부 VLA 실행 가능성 검증이 구분되는가?
 - Navigation과 Manipulation의 책임이 섞이지 않고 안전 정지가 일반 skill과 구분되는가?
 - 목표 구조, 현재 구현과 실험 후보가 구분되는가?
+
+## 프로젝트 설명
+
+팀원이나 외부 사람에게 프로젝트를 설명할 때는 다음 순서로 본다.
+
+1. [Project Brief](<../10_PLANNING/00 - Project Brief.md>)
+2. [Target Scenario](<../10_PLANNING/02 - Target Scenario.md>)
+3. [Technical Overview](<../20_TECHNICAL/00 - Technical Overview.md>)
+4. [Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
+
+미결정 사항을 설명해야 할 때만 Planning Questions와 Technical Questions를 추가한다.
 
 ## Decision과 Raw
 
@@ -60,6 +62,6 @@ Jira에 복사하지 않고 관련 문서 링크만 연결한다.
 
 ## 외부 공유 전
 
-1. `main` 문서인지 작업 브랜치의 변경안인지 확인한다.
+1. 현재 기준 문서인지 검토 중인 변경안인지 확인한다.
 2. Decision 대체 관계와 GitHub PR 승인 이력을 확인한다.
 3. `$kb-quality-checks`, `$kb-audit`, 필요 시 `$kb-review-pack`을 실행한다.

@@ -2,6 +2,15 @@
 
 이 문서는 Codex 또는 다른 문서화 에이전트가 이 KB에서 작업할 때 따라야 할 규칙이다.
 
+## 0. KB 읽기 진입점
+
+- KB 전체, 제품 범위 또는 기술 맥락이 필요한 작업은 루트
+  [README.md](README.md)에서 시작한다.
+- 목적별 읽기 순서는 [Reading Guide](<00_START_HERE/01 - Reading Guide.md>)를 따른다.
+- 현재 기준은 관련 Planning과 Technical에서 읽고, 미결정 사항은 각 Questions,
+  결정 이유는 Decision에서 확인한다.
+- Raw는 공식 문서의 `출처`를 따라 근거와 과거 맥락이 필요할 때만 읽는다.
+
 ## 1. 저장소 성격
 
 - 이 저장소는 끌리니(Cleany) 프로젝트의 기획 KB 저장소다.
@@ -28,14 +37,14 @@
 - 독립적인 Raw Markdown은 `40_RAW` 루트에, 해당 문서의 공용 첨부 자료는 `40_RAW/assets/`에 둔다. 팀원이 폴더 단위로 관리하는 학습, 조사 자료는 `40_RAW/YYMMDD - 주제/`로 보존하고 첨부 자료는 해당 묶음의 `assets/`에 둔다. Meetings, Research 같은 자료 종류별 분류 폴더는 만들지 않는다.
 - 미해결 기획 질문은 `10_PLANNING/99 - Questions.md`, 미해결 기술 질문은 `20_TECHNICAL/99 - Questions.md`에서 중앙 관리한다. 개별 Planning과 Technical 문서 및 템플릿에는 별도 미해결 질문 섹션을 두지 않는다.
 - 폴더는 지식의 성격을, Git은 검토 상태를 나타낸다. YAML `status`와 `ingest_status`는 사용하지 않는다.
-- `main`의 Planning과 Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과 변경 이력이다.
+- Planning과 Technical은 현재 팀이 합의한 기준이고, Decision은 실제로 내린 결정과 변경 이력이다.
 - Raw와 작업 브랜치의 변경은 공식 기준이 아니다. 검토자와 승인 이력은 GitHub PR에 남긴다.
 - Decision 후보는 Raw 또는 Questions에서 관리하고, 실제 결정이 확인된 뒤 작업 브랜치에서 Decision 문서를 작성한다.
 
 ## 4. 현재 기준과 결정 이력
 
-`main`의 `10_PLANNING`과 `20_TECHNICAL`을 현재 기준으로 사용한다. `30_DECISIONS`는
-그 기준을 선택한 이유와 대체 이력을 설명하며, 이전 결정은
+`10_PLANNING`과 `20_TECHNICAL`을 현재 기준으로 사용한다. `30_DECISIONS`는 그 기준을
+선택한 이유와 대체 이력을 설명하며, 이전 결정은
 `supersedes`, `superseded_by`로 연결한다.
 
 Planning이나 Technical이 Decision과 충돌하면 어느 한쪽을 임의로 우선하지 않는다.
@@ -68,26 +77,13 @@ Planning이나 Technical이 Decision과 충돌하면 어느 한쪽을 임의로 
 - 가능한 미결정 사항을 추측해 Questions를 채우지 않는다. 팀이 실제로 제기했거나 출처에 명시된 질문만 정리한다.
 - 작업 후 변경 파일과 사람 검토 필요 항목을 요약한다.
 
-## 8. Codex skill과 deterministic tool 규칙
+## 8. Skill과 결정적 검사
 
-- 이 저장소는 Office 파일 변환, Markdown 정비, 품질 검사를 LLM 없이 실행하기 위해 `uv` project로 초기화되어 있다.
-- Python dependency는 `pyproject.toml`과 `uv.lock`으로 관리한다.
-- 재사용 가능한 작업 지침은 `.agents/skills/<skill-name>/SKILL.md`로 노출되는 repo skill에 둔다.
-- 요청에 적합한 repo skill이 있으면 해당 지침을 따른다.
-- Codex용 skill entrypoint는 `.agents/skills/<skill-name>/SKILL.md`이며, 실행 스크립트는 `skills/<skill-name>/scripts/` 아래에 둔다.
-- Office/PDF 원본 변환, 템플릿 기반 문서 생성, Markdown 정비, Raw ingest, audit, review pack, 품질 검사는 각각 대응하는 repo skill을 우선 사용한다.
-- GitHub draft PR 생성은 `kb-pr` skill을 사용한다.
-- deterministic script는 문서 형식, 변환, 검사, 색인, 리포트, 배포 사본 생성만 수행하며 기획/기술 결정을 자동 확정하지 않는다.
-
-## 9. 결정적 검사 규칙
-
-문서, 템플릿, repo skill, 폴더 구조를 생성하거나 수정한 경우 적합한 품질 검사 skill로 결정적 검사를 실행한다.
-
-검사 범위는 다음과 같다.
-
-- 필수 폴더/파일 구조
-- Markdown formatting
-- Obsidian YAML metadata
-- 내부 Markdown 링크와 Obsidian wiki link
-
-검사 실패를 무시하고 공식 문서를 확정하지 않는다. 실패 항목이 판단을 요구하면 기획 항목은 `10_PLANNING/99 - Questions.md`, 기술 항목은 `20_TECHNICAL/99 - Questions.md`에 질문으로 남긴다.
+- 요청에 적합한 repo skill이 있으면 해당 `SKILL.md`를 따른다. skill과 script의 위치와
+  사용법은 [skills 안내](skills/README.md)에서 확인한다.
+- deterministic script는 변환, 형식 정비, 색인, 검사와 리포트만 수행하며 제품 또는
+  기술 결정을 자동 확정하지 않는다.
+- 문서, 템플릿, repo skill 또는 폴더 구조를 수정한 뒤에는 `kb-quality-checks`로 구조,
+  Markdown formatting, metadata와 내부 링크를 검사한다.
+- 검사 실패를 무시하지 않는다. 해결에 판단이 필요하면 기획 항목은 Planning
+  Questions, 기술 항목은 Technical Questions에 남긴다.

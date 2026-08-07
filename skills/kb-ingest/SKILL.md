@@ -91,9 +91,9 @@ decision_candidates:
 - 미해결 기술 질문: `20_TECHNICAL/99 - Questions.md`
 - Raw 초안, 노트, 원본, 요약: `40_RAW/`
 
-별도 working 폴더는 사용하지 않는다. Raw는 비공식 기록이고, `main`의
-Planning과 Technical은 현재 기준이며, `main`의 Decision은 실제 결정 이력이다. 반영안의
-검토 상태는 작업 브랜치와 GitHub PR로 표현한다.
+별도 working 폴더는 사용하지 않는다. Raw는 비공식 기록이고, Planning과 Technical은
+현재 기준이며, Decision은 실제 결정 이력이다. 반영안의 검토 상태는 작업 브랜치와
+GitHub PR로 표현한다.
 
 ## 링크 방향
 
