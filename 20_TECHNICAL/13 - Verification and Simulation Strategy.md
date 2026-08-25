@@ -8,33 +8,6 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 
 ## 검증 단계
 
-```mermaid
-flowchart TB
-    core["Core<br/>Mission, Planner와 Capability 순수 logic"]
-    baseline["Rule-based 통합<br/>고정 입력의 E2E 기준선"]
-
-    subgraph subsystem["Subsystem 검증"]
-        direction LR
-        navigation["Navigation Sim<br/>Gazebo"]
-        perception["Perception<br/>image에서 Scene State"]
-        manipulation["Manipulation Sim<br/>MuJoCo"]
-    end
-
-    comparison["추론 경로 비교<br/>VLM, detector와 segmentation 후보"]
-    planner["Planner 통합<br/>task order와 tool orchestration"]
-    real["Real Robot<br/>sensor, base, arm과 safety"]
-
-    core --> baseline
-    baseline --> navigation
-    baseline --> perception
-    baseline --> manipulation
-    perception --> comparison
-    comparison --> planner
-    manipulation --> planner
-    navigation --> real
-    planner --> real
-```
-
 | 단계 | 검증 목표 | 통과 기준 |
 |---|---|---|
 | Core | Mission, Planner, Capability 검증 순수 logic | 성공, 실패, 차단, 부분 결과 경로가 재현됨 |
