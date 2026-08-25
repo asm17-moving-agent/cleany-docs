@@ -8,6 +8,33 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 
 ## 검증 단계
 
+```mermaid
+flowchart TB
+    core["Core<br/>Mission, Planner와 Capability 순수 logic"]
+    baseline["Rule-based 통합<br/>고정 입력의 E2E 기준선"]
+
+    subgraph subsystem["Subsystem 검증"]
+        direction LR
+        navigation["Navigation Sim<br/>Gazebo"]
+        perception["Perception<br/>image에서 Scene State"]
+        manipulation["Manipulation Sim<br/>MuJoCo"]
+    end
+
+    comparison["추론 경로 비교<br/>VLM, detector와 segmentation 후보"]
+    planner["Planner 통합<br/>task order와 tool orchestration"]
+    real["Real Robot<br/>sensor, base, arm과 safety"]
+
+    core --> baseline
+    baseline --> navigation
+    baseline --> perception
+    baseline --> manipulation
+    perception --> comparison
+    comparison --> planner
+    manipulation --> planner
+    navigation --> real
+    planner --> real
+```
+
 | 단계 | 검증 목표 | 통과 기준 |
 |---|---|---|
 | Core | Mission, Planner, Capability 검증 순수 logic | 성공, 실패, 차단, 부분 결과 경로가 재현됨 |
@@ -20,6 +47,52 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 | Real Robot | 실제 sensor, base, arm, safety | 승인된 통제 시나리오를 전후 결과와 함께 수행함 |
 
 현재는 정량 성공률보다 각 단계의 pass/fail과 실패 증거를 우선 기록한다.
+
+## 자동 CI 검증 경계
+
+CI는 위 검증 단계 중 반복 가능하고 자동 판정할 수 있는 범위를 담당한다. 현재 Cleany
+구현 레포 CI는 GitHub-hosted Ubuntu 22.04와 ROS 2 Humble 환경에서 workspace
+dependency를 설치하고 전체 build와 package test를 실행한 뒤, Gazebo Fortress의
+Navigation runtime smoke test로 sensor, odometry와 TF 경계를 확인한다.
+
+```mermaid
+sequenceDiagram
+    participant Dev as 개발자
+    participant CI as GitHub Actions
+    participant Sim as Headless Simulator
+    participant Review as 검토자
+    participant Robot as Jetson과 실제 로봇
+
+    Dev->>CI: 변경 검증 시작
+    CI->>CI: 재현 가능한 환경 준비
+    CI->>CI: Workspace build와 package test
+    CI->>Sim: 선택된 runtime smoke 실행
+    Sim-->>CI: Topic, TF와 실행 결과
+
+    alt 자동 검증 실패
+        CI-->>Dev: 실패 단계와 test result
+        Dev->>CI: 수정 후 다시 검증
+    else 자동 검증 통과
+        CI-->>Review: 정의된 자동 범위의 통과 증거
+
+        opt 장비 또는 E2E 관련 변경
+            Review->>Robot: 별도 검증
+            Robot-->>Review: Sensor, actuator와 시나리오 결과
+        end
+    end
+```
+
+| 검증 범위 | 현재 자동 CI가 확인하는 경계 | 별도 검증이 필요한 경계 |
+|---|---|---|
+| Core와 Contract | 순수 logic, package, interface와 설정 계약 | 실제 장비 timing과 물리 동작 |
+| ROS build와 integration | 전체 workspace build, package test와 headless ROS runtime | Jetson ARM64와 JetPack 고유 환경 |
+| Navigation Sim runtime | Gazebo의 LiDAR, IMU, odometry, TF와 base 이동 | 장시간 주행, 실제 slip과 sensor 오차 |
+| Real Robot | 자동 CI 범위에 포함하지 않음 | sensor, actuator, e-stop과 통합 데모 |
+
+CI 성공은 해당 commit에서 workflow가 정의한 build, test와 runtime smoke가 통과했다는
+뜻이다. 실제 로봇의 정상 동작이나 모든 E2E 시나리오의 완료를 보장하지 않는다.
+정확한 workflow, 명령, package별 test와 현재 구현 범위는 Cleany 구현 레포에서
+관리한다.
 
 ## Simulator 책임
 
@@ -57,12 +130,15 @@ Simulator 사이를 반드시 실시간으로 연결할 필요는 없다. 공통
 
 ## 증거와 실패 기록
 
+- 검증한 commit, runner 환경, ROS 배포판과 simulator profile
 - 입력 Mission과 환경, 모델, config 식별자
+- package별 test result와 runtime에서 실제 관찰한 topic, TF와 결과
 - 작업 전후 관찰
 - Planner proposal과 Mission, Capability 검증의 승인, 거절 이유
 - Capability별 success, failed, blocked 결과
 - 행동 전후 Scene과 물체의 낙하 또는 전도 같은 예상 밖 변화
 - Navigation, Perception, Planning, Manipulation 중 실패 경계
+- timeout과 실패 단계, 재실행한 경우 최초 실패와 이후 결과의 구분
 - 실제 로봇에서는 감독자, 작업 구역, e-stop 준비 확인
 
 ## 구현 검증 문서 경계
@@ -80,6 +156,10 @@ README가 관리한다. KB는 제품 단계와 검증 증거의 의미를 관리
 ## 출처
 
 - [05 - Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
+- [Cleany CI workflow at 194580a](https://github.com/asm17-moving-agent/cleany/blob/194580a976844be33f520cb2ecb937d153b4d7ec/.github/workflows/ci.yml)
+- [Cleany Makefile at 194580a](https://github.com/asm17-moving-agent/cleany/blob/194580a976844be33f520cb2ecb937d153b4d7ec/Makefile)
+- [ROS 2 workspace README at 194580a](https://github.com/asm17-moving-agent/cleany/blob/194580a976844be33f520cb2ecb937d153b4d7ec/ros2_ws/README.md)
+- [Cleany CI successful run 32808035521](https://github.com/asm17-moving-agent/cleany/actions/runs/32808035521)
 
 ## 관련 결정
 
