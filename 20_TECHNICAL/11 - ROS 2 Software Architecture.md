@@ -80,9 +80,10 @@ Mission, Capability, failure의 의미만 고정한다.
 
 ## 상태와 안전 소유권
 
-Mission Manager만 Mission state를 바꾼다. 하위 모듈은 성공, 실패, 차단, 취소 결과를
-반환한다. hardware fault와 e-stop은 결과를 반환하기 전에 실제 구동을 우선 정지할
-수 있어야 한다.
+Mission Manager만 Mission state를 바꾼다. 하위 모듈은 성공, 실패, 차단, 취소와 치명
+오류를 구분해 결과를 반환한다. Manipulation 실행 결과에는 정지 확인과 물체 상태도
+보존한다. 정지 미확인은 일반 실패나 정상 취소로 축약하지 않고 후속 동작을 차단한다.
+hardware fault와 e-stop은 결과를 반환하기 전에 실제 구동을 우선 정지할 수 있어야 한다.
 
 ## 관련 문서
 
@@ -93,7 +94,9 @@ Mission Manager만 Mission state를 바꾼다. 하위 모듈은 성공, 실패, 
 ## 출처
 
 - [09 - Mission Lifecycle](<09 - Mission Lifecycle.md>)
+- [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 
 ## 관련 결정
 
 - [260714 - 4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)
+- [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)

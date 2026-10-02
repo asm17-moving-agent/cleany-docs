@@ -87,7 +87,8 @@ Robot 가용 상태는 외부 Mission lifecycle과 분리해 `offline`, `idle`, 
 
 종료 결과는 성공, 부분 성공, 사람 검토 필요, 차단, 실패, 취소, 만료, 거절과 중단을
 구분한다. 작업 전후 관찰은 같은 미션 결과에 참조로 연결하고 실제 저장 위치,
-보관 기간과 삭제 정책은 별도로 정한다.
+Backend의 보관 기간과 삭제 정책은 별도로 정한다. 로봇의 관찰 자료 로컬 저장과
+Backend 전송 정책은 [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>)에서 관리한다.
 
 ## 취소와 복구 요청
 
@@ -136,8 +137,10 @@ message schema, heartbeat 주기, 인증 방식, database와 media 저장 구조
 
 - [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
 - [cleany_mission_manager README](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/README.md)
+- [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 
 ## 관련 결정
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260708 - 안전 기준과 실패 처리 정책](<../30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md>)
+- [261002 - 관찰 자료 로컬 저장과 Backend 재전송](<../30_DECISIONS/Technical/261002 - 관찰 자료 로컬 저장과 Backend 재전송.md>)

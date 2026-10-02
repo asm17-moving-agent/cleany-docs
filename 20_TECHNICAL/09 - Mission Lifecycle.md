@@ -26,6 +26,11 @@ sequenceDiagram
     Nav-->>Mission: 도착 결과
     Mission->>Perception: 작업 전 관찰
     Perception-->>Mission: Scene State
+    Mission->>Mission: 작업 전 자료의 로컬 저장 성공 확인
+    break 로컬 저장 실패
+        Mission-->>Control: 저장 실패, 조작 미실행 결과
+    end
+    Note over Mission, Control: 사진 전송과 Backend 저장 확인을 기다리지 않고 조작 진행
 
     loop 모든 대상 확인까지
         Mission->>Planner: Mission Goal + Scene + 실행 결과
@@ -33,7 +38,11 @@ sequenceDiagram
         Mission->>Mission: 상태, 허용 Capability, 인자 검증
         alt 실행 허용
             Mission->>Capability: 검증된 요청 실행
-            Capability-->>Mission: success / failed / blocked
+            Capability-->>Mission: 행동 결과, 정지 및 물체 상태
+            break 취소, 치명 오류 또는 정지 미확인
+                Mission->>Mission: 진행 기록 보존, 후속 동작 차단
+                Mission-->>Control: 종료 결과와 안전 상태
+            end
             Mission->>Perception: 결과 재관찰
             Perception-->>Mission: Updated Scene
         else 보류, 실행 불가
@@ -43,12 +52,16 @@ sequenceDiagram
 
     Mission->>Perception: 작업 후 관찰
     Perception-->>Mission: After Observation
+    Mission->>Mission: 최종 사진과 인식 정보 로컬 저장, 전송 요청
     Mission->>Nav: 대기 위치 복귀
     Nav-->>Mission: 복귀 결과
     Mission-->>Control: 전후 관찰, 부분 실패, 최종 상태
 ```
 
 실패, 차단, 취소는 어느 단계에서든 보고 가능한 종료 경로로 연결되어야 한다.
+첫 조작은 작업 전 사진과 인식 정보의 로컬 저장 성공을 확인한 뒤 허용한다.
+Backend 저장 확인은 첫 조작의 조건으로 두지 않는다. 저장과 전송 정책은
+[Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>)에서 관리한다.
 
 ## 준정적 장면과 행동 checkpoint
 
@@ -57,13 +70,15 @@ sequenceDiagram
 
 1. 작업 전 Scene으로 Planner를 최초 호출한다.
 2. Planner가 제안한 high-level 행동 하나만 검증하고 실행한다.
-3. 행동이 success, failed, blocked로 끝날 때마다 결과를 기록하고 Scene을 재관찰한다.
+3. 성공, 안전하게 정지한 실패 또는 실행 전 차단으로 끝나면 결과를 기록하고 Scene을 재관찰한다.
 4. 실행 결과와 최신 Scene으로 Planner를 다시 호출한다.
 5. Planner가 완료를 제안하고 최종 관찰이 일치하면 책상 작업을 종료한다.
 
 고정 시간 주기로 VLM을 호출하거나 실행 중 trajectory를 새 proposal로 교체하지
 않는다. 물체의 낙하 또는 전도 같은 즉시 변화는 Capability가 동작을 종료하거나 차단하고,
-Mission Manager가 이후 재관찰과 재계획을 시작한다.
+Mission Manager가 이후 재관찰과 재계획을 시작한다. 취소는 진행 기록을 보존해
+종료 경로로 연결하고, 치명 오류 또는 정지 미확인에서는 후속 동작을 차단하고
+사람 확인 필요를 보고한다.
 
 ## 현재 구현과 차이
 
@@ -102,6 +117,28 @@ Mission state를 직접 전이시키지 않는다.
 Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navigation을 tool로
 제안하게 되더라도 Mission Manager의 상태, 취소, 보고 소유권은 유지한다.
 
+## Manipulation 결과와 안전 상태
+
+행동 결과는 성공 여부뿐 아니라 실행 전 차단, 실행 중 실패, 취소와 치명 오류를
+구분한다. ROS action의 종료 상태와 행동 결과는 함께 해석하며, 실패 이유, 정지
+확인, 물체 보유 상태와 놓기 검증 상태를 함께 반환하고 MissionReport에 보존한다.
+
+| 결과 의미 | 해석 | Mission Manager의 후속 처리 |
+|---|---|---|
+| 성공 | 승인된 행동의 성공 조건 충족 | 기록하고 재관찰 |
+| 실행 전 차단 | 움직이기 전에 필요한 조건 미충족 | 이유를 기록하고 안전하면 재관찰과 다른 행동 검토 |
+| 실행 중 실패 | 실행 중 요구한 결과를 얻지 못함 | 정지를 확인하고 재관찰 |
+| 취소 | 취소 뒤 정지를 확인함 | 진행 기록을 보존해 종료 경로로 연결 |
+| 치명 오류 또는 정지 미확인 | 치명 오류가 발생했거나 실제 정지를 확인하지 못함 | 후속 동작 차단과 사람 확인 필요 보고 |
+
+취소 요청의 수락만으로 실제 정지를 확인했다고 판단하지 않는다. 정지 미확인을
+일반 실패나 정상 취소로 축약하지 않는다. 실패와 취소에서도 이미 확인한 물체 및
+놓기 상태를 보존한다.
+
+이 결과 경계는 목표 의미이며 구현 레포 `main`에 수거 Action이나 놓기 판정이
+이미 구현됐다는 뜻은 아니다. 구체적인 놓기 성공 판정 방식과 정확한 필드, 상태
+이름 및 adapter 규칙은 구현 명세와 검증 근거를 확인해 반영한다.
+
 ## 결과 원칙
 
 - 성공한 대상과 실패, 미처리 대상을 구분한다.
@@ -132,8 +169,12 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 
 - [cleany_mission_manager README](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/README.md)
 - [Mission Manager core](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/cleany_mission_manager/core/manager.py)
+- [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
+- [ROS 2 Action 공식 설계](https://design.ros2.org/articles/actions.html)
 
 ## 관련 결정
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
+- [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)
+- [261002 - 관찰 자료 로컬 저장과 Backend 재전송](<../30_DECISIONS/Technical/261002 - 관찰 자료 로컬 저장과 Backend 재전송.md>)

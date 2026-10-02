@@ -1,0 +1,107 @@
+---
+type: decision
+decision_type: technical
+status: draft
+reviewers:
+  -
+tags:
+  - decision
+  - draft
+  - technical
+  - mission-manager
+  - table-cleanup
+  - action
+  - cleany
+date: 2026-09-30
+impact: high
+source_refs:
+  - "40_RAW/30_Technical_Notes/260928 - Table Cleanup Workflow.md"
+  - "40_RAW/30_Technical_Notes/260930 - Table Cleanup Mission Loop.md"
+  - "40_RAW/30_Technical_Notes/260930 - Table Cleanup Action Boundary.md"
+related_jira:
+  -
+supersedes:
+  - "30_DECISIONS/Technical/260930 - 책상 작업 반복을 Mission Manager FSM 루프로 처리.md"
+superseded_by:
+updated: 2026-09-30
+---
+
+# 260930 - 전체 미션과 책상 정리 Action의 책임 경계 분리
+
+## 1. 결정
+
+**전체 미션은 Mission Manager가, 책상 안의 반복은 책상 정리 Action 서버가 담당하는
+안으로 KB를 정렬한다.** 현재는 사용자의 문서 재정리 요청을 반영한 `draft`다.
+`supersedes`는 이전 FSM 루프 초안을 문서 정렬 기준으로 대체한다는 뜻이며,
+사람 검토를 마친 `selected` Decision으로 승격했다는 뜻은 아니다.
+
+| 경계 | 이번 초안의 방향 |
+|---|---|
+| Mission Manager | 이동, 책상 작업 Goal 전달, 취소 요청, 결과 확인, 복귀·미션 보고 |
+| 책상 정리 Action 서버 | 관측 → 계획 → 첫 관측 전달 → 물체 처리 → 재관측 반복 |
+| Perception | 독립된 장면 관측 기능. 책상 정리 외 요청자도 호출 가능 |
+| Planner | 처리 여부·분류·다음 대상과 사람 확인 판단 |
+| Skill Executor | 지정된 skill의 팔·그리퍼 실행 |
+| Observation Reporter | 같은 snapshot의 원본 이미지·bbox·라벨·분류 조립·전달 |
+
+책상 정리 미션의 `PERCEIVE`·`PLAN_TASKS`·`EXECUTE_TASKS`를 Mission Manager의
+`CLEAN_TABLE` 상태 후보로 묶는다. 앞선 초안의 `PUBLISH_INITIAL_OBSERVATION`도
+Action 내부 단계로 옮긴다. 이 경계는 책상 정리 미션에 한정하며 다른 미션의
+상태 구성을 일괄 변경하는 결정이 아니다.
+
+책상 Action과 개별 skill 실행은 서로 다른 책임이다. 하나의 프로세스나 패키지에
+둘 수 있어도, 순서 조정 로직과 인식·계획·동작 구현은 port로 구분한다.
+서버의 정확한 이름과 패키지 배치는 추가 정의 필요다.
+
+## 2. 이유
+
+- 사용자와의 재검토에서 책상 전체를 한 번 요청하고 결과를 받는 경계가 추천됐다.
+- 물체를 든 상태, 놓기 기록과 단계 재시도를 책상 작업 담당자가 함께 관리할 수 있다.
+- Mission Manager의 책임을 미션 이동·시작·중단·결과·복귀에 집중할 수 있다.
+- Mission Manager의 ROS 연결 전에 Action 서버를 독립적으로 개발·검증할 수 있다.
+- Perception과 Planner는 독립 기능으로 유지하면서 매번 새 관측·새 계획을 받을 수 있다.
+
+첫 이미지 전달 순서와 재관측은 두 구조 모두에서 구현할 수 있다.
+Mission Manager가 직접 모든 모듈을 호출해야만 가능한 기능으로 보지 않는다.
+
+## 3. 대안
+
+| 대안 | 이번 정렬에서의 판단 |
+|---|---|
+| Mission Manager FSM이 물체별 반복을 담당 | 이전 비교안으로 보존한다. 책상 진행·재시도·기록이 미션 계층에 들어간다는 점 때문에 이번 정렬에서는 책상 Action 경계를 제안한다. |
+| `pick_object` 내부에서 책상 전체를 반복 | 집기 skill의 범위가 관측·분류·다른 물체 처리까지 커진다. 별도 책상 작업 조정 경계를 둔다. |
+| 인식·계획 알고리즘도 통합 서버 안에 복사 | 독립 사용과 유지보수가 어려워진다. 통합 서버는 공통 Perception·Planner를 호출한다. |
+
+## 4. 가정
+
+- 모바일 베이스가 지정 책상에 도착했는지는 Navigator와 Mission Manager가 다룬다.
+- 책상 작업 시작 전 정지·준비 조건은 서버가 관련 모듈을 통해 확인한다. 실제 기준은 미정이다.
+- 첫 물체를 움직이기 전에 같은 snapshot의 이미지·bbox·라벨·Planner 판단을 전달한다.
+- 로컬 발행 성공과 Backend 저장 성공은 구분한다. 원격 저장을 조작 조건으로 둘지는 미정이다.
+- 하위 모듈의 내부 결과는 서버가 조정하고, 최종 결과는 기존 `ModuleResult`·`MissionReport`에 연결한다.
+- 정확한 Goal·Feedback·Result 필드와 상황별 결과 매핑은 구현 명세에서 추가 정의한다.
+
+## 5. 리스크
+
+- 기존 FSM의 모듈 port와 상태 전이가 달라지므로 관련 core·ROS adapter·테스트를 함께 바꿔야 한다.
+- 서버 내부 retry와 Mission Manager의 전체 Goal retry가 겹치면 물체를 중복 조작할 수 있다.
+- Goal 응답 유실 뒤 같은 작업을 재전송할 때 중복 실행을 막는 계약이 필요하다.
+- 물체 개수 비교만으로 사라진 물체의 처리를 증명할 수 없다. 동일 물체 연결과 처리 기록이 필요하다.
+- 취소 응답, Action 종료, 물리적 정지는 서로 다르므로 정지 확인과 복귀 조건을 정의해야 한다.
+- 일부 완료·사람 확인·확인하지 못한 놓기 결과를 단순 성공으로 바꾸면 미션 보고가 잘못될 수 있다.
+
+미해결 기술 질문은 중앙 Questions 문서에서 관리한다. 여기서는 수치·코드·저장 방식을
+임의로 확정하지 않는다.
+
+## 6. 재검토 조건
+
+- 새로운 미션이 책상 작업 내부의 개별 단계에 직접 개입해야 한다.
+- 여러 작업자가 같은 로봇 자원을 동시에 요청하며 자원 소유 계약이 달라진다.
+- 사람 승인 후 중단 지점부터 재개하는 흐름이 제품 범위로 들어온다.
+- 결과 변환이나 안전 정지 계약을 현재 모듈 경계에서 표현하기 어렵다.
+
+## 7. 출처
+
+- [[40_RAW/30_Technical_Notes/260928 - Table Cleanup Workflow|최초 책상 작업 흐름 논의]]
+- [[40_RAW/30_Technical_Notes/260930 - Table Cleanup Mission Loop|이전 FSM 루프 비교 논의]]
+- [[40_RAW/30_Technical_Notes/260930 - Table Cleanup Action Boundary|책상 Action 책임 경계 재검토]]

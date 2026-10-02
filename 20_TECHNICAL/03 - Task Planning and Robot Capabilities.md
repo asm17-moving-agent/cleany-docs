@@ -3,9 +3,9 @@
 ## 요약
 
 Cleany는 고수준 Task Planner가 Scene State를 바탕으로 처리 순서를 제안하고,
-검증된 Robot Capability가 물리 동작을 실행하는 구조를 목표로 한다. 현재 Planner와
-Scene State를 만드는 추론 경로는 선택 전이다. RuleBasedPlanner, 로컬 VLM, API 기반
-VLM과 detector, segmentation 조합은 같은 계약을 비교하는 후보다.
+검증된 Robot Capability가 물리 동작을 실행하는 구조를 목표로 한다. 현재 Perception
+구현의 인식 경로는 YOLOE-seg와 Gemini를 사용한다. Task Planner의 실행 경로와 최종
+제품 기준은 별도로 관리한다.
 
 ## 책임 경계
 
@@ -51,12 +51,12 @@ Mission Manager의 state를 변경하지 않는다.
 | RuleBasedPlanner | E2E 경계와 실패 흐름 검증, detector 결과 기반 순서 선택 | Scene 입력, high-level task 출력 | 사전 정의 규칙만 사용 |
 | 로컬 VLM adapter | 장면 의미 해석 또는 structured task proposal 후보 | 동일한 Scene State, Task Proposal | Jetson 지연, 자원 사용, 정확도 |
 | API VLM adapter, ER 2 포함 | 장면 의미 해석 또는 structured task proposal 후보 | 동일한 Scene State, Task Proposal | 네트워크 지연, 실패, 비용, 개인정보 |
-| YOLO와 SAM 계열 | object, mask, 3D 추정에 쓰는 Perception 후보 | 동일한 Scene State | 작은 물체 정확도, 처리 지연, 조작 적합성 |
-| YOLO segmentation | detector와 mask를 함께 만드는 Perception 후보 | 동일한 Scene State | 정확도, 처리 지연, 모델 단순성 |
+| Gemini | 현재 Perception 의미 분류에 사용 | Scene State의 label과 분류 | 분류 정확도, 지연, 불확실성 처리 |
+| YOLOE-seg | 현재 Perception의 object region과 instance mask 생성에 사용 | Scene State의 물체 영역과 mask | 작은 물체 정확도, 처리 지연, 조작 적합성 |
 
-YOLO 계열은 Planner 자체가 아니라 Scene State를 만드는 후보이며, 그 결과로
-RuleBasedPlanner를 사용할 수 있다. API 후보 중 하나가 Gemini Robotics ER 2다.
-후보가 바뀌어도 Mission Manager와 Capability 경계는 바뀌지 않는다.
+YOLOE-seg와 Gemini는 Perception 결과를 만든다. 이 결과는 Planner의 행동 제안이나
+Mission Manager의 실행 승인을 대신하지 않는다. 인식 경로가 바뀌어도 Mission Manager와
+Capability 경계는 바뀌지 않는다.
 
 ## VLM 호출과 재추론
 
@@ -83,12 +83,17 @@ Capability가 실행을 종료, 차단하고 새 장면을 관찰한 뒤, VLM이
 | 분류 | 예시 | 현재 소유 |
 |---|---|---|
 | Navigation | 대상 좌석 이동, 대기 위치 복귀 | Navigator, Nav2 |
-| Manipulation Skill | 쓰레기 집기, 수거함 투입, arm reset | Skill Executor와 실행 backend |
+| Manipulation Skill | 쓰레기 수거, 승인된 분실물의 전용 탑재 보관함 보관, arm reset | Skill Executor와 실행 backend |
 | Observation | 작업 전후 촬영, 실행 결과 확인 | Perception |
+
+분실물 보관은 Planner가 제안하고 Mission Manager가 승인한 경우에 별도 행동으로
+실행한다. 목적지는 로봇의 전용 탑재 보관함이다.
 
 `Robot Capabilities`는 중립적인 상위 용어다. 선택된 Planner가 Navigation까지 직접
 호출할지, 책상 도착 후 Manipulation만 제안할지는 아직 정하지 않는다.
 Mission cancel, safe stop과 e-stop은 Robot Capability로 분류하지 않는다.
+
+현재 Manipulation 실행 기준은 규칙 기반 Skill, MoveIt 계획과 ROS controller 실행이다.
 
 ## Manipulation Skill과 VLA
 

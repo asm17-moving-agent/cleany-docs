@@ -53,7 +53,7 @@ Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 
 - ROS 2 node와 Mission Manager 실행
 - RGB-D, LiDAR, IMU, encoder 입력 처리
 - Nav2와 base adapter 실행
-- SAM2, depth, 3D 위치 추정 등 선택된 Perception adapter 실행
+- YOLOE-seg, depth, 3D 위치 추정 등 현재 Perception 경로 실행
 - Manipulation Skill과 VLA, MoveIt, controller adapter 실행
 - Mission 단계, Planner 출력 schema, Capability allowlist, 기본 argument 검증
 - Capability adapter의 workspace, joint, collision, timeout 검증
@@ -62,9 +62,8 @@ Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 
 
 ## Cloud 책임 후보
 
-API 기반 VLM을 채택하면 장면 의미 해석, 처리 순서와 tool orchestration을 API에
-요청할 수 있다. ER 2는 이 후보 중 하나다. 클라우드는 하드웨어 안전, 고주기 제어와
-네트워크 장애 시 정지를 담당하지 않는다. VLM 호출은 고정 주기가 아니라 작업 전 관찰과
+Gemini API는 현재 Perception의 장면 의미 분류에 사용한다. 클라우드는 하드웨어 안전,
+고주기 제어와 네트워크 장애 시 정지를 담당하지 않는다. 추론 요청은 고정 주기가 아니라 작업 전 관찰과
 high-level 행동의 완료, 실패, 장면 변화 checkpoint를 기준으로 한다.
 
 ## 리소스 원칙
@@ -87,8 +86,8 @@ high-level 행동의 완료, 실패, 장면 변화 checkpoint를 기준으로 �
 
 ## 채택 판단
 
-로컬 VLM, API 기반 VLM, YOLO와 SAM 계열, YOLO segmentation 중 어떤 경로를 사용할지
-정확도, 지연, 실패 형태, 비용과 개인정보 실험 뒤 확정한다. Orin 선택 자체가
+현재 Perception 경로는 YOLOE-seg와 Gemini를 사용한다. 인식 정확도, 지연과 실패 형태는
+구현 및 검증 결과에 따라 관리한다. Orin 선택 자체가
 온디바이스 VLM/VLA 채택을 의미하지 않는다.
 
 ## 관련 문서

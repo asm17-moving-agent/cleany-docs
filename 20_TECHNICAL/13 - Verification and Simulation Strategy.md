@@ -15,7 +15,7 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 | Perception | image→mask→3D→Scene State | 실패를 포함한 각 adapter 계약이 확인됨 |
 | Navigation Sim | 좌석 왕복과 cancel, failure | Gazebo에서 Nav2, base, sensor 경계가 동작함 |
 | Manipulation Sim | 여러 물체와 physical skill | MuJoCo에서 VLA, motion backend 결과가 반환됨 |
-| 추론 경로 비교 | 로컬 VLM, API 기반 VLM, YOLO와 SAM 계열, YOLO segmentation | 같은 Scene State 계약에서 정확도, 지연, 실패 증거를 비교함 |
+| Perception baseline | YOLOE-seg 물체 영역과 instance mask 및 Gemini 의미 분류 | 정확도, 지연, 실패 사례를 같은 Scene State 계약에서 검증함 |
 | Planner 통합 | 선택된 Planner adapter의 task order와 tool orchestration | 행동마다 허용 tool 하나만 실행되고 새 장면으로 재판단함 |
 | Real Robot | 실제 sensor, base, arm, safety | 승인된 통제 시나리오를 전후 결과와 함께 수행함 |
 
@@ -48,9 +48,13 @@ Isaac Sim은 현재 공식 검증 구조에 역할을 배정하지 않는다. �
 4. RuleBasedPlanner 또는 측정 중인 Planner adapter가 다음 high-level 행동 하나를 제안한다.
 5. Mission Manager가 상태, allowlist, 기본 argument를 검증한다.
 6. MuJoCo 또는 실제 Manipulation backend가 물리 제약을 검증하고 skill을 실행한다.
-7. success, failed, blocked 뒤 장면을 재관찰한다.
+7. 행동 결과와 안전 상태를 기록하고, 다음 판단을 안전하게 진행할 수 있으면 장면을 재관찰한다.
 8. 실행 결과와 최신 Scene으로 다음 행동 또는 완료 여부를 재판단한다.
 9. 최종 관찰을 확인한 뒤 복귀와 MissionReport를 완료한다.
+
+작업 전 자료의 로컬 저장 실패에서는 첫 조작을 시작하지 않는다. 취소는 진행 기록을
+보존해 종료 경로로 연결하고, 치명 오류 또는 정지 미확인에서는 후속 동작을 차단해
+사람 확인 필요를 보고한다.
 
 Simulator 사이를 반드시 실시간으로 연결할 필요는 없다. 공통 Mission, Scene, Capability
 결과 계약으로 subsystem 검증 결과를 연결한다.
@@ -61,6 +65,8 @@ Simulator 사이를 반드시 실시간으로 연결할 필요는 없다. 공통
 - 작업 전후 관찰
 - Planner proposal과 Mission, Capability 검증의 승인, 거절 이유
 - Capability별 success, failed, blocked 결과
+- Manipulation의 취소와 치명 오류, 실패 이유, 정지 확인, 물체 보유 상태와 놓기 검증 상태
+- 작업 전후 자료의 로컬 저장 결과, Backend 저장 확인, 전송 재시도와 중복 저장 판별 결과
 - 행동 전후 Scene과 물체의 낙하 또는 전도 같은 예상 밖 변화
 - Navigation, Perception, Planning, Manipulation 중 실패 경계
 - 실제 로봇에서는 감독자, 작업 구역, e-stop 준비 확인
@@ -80,8 +86,11 @@ README가 관리한다. KB는 제품 단계와 검증 증거의 의미를 관리
 ## 출처
 
 - [05 - Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
+- [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 
 ## 관련 결정
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
+- [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)
+- [261002 - 관찰 자료 로컬 저장과 Backend 재전송](<../30_DECISIONS/Technical/261002 - 관찰 자료 로컬 저장과 Backend 재전송.md>)

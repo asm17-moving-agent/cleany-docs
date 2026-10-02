@@ -154,11 +154,11 @@ map
 ### 3.8 Arm / Gripper 계약 후보
 
 - simulation 전용 qpos, joint test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
-- arm 공통 계약은 ROS 표준 `control_msgs/action/FollowJointTrajectory` 사용을 우선 검토한다.
-- gripper 공통 계약은 `control_msgs/action/GripperCommand` 또는 실제 gripper driver가 제공하는 표준 호환 action을 검토한다.
-- MoveIt 또는 Skill Executor가 표준 action을 호출하고, Sim/Real controller가 같은 joint 의미를 구현하는 구조를 목표로 한다.
+- 현재 MuJoCo 조작 backend는 arm과 gripper에 trajectory controller를 사용한다.
+- MoveIt이 현재 조작 실행 경로에서 trajectory controller를 호출한다.
+- Sim과 Real 사이의 공통 controller/action 의미는 실물 backend 통합 후 확인한다.
 
-arm joint, gripper, controller 이름과 허용 범위는 아직 확정하지 않는다.
+실물 controller 이름과 허용 범위, gripper command 의미는 아직 확정하지 않는다.
 
 ### 3.9 QoS 권고안
 
