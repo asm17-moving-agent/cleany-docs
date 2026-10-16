@@ -14,18 +14,21 @@ flowchart LR
     context["Mission Goal<br/>+ Scene State<br/>+ 이전 실행 결과"]
     planner["제안 영역<br/><b>Task Planner</b><br/>선택된 adapter<br/>Task, Tool 제안만"]
     mission["Mission 권한 영역<br/><b>Mission Manager</b><br/>state, 순서, 결과<br/>allowlist, argument 검증"]
+    supervisor["시스템 가용성<br/><b>System Supervisor</b><br/>기능 상태와 실행 허가"]
     capabilities["검증 및 실행 영역<br/><b>Robot Capabilities</b><br/>Navigation, Observation<br/>Manipulation Skill<br/>물리 제약 검증"]
     result["Execution Result<br/>+ New Observation"]
 
     context --> planner
     planner -->|제안만 반환| mission
+    supervisor -->|필요 기능의 허가와 철회| mission
     mission -->|승인된 요청만| capabilities
     capabilities --> result
     result -.->|행동 완료, 실패 후 새 context| context
 ```
 
 Planner는 행동을 제안하지만 실행 권한과 Mission state를 소유하지 않는다. Mission
-Manager가 상태, allowlist, 기본 argument를 검증해 Capability 호출로 바꾸고,
+Manager가 Supervisor의 기능 가용성 및 실행 허가와 Mission 상태, allowlist, 기본
+argument를 검증해 Capability 호출로 바꾸고,
 Capability와 Robot backend가 물리 제약을 확인한다. Mission cancel은 Mission
 Manager가 처리하고, safe stop과 e-stop은 Planner 응답과 독립된 하위 경로에서
 물리 실행을 제한하거나 중단한다.
@@ -95,6 +98,12 @@ Mission cancel, safe stop과 e-stop은 Robot Capability로 분류하지 않는�
 
 현재 Manipulation 실행 기준은 규칙 기반 Skill, MoveIt 계획과 ROS controller 실행이다.
 
+여기서 Robot Capability는 실행 기능의 상위 의미다. Supervisor가 관리하는
+`BASE_MOTION`, `NAVIGATION`, `MANIPULATION`, `VISUAL_PERCEPTION`,
+`MOBILE_MANIPULATION`은 이 기능을 사용할 수 있는지 나타내는 가용성 분류다.
+실행 가능한 Skill 목록이나 Planner tool 목록과 일대일로 같다고 가정하지 않는다.
+가용성의 의존성과 UNKNOWN 처리는 [System Supervisor](<14 - System Supervisor.md>)를 따른다.
+
 ## Manipulation Skill과 VLA
 
 Manipulation Skill은 사전 작성 trajectory만을 뜻하지 않는다. Skill 내부에서 VLA
@@ -119,14 +128,16 @@ MVP에서는 별도 `Local Guard` 컴포넌트나 package를 두지 않는다. �
 
 | 검증 | 소유 위치 |
 |---|---|
+| 필요한 기능이 가용하고 시스템 실행 허가가 유효한가 | System Supervisor와 Mission Manager |
 | 현재 Mission 단계에서 허용된 요청인가 | Mission Manager |
 | allowlist에 있는 Capability와 기본 argument인가 | Mission Manager |
 | object, destination ID가 현재 관찰과 일치하는가 | Mission Manager, Capability |
 | workspace, joint, collision, timeout 조건을 만족하는가 | Capability, Robot backend |
 | 불확실한 분실물 정책을 임의로 실행하지 않는가 | Mission Manager |
 
-검증 정책이 중복되고 독립 lifecycle, interface가 필요해질 때 별도 컴포넌트 추출을
-재검토한다.
+Supervisor는 시스템 가용성을 관리하며 object, argument, collision 검증을 대신하지
+않는다. 이 행동별 검증이 중복되고 독립 lifecycle과 interface가 필요해질 때 별도
+Guard 추출을 재검토한다.
 
 ## Stop 경계
 
@@ -147,12 +158,17 @@ stop은 Planner가 선택하는 일반 skill로 보지 않는다. Mission cancel
 - [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>)
 - [Safety and Risk](<08 - Safety and Risk.md>)
 - [Mission Lifecycle](<09 - Mission Lifecycle.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
+
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
 
 - [Gemini Robotics ER 2 공식자료 검증](<../40_RAW/260803 - Gemini Robotics ER 2/04 - 공식자료 검증.md>)
 - [260806 - MVP Task Planning 책임 경계 결정](<../40_RAW/260806 - MVP Task Planning 책임 경계 결정.md>)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)

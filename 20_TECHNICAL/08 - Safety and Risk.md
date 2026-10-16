@@ -26,6 +26,28 @@
 stop은 Task Planner가 선택하는 일반 Manipulation Skill이 아니다. ER 2에 정지 요청
 tool을 제공하더라도 실제 선점 경로는 별도로 유지한다.
 
+## Supervisor와 독립 안전 계층
+
+System Supervisor는 시스템 가용성, Fault, 기능 제한과 실행 허가를 관리하고 필요한
+경우 Mission 중단을 요청한다. 실제 구동 정지와 하드웨어 보호는 Supervisor와
+독립된 하위 제어기 및 안전 계층이 보장해야 한다.
+
+- Mission 중단 요청 수락과 실제 중단 완료를 구분한다. 실패나 시간 초과는 운영
+  잠금으로 확대하며 보고 저장 성공 여부가 정지 경로를 막아서는 안 된다.
+- ESP32 통신 두절 시 ROS 정지 명령이 도착한다고 가정하지 않는다. 하위 watchdog과
+  보호 기능 및 실제 정지 증거가 필요하다.
+- Supervisor 종료 시 허가는 로컬에서 만료되어야 하며 재시작하면 이전 허가를
+  무효화한다. 이것만으로 임의의 motor 명령원이 물리적으로 차단되는 것은 아니다.
+- 기능 가용성과 특정 동작의 안전성은 다르다. 팔 통신 정상만으로 이동에 안전한 팔
+  상태를 추정하거나 camera frame만으로 Perception 준비를 선언하지 않는다.
+- 운영 잠금 해제에는 Fault 원인 해소와 fresh 안전 재검증이 필요하다. E-stop은
+  software Service만으로 해제하지 않으며 물리 해제와 보호 계층 상태를 확인한다.
+
+`feat/system-supervisor`의 `c63fadb`에는 위 상태 및 허가 계약이 구현되어 있지만
+실물 독립 안전 상태 adapter와 Arm 정지 증거는 추가 구현 및 검증이 필요하다.
+기본 설정은 해당 증거 없이 자동 운영을 허용하지 않는다. synthetic ROS graph의
+정지 및 복구 응답은 실물 모터 정지나 E-stop 회로 검증으로 해석하지 않는다.
+
 ## 예상 밖 장면 변화
 
 책상 작업은 외부 개입이 없는 준정적 환경을 전제로 하지만, 로봇 행동으로 물체가
@@ -70,12 +92,18 @@ tool을 제공하더라도 실제 선점 경로는 별도로 유지한다.
 - [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>)
 - [Robot ROS Contract](<10 - Robot ROS Contract.md>)
 - [Technical Questions](<99 - Questions.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
+
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+- [Supervisor 안전 및 검증 범위 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
 
 - [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260708 - 안전 기준과 실패 처리 정책](<../30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md>)
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)

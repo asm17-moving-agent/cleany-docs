@@ -3,7 +3,7 @@
 ## 요약
 
 Cleany ROS 2 workspace는 Mission orchestration, 장면 인식, task planning, physical
-execution과 robot backend를 분리한다. 이 문서는 package 책임과 의존 방향만
+execution, 시스템 가용성 및 복구 조정과 robot backend를 분리한다. 이 문서는 package 책임과 의존 방향만
 관리하며 정확한 ROS interface는 구현 code, package README가 관리한다.
 
 ## 구성도
@@ -12,6 +12,8 @@ execution과 robot backend를 분리한다. 이 문서는 package 책임과 의�
 flowchart LR
     external["Dashboard / Backend Adapter"]
     mission["cleany_mission_manager"]
+    supervisor["cleany_system_supervisor"]
+    safety["Independent Safety Layer"]
     nav["Navigator / Nav2"]
     perception["cleany_perception"]
     planner["cleany_planner"]
@@ -22,6 +24,13 @@ flowchart LR
     logger["cleany_logger"]
 
     external <--> mission
+    supervisor <-->|실행 허가, 중단 요청과 완료| mission
+    nav -->|health와 lifecycle| supervisor
+    perception -->|semantic health| supervisor
+    interface -->|상태 보고| supervisor
+    supervisor -->|담당 컴포넌트에 복구 요청| interface
+    safety -->|보호와 정지 증거| supervisor
+    safety -->|독립 구동 보호| real
     mission --> nav
     mission --> perception
     mission --> planner
@@ -40,7 +49,8 @@ flowchart LR
 
 | Package, 경계 | 책임 | 소유하지 않는 것 |
 |---|---|---|
-| `cleany_mission_manager` | lifecycle, 상태 전이, retry, report | 센서 처리와 motor 제어 |
+| `cleany_system_supervisor` | 시스템 가용성, Fault, Capability 상태, 실행 허가와 복구 조정 | Mission 재개, Skill 일반 실패와 실제 안전 정지 |
+| `cleany_mission_manager` | Mission lifecycle, 상태 전이, retry, 중단, 재검증과 report | 시스템 Fault 전체 정책, 센서 처리와 motor 제어 |
 | Navigator adapter | 좌석 ID→pose, Nav2 action 조정 | 책상 task 순서 |
 | `cleany_perception` | sensor→Scene State | Mission 전이와 task 정책 |
 | `cleany_planner` | RuleBasedPlanner, 선택된 VLM 또는 API adapter | trajectory, hardware safety |
@@ -49,8 +59,12 @@ flowchart LR
 | `cleany_interfaces` | package 간 공유 ROS type | business, 실행 logic |
 | `cleany_logger` | event, observation, MissionResult 기록 | state Source of Truth |
 | Sim package | Gazebo 주행, MuJoCo 조작 backend | 제품 정책 |
+| Independent Safety Layer | 실제 정지와 하드웨어 보호 | Supervisor의 정상 실행이나 cloud 연결에 의존하지 않음 |
 
 현재 일부 package는 scaffold다. 구현 완료 여부는 각 package README를 확인한다.
+`feat/system-supervisor`의 `c63fadb`에는 Supervisor node와 Mission 허가 bridge가 있으며,
+실물 안전 및 component recovery adapter와 production 연결은 남아 있다. 위 안전 계층
+박스는 필요한 책임 경계이며 독립 ROS package나 실물 회로 구현 완료를 뜻하지 않는다.
 
 ## 의존 방향
 
@@ -59,6 +73,8 @@ flowchart LR
 - Nav2, MoveIt, controller와 VLA adapter는 Cleany package 뒤에서 호출한다.
 - Perception과 Planner는 자유 형식 dict보다 검증 가능한 typed boundary를 지향한다.
 - hardware limit과 safe stop은 cloud Planner dependency보다 아래에 둔다.
+- Supervisor와 Mission은 공유 interface 및 port로 연결한다. 시스템 운영 상태,
+  복구 작업 상태와 Mission 상태를 서로 직접 덮어쓰지 않는다.
 
 ## 통신 선택 원칙
 
@@ -85,18 +101,30 @@ Mission Manager만 Mission state를 바꾼다. 하위 모듈은 성공, 실패, 
 보존한다. 정지 미확인은 일반 실패나 정상 취소로 축약하지 않고 후속 동작을 차단한다.
 hardware fault와 e-stop은 결과를 반환하기 전에 실제 구동을 우선 정지할 수 있어야 한다.
 
+Supervisor는 Fault와 Capability에서 운영 상태 및 실행 허가를 계산하고 필요하면
+Mission 중단을 요청한다. Mission은 요청 수락과 실제 정지 완료를 구분해 반환한다.
+복구는 컴포넌트가 수행하며 health 복귀 뒤에도 재개 판단은 Mission Manager에 남는다.
+Supervisor 종료와 통신 두절에서 실제 정지를 보장하는 기능은 하위 제어기와 독립 안전
+계층에 있어야 한다.
+
 ## 관련 문서
 
 - [Mission Lifecycle](<09 - Mission Lifecycle.md>)
 - [Robot ROS Contract](<10 - Robot ROS Contract.md>)
 - [Verification and Simulation Strategy](<13 - Verification and Simulation Strategy.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
+
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+- [Supervisor README at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
 
 - [09 - Mission Lifecycle](<09 - Mission Lifecycle.md>)
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260714 - 4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)
 - [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)

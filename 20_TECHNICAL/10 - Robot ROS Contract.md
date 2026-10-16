@@ -171,10 +171,35 @@ map
 
 정확한 depth와 deadline/liveliness 정책은 주기와 네트워크 환경을 측정한 뒤 정한다.
 
+### 3.10 시스템 가용성, 허가와 복구 계약
+
+System Supervisor는 시스템 운영 상태, Capability, Fault, 복구 상태와 heartbeat를
+제공한다. 상태 snapshot에는 프로세스 실행 세대와 순서를 구분할 수 있는 정보가
+필요하며, 오래된 snapshot 수신을 유효한 실행 허가로 취급하지 않는다.
+
+- Mission 실행 허가는 필요한 Capability, Mission 식별자, 실행 세대, version과
+  유효기간을 연결한다. Mission client는 실행 중 철회와 로컬 만료를 반영해야 한다.
+- Supervisor 재시작은 이전 허가를 무효화한다. 센서 시간과 통신 수신 시각을 구분하고,
+  simulation clock 정지나 변경이 허가 및 안전 timeout을 무기한 연장하지 않게 한다.
+- Mission 중단은 Action 수락과 실제 완료를 구분한다. component recovery도 Action
+  결과 이후 health가 실제로 복귀했는지 별도로 확인한다.
+- component health는 단순 node 존재나 Topic 수신과 구분하며, 안전 상태 보고는
+  독립 안전 계층의 실제 증거를 표현한다. 보고 interface가 있다는 사실만으로 해당
+  실물 기능이 구현됐다고 가정하지 않는다.
+- Supervisor의 복구 정책과 Mission 허가는 하위 command, controller 및 하드웨어
+  안전 계약을 대신하지 않는다.
+
+개념과 책임은 [System Supervisor](<14 - System Supervisor.md>)를 따른다.
+`feat/system-supervisor`의 `c63fadb`에서 추가한 정확한 message, service, action과
+QoS는 구현 README에서 관리한다. 기존 sensor, arm/gripper와 base 명령 계약을
+새로운 Supervisor 명령 체계로 대체하지 않는다.
+
 ## 4. 인터페이스 / 경계
 
 | 구성요소 | 책임 | 경계 |
 |---|---|---|
+| System Supervisor | 시스템 상태, 기능 가용성, 허가와 복구 조정 | 실제 복구, Mission 재개와 물리 정지를 대신하지 않음 |
+| Mission Manager | 허가 안의 Mission 실행, 중단 완료와 복구 뒤 재검증 | 하위 command 소유권과 하드웨어 보호를 대신하지 않음 |
 | Navigator/Nav2 | 목적지 해석, 경로 계획, base 속도 생성 | actuator와 motor protocol을 직접 다루지 않음 |
 | Gazebo base backend | 공통 명령을 simulation base로 변환하고 상태 발행 | 실제 hardware protocol을 포함하지 않음 |
 | MuJoCo manipulation backend | 공통 arm과 gripper 의미를 simulation actuator로 변환 | Navigation과 실제 hardware protocol을 포함하지 않음 |
@@ -206,10 +231,16 @@ map
 
 ## 7. 관련 결정
 
+- [System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)는 가용성, 실행 허가와 복구 조정의 책임을 정한다.
+
 - [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 Decision이다.
 - `/cmd_vel`, frame, arm/gripper, sensor naming의 최종 채택은 Technical Decision 또는 팀 검토가 필요하다.
 - 관련 미해결 항목은 [Technical Questions](<99 - Questions.md>)에서 관리한다.
 
 ## 8. 출처
+
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+- [Supervisor ROS 계약 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
+- [공유 ROS 인터페이스 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_interfaces/README.md)
 
 - [260710 - Docs 검증 및 ROS 2 Contract 회의 준비](<../40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md>)

@@ -27,12 +27,15 @@ control plane이다. 저수준 motor 제어, Robot 내부 planning과 물리 안
 | Dashboard | 좌석 선택, 미션 요청과 취소, 진행 및 결과 표시 | 미션 배차와 Robot 내부 상태 전이 |
 | Backend | 우선순위 대기열, 미션 제안, Robot 가용 상태, 외부 lifecycle과 결과 참조 관리 | Robot 내부 planning, 물리 실행과 안전 해제 |
 | Robot, Mission Manager | 미션 수락과 거절, 실행 상태, checkpoint 취소, 최종 결과 생성 | 대기열 순서와 운영자 권한 정책 |
+| Robot, System Supervisor | 시스템 가용성, 기능 제한, 실행 허가와 복구 조정 | Backend 배차, Mission 재개와 실제 하드웨어 보호 |
 | Robot Interface, Controller | timeout, safe stop과 물리 구동 제약 | Backend 대기열과 미션 우선순위 |
 | 물리 e-stop | cloud와 Planner를 거치지 않는 구동 차단 | 원격 reset과 일반 retry |
 
 Backend는 미션을 제안하고 외부 상태를 추적하지만 Mission Manager의 내부 FSM을 직접
 변경하지 않는다. Robot은 요청의 유효성과 현재 상태를 확인해 수락 또는 거절하고,
-수락한 뒤에는 Mission Manager가 실행 상태와 최종 결과를 소유한다.
+수락한 뒤에는 Mission Manager가 실행 상태와 최종 결과를 소유한다. Robot의 내부
+실행에는 Supervisor의 기능 가용성 및 유효한 허가도 필요하다. Backend가 Robot을
+online 또는 idle로 본다는 사실만으로 동작이 허용되는 것은 아니다.
 
 ## 미션 할당 흐름
 
@@ -85,6 +88,10 @@ Robot 가용 상태는 외부 Mission lifecycle과 분리해 `offline`, `idle`, 
 수준으로 표현한다. Perception, Planning, 개별 Skill과 retry 같은 내부 단계는 외부
 관제 상태로 그대로 노출하지 않는다.
 
+이 외부 상태와 Supervisor의 시스템 운영 상태는 서로 다른 축이다. 미션 수행 여부와
+시스템 기능 제한을 하나의 상태로 합치거나 서로 일대일로 대응시킨다고 가정하지 않는다.
+구체적인 Dashboard 표시와 control-plane 연동 형식은 별도 구현 계약에서 관리한다.
+
 종료 결과는 성공, 부분 성공, 사람 검토 필요, 차단, 실패, 취소, 만료, 거절과 중단을
 구분한다. 작업 전후 관찰은 같은 미션 결과에 참조로 연결하고 실제 저장 위치,
 Backend의 보관 기간과 삭제 정책은 별도로 정한다. 로봇의 관찰 자료 로컬 저장과
@@ -101,12 +108,15 @@ Backend의 취소, reset과 복귀는 Robot 상태를 강제로 바꾸는 명령
 | 오류 reset | Robot이 복구 가능 오류이며 안전 조건이 충족됐다고 확인한 경우에만 수락한다. |
 | 대기 위치 복귀 | 활성 미션이 없고 위치 추정과 구동 조건이 유효한 경우에만 수락한다. |
 
-물리 e-stop과 hardware fault는 원격 reset으로 해제하지 않는다. 실행 중 임의 지점의
-일시정지와 재개는 MVP 관제 계약에 포함하지 않는다.
+물리 e-stop과 미해소 hardware fault는 원격 reset만으로 해제하지 않는다. Fault
+원인과 안전 상태를 재검증하고, 컴포넌트 복구 완료 뒤에도 Mission Manager가 재개
+또는 재계획을 판단해야 한다. Supervisor 도입이 실행 중 임의 지점의 원격 일시정지와
+재개를 MVP 관제 계약에 추가하는 것은 아니다.
 
 ## 연결 장애와 재시작
 
-- Backend 연결이 끊겨도 Robot은 수락한 미션을 로컬에서 계속 실행한다.
+- Backend 연결이 끊겨도 로컬 실행 허가와 안전 조건이 유효하면 Robot은 수락한
+  미션을 로컬에서 계속 실행할 수 있다. Supervisor 장애나 허가 만료는 별도 중단 조건이다.
 - 재연결 뒤 현재 상태와 최종 결과를 Backend와 다시 맞춰야 한다. 정확한 heartbeat,
   확인 응답과 재전송 방식은 구현 계약에서 정한다.
 - Robot 프로세스나 장치가 활성 미션 도중 재시작하면 미션을 자동 재개하지 않는다.
@@ -115,10 +125,11 @@ Backend의 취소, reset과 복귀는 Robot 상태를 강제로 바꾸는 명령
 
 ## 현재 구현과 차이
 
-현재 `cleany_mission_manager` core는 외부 `MissionRequest`를 받아 내부 FSM을 실행하고
-최종 `MissionReport`를 만드는 기본 경계를 제공한다. 아직 Dashboard와 Backend,
-우선순위 대기열, 외부 관제 adapter, checkpoint 취소와 재연결 계약은 구현되어 있지
-않다.
+구현 레포 `feat/system-supervisor`의 `c63fadb`에서는 기존 Mission core에 시스템 허가,
+철회, 중단 확인과 재검증 bridge가 추가됐다. 이 변경이 Dashboard 접수나 Backend
+대기열 및 외부 관제 adapter를 연결한 것은 아니다. Supervisor 연동의 검증 범위는
+로컬 core와 synthetic ROS graph이며, 다른 control-plane 및 runtime 브랜치의 구현
+상태는 해당 checkout의 README에서 별도로 확인한다.
 
 이 문서는 목표 관제 의미를 관리한다. 실제 transport, API endpoint, ROS interface,
 message schema, heartbeat 주기, 인증 방식, database와 media 저장 구조는 구현 과정에서
@@ -130,16 +141,20 @@ message schema, heartbeat 주기, 인증 방식, database와 media 저장 구조
 - [Mission Lifecycle](<09 - Mission Lifecycle.md>)
 - [Safety and Risk](<08 - Safety and Risk.md>)
 - [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 - [Planning Questions](<../10_PLANNING/99 - Questions.md>)
 - [Technical Questions](<99 - Questions.md>)
 
 ## 출처
 
 - [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
-- [cleany_mission_manager README](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/README.md)
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
+- [Mission Manager README at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_mission_manager/README.md)
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260708 - 안전 기준과 실패 처리 정책](<../30_DECISIONS/Technical/260708 - 안전 기준과 실패 처리 정책.md>)

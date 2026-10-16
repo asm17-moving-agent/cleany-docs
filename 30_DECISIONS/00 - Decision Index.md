@@ -24,3 +24,4 @@ Technical Questions에서 관리하고, 검토와 승인 이력은 GitHub PR에 
 | 2026-08-06 | [Task Planning과 Robot Capability 경계](<Technical/260806 - Task Planning과 Robot Capability 경계.md>) |
 | 2026-10-02 | [Manipulation 결과와 안전 상태 보존](<Technical/261002 - Manipulation 결과와 안전 상태 보존.md>) |
 | 2026-10-02 | [관찰 자료 로컬 저장과 Backend 재전송](<Technical/261002 - 관찰 자료 로컬 저장과 Backend 재전송.md>) |
+| 2026-10-16 | [System Supervisor 책임과 안전 경계](<Technical/261016 - System Supervisor 책임과 안전 경계.md>) |

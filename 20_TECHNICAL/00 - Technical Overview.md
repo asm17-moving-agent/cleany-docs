@@ -19,6 +19,8 @@ flowchart TB
     subgraph runtime[" "]
         direction TB
         mission["Mission Manager<br/>상태, 전이, 요청 검증 소유"]
+        supervisor["System Supervisor<br/>가용성, Fault, 실행 허가와 복구 조정"]
+        safety["Independent Safety Layer<br/>실제 안전 정지와 하드웨어 보호"]
         navigator["Navigator<br/>Nav2"]
         perception["Perception<br/>Scene State"]
         planner["Task Planner<br/>선택된 adapter<br/>VLM / API / Rule-based"]
@@ -35,6 +37,11 @@ flowchart TB
 
     dashboard <--> backend
     backend <-->|Mission Request, Status, Result| mission
+    supervisor <-->|실행 허가, 중단 요청과 완료 확인| mission
+    interface -->|Health Report| supervisor
+    safety -->|보호 상태와 정지 증거| supervisor
+    safety -->|독립 구동 보호| real
+    supervisor -->|담당 컴포넌트에 복구 요청| interface
     mission --> navigator
     mission --> perception
     mission <-->|Plan Request, Task Proposal| planner
@@ -49,10 +56,12 @@ flowchart TB
 ```
 
 한 실행에서는 Simulation 또는 Real backend 하나만 공통 Robot Interface의 명령과
-상태를 소유한다. MVP에서는 별도 Local Guard나 독립 안전 검증 컴포넌트를 두지
-않는다. Mission 검증과 cancel은 Mission Manager가, 물리 제약 검증은 Capability와
-Robot backend가, timeout과 safe stop은 Robot Interface와 controller가 맡는다.
-물리적 e-stop은 Planner와 cloud 연결을 거치지 않고 실제 구동을 차단한다.
+상태를 소유한다. 시스템 가용성, Fault와 복구 정책은 System Supervisor가 관리한다.
+Mission 검증, 중단과 복구 뒤 재개 판단은 Mission Manager가, 물리 제약 검증과 실제
+복구는 Capability 및 담당 컴포넌트가 맡는다. 행동별 검증을 옮기는 별도 Local Guard는
+두지 않는다. timeout과 safe stop은 하위 controller 및 안전 경로가 보장해야 하며,
+물리적 e-stop은 Planner, cloud와 Supervisor의 생존에 의존하지 않는다.
+독립 안전 계층은 필요한 책임 경계이며 실물 구현 완료를 의미하지 않는다.
 Reporter는 Mission Manager에 관찰과 결과를 반환하며, Backend에는 Mission Manager만
 상태와 최종 결과를 전송한다.
 
@@ -73,11 +82,14 @@ Reporter는 Mission Manager에 관찰과 결과를 반환하며, Backend에는 M
 | 소프트웨어 | [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>) | 패키지 책임은 어떻게 나뉘는가? |
 | 하드웨어 | [Hardware Configuration](<12 - Hardware Configuration.md>) | 실제 부품, 전원, 배선은 어떻게 구성되는가? |
 | 검증 | [Verification and Simulation Strategy](<13 - Verification and Simulation Strategy.md>) | 단계별로 무엇을 어디서 검증하는가? |
+| 시스템 운영 | [System Supervisor](<14 - System Supervisor.md>) | 시스템 가용성, 기능 제한, 실행 허가와 복구 조정을 누가 소유하는가? |
 
 ## 현재 설계 원칙
 
 - 제품 목표와 구현 상태를 구분한다.
 - Mission 상태 전이는 Mission Manager만 소유한다.
+- System Supervisor는 시스템 운영 상태와 복구 작업 상태를 분리하고, Mission 실행
+  허가의 만료와 철회를 관리한다. 복구만으로 Mission을 자동 재개하지 않는다.
 - Planner가 제안한 행동은 Mission Manager와 Capability의 검증을 통과한 뒤에만 실행한다.
 - VLM을 선택하면 고정 주기가 아니라 high-level 행동 완료, 실패와 장면 변화 checkpoint에서 재추론한다.
 - Manipulation Skill은 VLA-backed 실행을 포함할 수 있다.
@@ -94,9 +106,13 @@ Reporter는 Mission Manager에 관찰과 결과를 반환하며, Backend에는 M
 
 ## 출처
 
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+
 - [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260708 - XLeRobot 기반 플랫폼](<../30_DECISIONS/Technical/260708 - XLeRobot 기반 플랫폼.md>)
 - [260714 - 4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)

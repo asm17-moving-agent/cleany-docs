@@ -10,7 +10,8 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 
 | 단계 | 검증 목표 | 통과 기준 |
 |---|---|---|
-| Core | Mission, Planner, Capability 검증 순수 logic | 성공, 실패, 차단, 부분 결과 경로가 재현됨 |
+| Core | Mission, Planner, Capability와 Supervisor 검증 순수 logic | 성공, 실패, 차단, Fault, 허가와 복구 경로가 재현됨 |
+| Supervisor ROS 통합 | Health, 실행 허가, Mission stop과 component recovery 경계 | synthetic peer에서 만료, 재시작, 완료 확인과 실패 제한이 재현됨 |
 | Rule-based 통합 | Dashboard 요청부터 report까지 E2E 경계 | 고정 입력에서 전체 lifecycle이 연결됨 |
 | Perception | image→mask→3D→Scene State | 실패를 포함한 각 adapter 계약이 확인됨 |
 | Navigation Sim | 좌석 왕복과 cancel, failure | Gazebo에서 Nav2, base, sensor 경계가 동작함 |
@@ -20,6 +21,24 @@ Cleany는 Rule-based E2E 통합, 후보 추론 경로 비교, physical execution
 | Real Robot | 실제 sensor, base, arm, safety | 승인된 통제 시나리오를 전후 결과와 함께 수행함 |
 
 현재는 정량 성공률보다 각 단계의 pass/fail과 실패 증거를 우선 기록한다.
+
+## Supervisor 검증 증거의 경계
+
+`feat/system-supervisor`의 `c63fadb`에서 기록한 검증은 로컬 Humble build, pure core와
+synthetic ROS graph다. 이 기록을 원격 CI 실행, Nav2 실주행이나 실제 하드웨어
+안전 검증으로 확대 해석하지 않는다. 실행 명령, 결과 수와 fixture는 구현 README를 따른다.
+
+| 검증 | 확인하는 것 | 확인하지 못하는 것 |
+|---|---|---|
+| Pure core | 상태 전이, 동시 Fault, 해제 조건, 기능 의존성, 허가 만료 및 복구 예산 | 실제 sensor, actuator와 통신 지연 |
+| Synthetic ROS graph | health와 lifecycle 입력, 허가 갱신 및 철회, restart, Action 수락과 완료 구분 | 실제 Nav2 경로 실행, Arm 정지와 물리 Recovery |
+| 기본 launch | 필수 상태 증거가 없으면 자동 운영이 잠김 | 실물 안전 회로 또는 센서 정확성 |
+| 실물 통합 | 추가 검증 필요 | 위 자동 검사만으로 통과를 선언하지 않음 |
+
+실물 검증에서는 ESP32 통신 차단과 하위 watchdog, 실제 모터 정지, Supervisor 및
+Mission 종료, E-stop 작동과 물리 해제, 팔 상태와 물체 보유를 포함한 재개 판단을
+각각 확인해야 한다. 정지 요청 전달, 수락, 실제 정지와 복구 뒤 health 증거를 별도로
+기록한다. 실제 safety 및 Recovery 제공자가 없으면 성공을 모사해 실물 통과로 기록하지 않는다.
 
 ## Simulator 책임
 
@@ -69,6 +88,8 @@ Simulator 사이를 반드시 실시간으로 연결할 필요는 없다. 공통
 - 작업 전후 자료의 로컬 저장 결과, Backend 저장 확인, 전송 재시도와 중복 저장 판별 결과
 - 행동 전후 Scene과 물체의 낙하 또는 전도 같은 예상 밖 변화
 - Navigation, Perception, Planning, Manipulation 중 실패 경계
+- Supervisor 실행 세대와 허가 철회 및 만료, 중단 요청 수락과 실제 정지 완료의 구분
+- 활성 Fault 집합, 제한된 기능, recovery 시도 및 취소 확인과 복구 뒤 fresh health 증거
 - 실제 로봇에서는 감독자, 작업 구역, e-stop 준비 확인
 
 ## 구현 검증 문서 경계
@@ -82,14 +103,17 @@ README가 관리한다. KB는 제품 단계와 검증 증거의 의미를 관리
 - [Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
 - [Navigation and Mapping](<05 - Navigation and Mapping.md>)
 - [Perception and Scene Understanding](<07 - Perception and Scene Understanding.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
 
+- [Supervisor 구현 및 검증 기록 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
 - [05 - Success Criteria](<../10_PLANNING/05 - Success Criteria.md>)
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 
 ## 관련 결정
 
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
 - [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)

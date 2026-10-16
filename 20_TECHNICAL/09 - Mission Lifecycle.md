@@ -6,6 +6,10 @@ Mission Manager는 Cleany 전체 미션의 단계 전이와 최종 결과를 소
 Perception, Planner와 Skill Executor는 요청을 수행하고 결과를 반환하지만 Mission
 state를 직접 바꾸지 않는다.
 
+System Supervisor는 시스템 운영 상태, 기능 가용성과 실행 허가를 소유한다. Mission
+Manager는 유효한 허가 안에서 실행하고, 허가 철회 시 중단하며, 복구 뒤 재개 또는
+재계획을 스스로 판단한다. 두 컴포넌트가 같은 상태 모델을 공유하지 않는다.
+
 Backend는 대기열과 미션 제안을 소유하고, Mission Manager는 요청을 수락한 뒤 Robot
 내부 실행 상태를 소유한다. Backend가 수락 이후의 내부 state를 직접 전이시키지
 않는다.
@@ -16,12 +20,16 @@ Backend는 대기열과 미션 제안을 소유하고, Mission Manager는 요청
 sequenceDiagram
     participant Control as Backend Adapter
     participant Mission as Mission Manager
+    participant Supervisor as System Supervisor
     participant Nav as Navigator
     participant Perception
     participant Planner as Task Planner
     participant Capability as Robot Capability
 
     Control->>Mission: 검증할 Mission Request
+    Mission->>Supervisor: 필요한 기능의 실행 허가 요청
+    Supervisor-->>Mission: 만료와 철회를 반영하는 허가 또는 거절
+    Note over Mission,Supervisor: 아래 실행 흐름은 유효한 허가가 있는 경우에만 진행
     Mission->>Nav: 대상 좌석 이동
     Nav-->>Mission: 도착 결과
     Mission->>Perception: 작업 전 관찰
@@ -82,7 +90,8 @@ Mission Manager가 이후 재관찰과 재계획을 시작한다. 취소는 진�
 
 ## 현재 구현과 차이
 
-현재 `cleany_mission_manager` core는 다음 흐름을 구현한다.
+구현 레포 `feat/system-supervisor`의 `c63fadb`에서 기본 Mission core는 다음 흐름을
+유지하며 별도의 허가 및 중단 bridge를 연결했다. main 반영이나 실물 배포를 뜻하지 않는다.
 
 ```text
 NAVIGATE_TO_TARGET
@@ -93,20 +102,36 @@ NAVIGATE_TO_TARGET
 → REPORT
 ```
 
-현재 구현에는 작업 후 재관찰 단계와 Dashboard 및 Backend ROS 연동이 없다. 정확한
-enum, retry 값, 결과 필드와 현재 테스트 상태는 구현 code, package README가
-Source of Truth다.
+이 브랜치에는 허가 만료 및 철회 감시, 중단 수락과 완료 확인, 지연된 결과 무효화와
+명시적 재검증 뒤 재개 경계가 추가됐다. 기존 무감독 core가 자동으로 이 경계를
+사용하는 것은 아니다. production Navigator 및 Arm adapter 연결은 남아 있다.
+작업 후 재관찰 단계와 Dashboard 및 Backend 접수 연결이 추가됐다는 뜻도 아니다.
+정확한 enum, retry 값, 결과 필드와 테스트 상태는 구현 code와 package README가
+Source of Truth다. 다른 구현 브랜치의 진척을 이 기준에 합쳐 해석하지 않는다.
+
+## 실행 허가 철회와 복구 뒤 판단
+
+- Mission 시작과 실행 중에 필요한 Capability와 유효한 시스템 허가를 확인한다.
+- 기능 상실, 허가 만료 또는 Supervisor 재시작은 실행 중단 경로로 연결한다.
+- cancel 또는 stop 요청 수락만으로 중단 완료를 기록하지 않는다. 하위 정지 확인과
+  기존 실행의 종료가 확인되어야 한다. 이후 도착한 성공 결과는 Mission을 진행시키지 않는다.
+- 복구 Action 성공과 기능 복귀는 Mission 재개 신호가 아니다. 물체 보유, 팔 자세,
+  위치, 최신 관찰과 완료된 작업을 재검증해 재개, 재계획 또는 종료를 결정한다.
+- 재개를 선택해도 이전 허가를 되살리지 않고 새 허가를 취득한다. 기존 scene과 plan을
+  무조건 이어 쓰거나 이미 완료한 작업을 확인 없이 반복하지 않는다.
 
 ## 단계별 책임
 
 | 단계 | 호출 대상 | Mission Manager가 판단하는 것 |
 |---|---|---|
-| 미션 수락 | Backend adapter | 새 미션을 받을 수 있는가 |
+| 미션 수락 | Backend adapter, Supervisor | 요청이 유효하고 필요한 기능과 실행 허가가 있는가 |
 | 이동, 복귀 | Navigator | 성공, 재시도, 실패, 취소 |
 | 관찰 | Perception | 유효한 Scene State인가 |
 | 계획 | 선택된 Planner adapter 또는 RuleBasedPlanner | 실행 가능한 task proposal인가 |
 | 실행 | Skill Executor | 다음 skill, 부분 성공, 실패, 차단 |
 | 보고 | Reporter | 최종 상태와 전후 결과 구성 |
+| 시스템 허가 철회 | Supervisor, 하위 정지 adapter | 요청 수락과 실제 중단 완료가 구분되는가 |
+| 복구 뒤 재검증 | 최신 상태와 관찰 | 재개, 재계획 또는 종료할 것인가 |
 
 ## Planner와 Skill 경계
 
@@ -164,15 +189,19 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 - [Robot Operations and Mission Dispatch](<02 - Robot Operations and Mission Dispatch.md>)
 - [Task Planning and Robot Capabilities](<03 - Task Planning and Robot Capabilities.md>)
 - [ROS 2 Software Architecture](<11 - ROS 2 Software Architecture.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
 
-- [cleany_mission_manager README](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/README.md)
-- [Mission Manager core](https://github.com/asm17-moving-agent/cleany/blob/main/ros2_ws/src/cleany_mission_manager/cleany_mission_manager/core/manager.py)
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 - [ROS 2 Action 공식 설계](https://design.ros2.org/articles/actions.html)
+- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+- [Mission Manager README at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_mission_manager/README.md)
+- [Mission Manager core at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_mission_manager/cleany_mission_manager/core/manager.py)
 
 ## 관련 결정
+
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
