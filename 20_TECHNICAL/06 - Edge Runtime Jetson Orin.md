@@ -4,7 +4,8 @@
 
 Jetson Orin NX 16GB는 Cleany 로봇의 ROS 2, sensor 처리, 로컬 검증, Capability
 adapter와 hardware integration을 실행하는 엣지 컴퓨터다. 특정 cloud VLM을 로컬에서
-실행하기 위해 정해진 장치는 아니며, 로컬 VLM과 detector, segmentation 후보도 측정 대상이다.
+실행하기 위해 정해진 장치는 아니다. 현재 YOLOE-seg 인식과 로컬 VLM 확장 후보의
+실행 조건 및 자원 측정은 각각 구분한다.
 
 ## 배포 구조
 
@@ -12,14 +13,14 @@ adapter와 hardware integration을 실행하는 엣지 컴퓨터다. 특정 clou
 flowchart TB
     subgraph cloud["Cloud, 운영자 영역"]
         dashboard["Dashboard / Backend<br/>미션 요청, 상태, 결과"]
-        api_vlm["API 기반 VLM 후보<br/>ER 2 등"]
+        api_vlm["Gemini API<br/>장면 의미 분류"]
     end
 
     network["Network Boundary"]
 
     subgraph edge["Robot Edge, Jetson Orin NX"]
         mission["Mission Manager<br/>state, allowlist, argument 검증"]
-        local_ai["로컬 VLM, YOLO, segmentation 후보"]
+        local_ai["YOLOE-seg, depth와 3D 처리"]
         ros["ROS 2 Runtime<br/>Nav2, Perception, Planner<br/>Capability 물리 제약 검증 및 실행"]
         logs["Observation, Result, Diagnostics"]
     end
@@ -34,7 +35,7 @@ flowchart TB
     dashboard <--> network
     api_vlm <--> network
     network <-->|Mission 요청, 상태, 결과| mission
-    network <-->|VLM context, proposal| ros
+    network <-->|장면 입력과 의미 분류| ros
     mission <--> ros
     local_ai <--> ros
     sensors -->|관측, 상태| ros
@@ -44,9 +45,10 @@ flowchart TB
     estop -.->|cloud와 일반 ROS에서 독립된 차단| controllers
 ```
 
-Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 안전 권한은 Jetson과
-로봇 장치에 남는다. 네트워크가 끊겨도 새 행동을 차단하고 안전 상태를 유지할 수
-있어야 한다.
+Cloud는 고수준 요청과 의미 분류를 제공하지만 물리 실행과 안전 권한은 Robot에 남는다.
+Backend 연결 단절과 Gemini 추론 실패를 구분한다. Backend가 끊겨도 로컬 허가와 안전
+조건이 유효하면 수락한 미션을 계속할 수 있고, 필요한 의미 분류를 얻지 못한 새 행동은
+시작하지 않는다. Supervisor 허가 상실과 하위 정지는 각각 로컬 경로에서 처리한다.
 
 ## 로컬 책임
 
@@ -54,7 +56,7 @@ Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 
 - RGB-D, LiDAR, IMU, encoder 입력 처리
 - Nav2와 base adapter 실행
 - YOLOE-seg, depth, 3D 위치 추정 등 현재 Perception 경로 실행
-- Manipulation Skill과 VLA, MoveIt, controller adapter 실행
+- MoveIt, 규칙 기반 Manipulation Skill과 controller adapter 실행
 - Mission 단계, Planner 출력 schema, Capability allowlist, 기본 argument 검증
 - Capability adapter의 workspace, joint, collision, timeout 검증
 - timeout, cancel, safe stop과 장치 상태 감시
@@ -65,6 +67,13 @@ Cloud는 고수준 요청과 추론을 제공할 수 있지만 물리 실행과 
 Gemini API는 현재 Perception의 장면 의미 분류에 사용한다. 클라우드는 하드웨어 안전,
 고주기 제어와 네트워크 장애 시 정지를 담당하지 않는다. 추론 요청은 고정 주기가 아니라 작업 전 관찰과
 high-level 행동의 완료, 실패, 장면 변화 checkpoint를 기준으로 한다.
+
+## 배포 목표와 확인된 실행의 차이
+
+Jetson 선택과 x86 개발, 시뮬레이션 결과는 다른 근거다. Native ROS와 AI container의
+혼합 배포는 Raw 조사 자료에 정리돼 있지만, 그 자료만으로 최종 배포 선택이나
+Jetson 동시 실행 성능을 확정하지 않는다. 모델 경로, GPU 접근, 네트워크 및 ROS
+경계를 고정한 실제 배포 검증이 필요하다. 정확한 설치와 실행 계약은 구현 문서가 관리한다.
 
 ## 리소스 원칙
 
@@ -97,6 +106,10 @@ high-level 행동의 완료, 실패, 장면 변화 checkpoint를 기준으로 �
 - [Hardware Configuration](<12 - Hardware Configuration.md>)
 
 ## 출처
+
+- [Jetson 혼합 배포 조사 기록](<../40_RAW/40_Research/260818 - Jetson 네이티브·컨테이너 혼합 아키텍처/00 - README.md>)
+- [현재 Perception 모델과 실행 조건 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_perception/docs/runtime.md)
+- [실행 환경과 배포 진입점 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/docs/RUNNING.md)
 
 - [260714 - Jetson Orin NX 16GB](<../30_DECISIONS/Technical/260714 - Jetson Orin NX 16GB.md>)
 

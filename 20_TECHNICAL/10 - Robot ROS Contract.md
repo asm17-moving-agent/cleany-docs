@@ -1,177 +1,95 @@
 # 로봇 ROS 2 공통 계약(Robot ROS Contract)
 
-## 1. 요약
+## 요약
 
-이 문서는 Cleany 상위 소프트웨어가 Gazebo 주행, MuJoCo 조작과 실제 로봇을 같은
-의미로 사용할 수 있도록 robot boundary의 command, state, frame, 시간과 안전
-원칙을 정의한다.
+Navigation goal, 차체 속도, wheel 명령, 관절 trajectory와 센서 상태의 계층을 구분한다.
+Sim과 Real은 의미와 소유권을 공유하되 같은 구현이나 정확도를 가정하지 않는다.
+정확한 message 필드, endpoint, QoS와 parameter는 구현 레포 reference가 관리한다.
 
-4륜 Mecanum base와 `base_link` 기준 `linear.x`, `linear.y`, `angular.z` 지원은
-Decision으로 정했다. 이 문서는 공통 의미 경계를 관리하고, 정확한 topic, QoS,
-수치와 frame 이름은 실제 package 구현과 robot description에서 확정한다.
+현재 Runtime과 Scene/Grasp는 `65fdf06`, 실물 base와 MCU 계약은 `e8b9f11`,
+Supervisor 계약은 `c63fadb`를 근거로 한다. 통합 방향과 각 구현의 현재 상태는
+[Technical Overview](<00 - Technical Overview.md>)를 따른다.
 
-## 2. 기획 맥락
-
-Cleany는 같은 Mission Manager, Navigator, Perception, Planner와 Skill Executor를
-유지하면서 하위 backend를 Gazebo, MuJoCo 또는 Real로 교체하는 구조가 필요하다.
-상위 모듈은 simulation actuator나 실제 motor driver를 직접 알지 않고 공통 의미
-계약에만 의존한다.
-
-Navigation contract는 주로 Gazebo와 Real base 사이를, manipulation contract는
-MuJoCo와 Real arm 사이를 연결한다. 분실물 후보의 물리 행동은 이 문서에서 정하지 않는다.
-
-## 3. 기술 개념
-
-### 3.1 계약 계층
-
-Navigation goal과 base command는 경쟁하는 하나의 계약이 아니라 서로 다른 계층이다.
+## 명령 계층과 단일 소유권
 
 ```text
-Mission Manager
-    │ target_id
-    ▼
-Navigator
-    │ NavigateToPose 또는 동등한 navigation action
-    ▼
-Nav2
-    │ geometry_msgs/msg/Twist
-    ▼
-cmd_vel
-    │
-    ▼
-활성 Sim 또는 Real base backend
+Mission의 좌석 ID → Navigator의 지도 pose와 NavigateToPose
+→ Nav2 및 선택된 안전 경로 → cmd_vel
+→ Sim base 또는 Real base driver → wheel 명령 → MCU → motor
 ```
 
-- 상위 navigation 계약: 목적지까지 오래 걸리는 작업의 goal, feedback, result, cancel을 표현한다.
-- 하위 base 계약: 짧은 주기로 전달되는 차체 속도 명령과 odometry를 표현한다.
-- Mission Manager는 wheel 속도나 actuator 값을 직접 만들지 않는다.
-- Sim과 Real backend는 같은 하위 계약을 구현하되 한 실행에서는 하나만 활성화한다.
+Mission은 wheel command를 만들지 않고 Backend는 Robot 내부 FSM과 motor를 직접
+제어하지 않는다. 한 실행에서 최종 차체 명령원, MCU wheel 명령원 및 canonical
+odometry와 TF edge의 소유자를 각각 명확히 한다. Nav2, teleop과 시험 명령을 겹쳐
+발행하지 않는다. namespace와 remap으로 격리하며 노드는 상대 이름을 사용한다.
 
-### 3.2 이름과 namespace 원칙
+`cleany_robot_interface`는 공통 의미 경계다. 현재 모든 명령과 센서가 하나의 완성된
+해당 패키지를 통과한다고 가정하지 않는다.
 
-노드 구현은 선행 `/`가 없는 상대 이름을 사용한다.
+## 차체 명령과 MCU 구동 허가
 
-```python
-create_subscription(Twist, "cmd_vel", ...)
-create_publisher(Odometry, "odom", ...)
-```
+`cmd_vel`은 `base_link` 기준 x, y 병진 m/s와 yaw rad/s를 나타내는 Twist다.
+메카넘 base는 세 축을 지원하지만 상위 주행 profile은 횡이동을 제한할 수 있다.
+실물 driver는 유한성 및 속도 한계를 검사하고 wheel 목표가 한계를 넘으면 비율을
+유지해 줄인다. 지원하지 않는 축과 잘못된 수치의 처리는 구현 reference에 명시한다.
 
-단일 로봇을 root namespace에서 실행하면 `/cmd_vel`, `/odom`으로 resolve된다. 다중 로봇 또는 Sim/Real 동시 비교가 필요할 때는 namespace와 remap으로 분리한다. Sim과 Real을 같은 canonical topic에 동시에 연결하지 않는다.
+`e8b9f11`의 ESP32-S3는 native USB의 micro-ROS로 WheelCommand와 WheelState를
+교환한다. ROS 배열의 FL, FR, RL, RR 순서와 PCB의 motor 순서를 MCU에서 변환하며,
+wheel, encoder 부호를 host에서 다시 반전하지 않는다. 기구 치수와 slip을 반영한
+유효 기구학 보정값도 다른 값으로 관리한다.
 
-### 3.3 MVP 핵심 topic 권고안
+| 조건 | 명령과 허가 의미 |
+|---|---|
+| 시작, 재부팅, 연결 복구 | 구동 비허가; 명시적 ENABLE과 그 이후의 새 명령 필요 |
+| MCU 명령 | protocol, sequence, 유효 수치와 MCU 기준 deadline 검사 |
+| STOP, 만료, 통신 두절 | 목표와 허가 폐기; cached 이동 명령 자동 복구 금지 |
+| Host timeout | monotonic 수신 시간으로 판단; MCU watchdog과 별도로 동작 |
+| Command 재시도 | 같은 sequence/deadline 유지; 오래된 패킷이 유효기간을 연장하지 않음 |
 
-아래 표는 Sim과 Real backend가 공유하는 현재 상위 의미 경계다.
+연결 성공과 `/cmd_vel` 발행은 구동 허가가 아니다. Deadline, slew와 PI+FF 동작은
+firmware 계약이 관리한다. MCU의 PWM zero 응답과 실제 정지 거리는 별도 검증한다.
+기존 `main`의 바이너리 serial firmware와 micro-ROS 경로를 혼용하지 않는다.
 
-| 상대 topic | message type | Publisher | Subscriber | 계약 의미 |
-|---|---|---|---|---|
-| `cmd_vel` | `geometry_msgs/msg/Twist` | Nav2 controller 또는 수동 제어기 | 활성 base backend | 차체 기준 속도 명령 |
-| `odom` | `nav_msgs/msg/Odometry` | 활성 odometry backend | localization, Nav2, logger | `odom` 기준 차체 pose와 twist |
-| `joint_states` | `sensor_msgs/msg/JointState` | 활성 robot backend | `robot_state_publisher`, MoveIt, logger | 관절 위치, 속도, effort 상태 |
-| `scan` | `sensor_msgs/msg/LaserScan` | LiDAR driver 또는 Sim | SLAM, localization, Nav2 | `laser` 기준 2D 거리 측정 |
-| `tf` | `tf2_msgs/msg/TFMessage` | transform 소유 node | 전체 시스템 | 동적 frame 변환 |
-| `tf_static` | `tf2_msgs/msg/TFMessage` | `robot_state_publisher` 등 | 전체 시스템 | 정적 frame 변환 |
-| `clock` | `rosgraph_msgs/msg/Clock` | Sim backend | `use_sim_time` node | simulation 전용 시간 |
+## 상태, TF와 시간
 
-### 3.4 `cmd_vel` 의미 권고안
+| 데이터 또는 TF | 의미와 소유권 |
+|---|---|
+| `joint_states` | description과 같은 joint 이름; revolute rad 및 rad/s |
+| `wheel/odom` | 누적 wheel 각도에서 계산한 로컬 이동 추정; ground truth 아님 |
+| `odom` 및 `odom → base_link` | 선택된 canonical estimator 또는 relay 한 곳이 소유 |
+| `map → odom` | SLAM 또는 saved-map localization 중 활성 소유자 한 곳 |
+| base와 sensor, arm TF | description과 해당 actuator/backend의 책임; capture-time lookup 사용 |
+| `scan` | LiDAR frame, meter와 radian, 유효 촬영 stamp |
+| RGB-D, CameraInfo | 정합, encoding, 크기, optical frame과 시각의 일치 |
+| `/clock` | simulation 시간; 관측 stamp와 별개인 timeout의 steady clock을 대체하지 않음 |
 
-| 필드 | 단위 | 의미 | 상태 |
-|---|---|---|---|
-| `linear.x` | m/s | `base_link` 기준 전진, 후진 속도 | MVP 후보 |
-| `linear.y` | m/s | `base_link` 기준 좌우 속도 | 4륜 Mecanum base 지원 대상 |
-| `angular.z` | rad/s | `base_link` 기준 yaw 회전 속도 | MVP 후보 |
-| 나머지 필드 | - | 모바일 베이스에서 사용하지 않음 | 0을 요구하는 안 검토 필요 |
+실물 기본 odometry는 wheel feedback에서 계산하고 relay가 canonical odom과 TF를
+소유한다. IMU/EKF 융합을 이미 기본 적용했다고 설명하지 않는다. 융합 estimator를
+연결하면 기존 relay 소유권을 넘겨 중복 발행을 막아야 한다.
 
-`geometry_msgs/msg/Twist`에는 `header`와 `frame_id`가 없으므로 `base_link` 기준이라는 의미는 이 계약과 backend 설정에서 명시한다.
+MCU monotonic microseconds는 ROS epoch가 아니다. Host는 수신 시각, boot ID와
+sequence를 구분하며 encoder rollover 및 관측 단절 후 baseline을 처리한다.
+미관측 구간의 이동을 임의로 복원하거나 과거 상태를 최신으로 재발행하지 않는다.
 
-활성 base backend가 가져야 할 기본 방어 동작 후보:
+Gazebo ground-truth odometry와 encoder 기반 odometry는 profile에 따라 다르다.
+평가용 참값을 localization 결과나 실제 wheel feedback으로 표시하지 않는다.
+센서의 정확한 이름과 frame은 URDF 및 실행 profile의 실제 계약을 따른다.
 
-- 마지막 명령 이후 `cmd_vel_timeout`이 지나면 정지한다.
-- NaN, infinity 같은 유효하지 않은 값은 실행하지 않고 진단 정보를 남긴다.
-- 속도와 가속도 제한은 실제 로봇 사양에 따른 ROS parameter 또는 `configs/robot/` 설정으로 둔다.
-- `linear.y`를 4륜 Mecanum base의 좌우 병진 속도로 해석하며 무시하거나 다른 축으로 재해석하지 않는다.
-- e-stop 또는 hardware fault 상태에서는 새 속도 명령보다 정지 정책을 우선한다.
+## 조작 요청과 controller
 
-정확한 timeout, 속도, 가속도 수치는 실제 base 사양과 안전 검토 후 정한다.
+Mission의 단일 객체 Action은 승인한 snapshot, object, destination과 execution ID를
+전달한다. 재전송, 결과 불명확과 재시작 시 같은 행동이 새 실행으로 중복되지 않아야
+한다. 결과에는 행동 outcome, 정지, 물체 보유와 놓기 확인이 함께 보존된다.
 
-### 3.5 상태 topic 의미
+Scene inspection, grasp planning과 reachable-grasp 선택은 조작 실행과 다른 계약이다.
+plan-only 성공은 controller 실행이나 실제 수거 성공이 아니다.
 
-#### `odom`
+현재 MuJoCo 조작은 MoveIt과 trajectory controller를 사용한다. 팔의 표준
+FollowJointTrajectory와 joint feedback 의미를 유지하며, simulator qpos나 private
+hook을 실물 제어 계약으로 승격하지 않는다. 실물 arm/gripper driver의 실행과 정지
+조건 및 보정값은 별도 통합 대상이다.
 
-- `header.frame_id`: `odom`
-- `child_frame_id`: `base_link`
-- pose와 twist 단위는 SI 단위를 사용한다.
-- 실제 로봇은 encoder 기반 wheel odometry와 IMU를 융합하고 SLAM/localization 보정을 적용하는 방향으로 설계한다. 정확한 filter 구성과 source별 covariance는 추가 정의가 필요하다.
-- Sim 초기 구현은 ground-truth odometry를 사용할 수 있으나, 실제 wheel odometry와 동일한 정확도를 보장한다고 표현하지 않는다.
-
-#### `joint_states`
-
-- joint 이름은 robot description의 joint 이름과 일치해야 한다.
-- revolute joint 위치는 radian, prismatic joint 위치는 meter를 사용한다.
-- Sim과 Real은 같은 논리 joint 이름을 사용하는 것을 목표로 한다.
-
-#### `scan`
-
-- `header.frame_id`는 LiDAR frame을 사용한다.
-- range는 meter, angle은 radian을 사용한다.
-- 유효 범위와 scan 주기는 sensor 또는 simulation config로 관리한다.
-
-### 3.6 sensor 확장 후보
-
-아래 topic은 Perception과 localization에 필요할 가능성이 높지만 정확한 장치와 namespace가 확인되지 않아 MVP 핵심 계약과 분리한다.
-
-| 상대 topic 후보 | message type | 상태 |
-|---|---|---|
-| `imu/data` | `sensor_msgs/msg/Imu` | IMU 사양과 fusion 방식 확인 필요 |
-| `camera/color/image_raw` | `sensor_msgs/msg/Image` | RGB-D driver naming 확인 필요 |
-| `camera/color/camera_info` | `sensor_msgs/msg/CameraInfo` | calibration 계약 확인 필요 |
-| `camera/depth/image_raw` | `sensor_msgs/msg/Image` | depth encoding 확인 필요 |
-| `camera/depth/camera_info` | `sensor_msgs/msg/CameraInfo` | RGB/depth 정합 방식 확인 필요 |
-
-Perception은 Sim/Real 구현을 직접 분기하지 않고, 선택된 sensor topic과 frame 계약을 통해 입력을 받는다.
-
-### 3.7 frame tree와 소유권 권고안
-
-```text
-map
-└── odom
-    └── base_link
-        ├── laser
-        ├── imu_link
-        ├── camera_link
-        │   ├── camera_color_optical_frame
-        │   └── camera_depth_optical_frame
-        └── arm links ...
-```
-
-| transform | 소유 컴포넌트 | 상태 |
-|---|---|---|
-| `map -> odom` | SLAM 또는 localization | navigation 사용 시 필요 |
-| `odom -> base_link` | 활성 Sim 또는 Real odometry backend | MVP 후보 |
-| `base_link -> sensor/arm links` | `robot_state_publisher` | robot description 필요 |
-
-하나의 transform은 한 컴포넌트만 발행한다. `laser`, `camera_link`, optical frame, end-effector의 최종 이름과 실제 변환 수치는 URDF/Xacro 및 XLeRobot 사양 확인 후 확정한다.
-
-### 3.8 Arm / Gripper 계약 후보
-
-- simulation 전용 qpos, joint test hook을 Sim/Real 공통 제어 계약으로 사용하지 않는다.
-- 현재 MuJoCo 조작 backend는 arm과 gripper에 trajectory controller를 사용한다.
-- MoveIt이 현재 조작 실행 경로에서 trajectory controller를 호출한다.
-- Sim과 Real 사이의 공통 controller/action 의미는 실물 backend 통합 후 확인한다.
-
-실물 controller 이름과 허용 범위, gripper command 의미는 아직 확정하지 않는다.
-
-### 3.9 QoS 권고안
-
-| 데이터 | QoS 후보 | 이유 |
-|---|---|---|
-| `cmd_vel` | reliable, volatile, keep last | 최신 제어 명령 전달 |
-| `odom`, `joint_states` | reliable, volatile | 상태 전달과 디버깅 |
-| `scan`, IMU, camera | ROS 2 Sensor Data QoS | 지연보다 최신 sensor sample 우선 |
-| `tf`, `tf_static` | tf2 표준 broadcaster/listener QoS | ROS 2 TF 생태계 호환 |
-
-정확한 depth와 deadline/liveliness 정책은 주기와 네트워크 환경을 측정한 뒤 정한다.
-
-### 3.10 시스템 가용성, 허가와 복구 계약
+## 시스템 가용성, 허가와 복구
 
 System Supervisor는 시스템 운영 상태, Capability, Fault, 복구 상태와 heartbeat를
 제공한다. 상태 snapshot에는 프로세스 실행 세대와 순서를 구분할 수 있는 정보가
@@ -191,56 +109,36 @@ System Supervisor는 시스템 운영 상태, Capability, Fault, 복구 상태�
 
 개념과 책임은 [System Supervisor](<14 - System Supervisor.md>)를 따른다.
 `feat/system-supervisor`의 `c63fadb`에서 추가한 정확한 message, service, action과
-QoS는 구현 README에서 관리한다. 기존 sensor, arm/gripper와 base 명령 계약을
+QoS는 해당 구현 reference에서 관리한다. 기존 sensor, arm/gripper와 base 명령 계약을
 새로운 Supervisor 명령 체계로 대체하지 않는다.
 
-## 4. 인터페이스 / 경계
+## 실패와 안전의 해석
 
-| 구성요소 | 책임 | 경계 |
-|---|---|---|
-| System Supervisor | 시스템 상태, 기능 가용성, 허가와 복구 조정 | 실제 복구, Mission 재개와 물리 정지를 대신하지 않음 |
-| Mission Manager | 허가 안의 Mission 실행, 중단 완료와 복구 뒤 재검증 | 하위 command 소유권과 하드웨어 보호를 대신하지 않음 |
-| Navigator/Nav2 | 목적지 해석, 경로 계획, base 속도 생성 | actuator와 motor protocol을 직접 다루지 않음 |
-| Gazebo base backend | 공통 명령을 simulation base로 변환하고 상태 발행 | 실제 hardware protocol을 포함하지 않음 |
-| MuJoCo manipulation backend | 공통 arm과 gripper 의미를 simulation actuator로 변환 | Navigation과 실제 hardware protocol을 포함하지 않음 |
-| Real base backend | 공통 명령을 wheel target으로 변환하고 MCU feedback을 ROS 상태로 발행 | mission과 navigation 판단을 수행하지 않음 |
-| Mentor-supported MCU | encoder feedback 수집, wheel velocity 제어와 MDD20A PWM/DIR 출력 | ROS 상위 계약과 mission 판단을 소유하지 않음 |
-| Robot description | joint/link 이름과 정적, 관절 TF 제공 | 동적 odometry를 소유하지 않음 |
-| Sensor driver/Sim sensor | 표준 sensor message 발행 | 물체 의미와 행동을 결정하지 않음 |
-| Skill Executor/MoveIt | high-level skill과 manipulation motion 실행 | private simulation hook에 의존하지 않음 |
+- Action 수락, 완료 결과와 실제 정지 확인을 구분한다.
+- 입력이 오래됐거나 TF와 calibration이 없으면 정상 관측, 준비 상태를 합성하지 않는다.
+- Wheel feedback 정상, 팔 통신 정상과 Mission을 실행할 수 있는 안전 상태는 다르다.
+- Fault release, 복구 Action 성공과 새 Mission 실행 허가는 각각 다른 조건이다.
+- 물리 e-stop과 하드웨어 보호는 Supervisor, ROS, cloud 연결의 생존에 의존하지 않는다.
 
-## 5. 가정
+## 관련 문서
 
-- 기본 실행은 단일 Cleany 로봇이며 root namespace를 사용한다.
-- Sim 또는 Real backend 중 하나만 canonical robot topic과 TF를 소유한다.
-- 상위 mission stack은 backend 종류를 알지 않는다.
-- 실제 base는 4륜 Mecanum holonomic kinematics를 사용한다.
-- 실제 motor encoder와 MDD20A는 멘토 지원 MCU를 통해 제어한다.
-- MCU 모델, firmware 책임, Jetson 연결 방식과 command/feedback 주기는 추가 확인 필요다.
-- wheel radius, wheelbase, track width, wheel 순서, 회전 방향, joint 이름과 sensor 장착 위치는 추가 확인 필요다.
-- 모든 node가 simulation에서 `use_sim_time`을 일관되게 적용할 수 있다고 가정한다.
+- [Navigation and Mapping](<05 - Navigation and Mapping.md>)
+- [Mission Lifecycle](<09 - Mission Lifecycle.md>)
+- [System Supervisor](<14 - System Supervisor.md>)
+- [Manipulation and Calibration](<15 - Manipulation and Calibration.md>)
 
-## 6. 리스크
+## 출처
 
-- Sim과 Real의 Mecanum wheel 순서, roller 방향, geometry 또는 velocity 부호가 다르면 같은 `cmd_vel`에서 이동 방향이 달라질 수 있다.
-- Mecanum wheel slip은 IMU만으로 제거할 수 없으므로 wheel odometry fusion과 localization 보정이 부정확하면 `odom` drift가 커질 수 있다.
-- Sim과 Real이 동시에 같은 topic 또는 transform을 발행하면 navigation과 상태 추정이 깨질 수 있다.
-- frame 이름과 joint 이름이 driver, URDF, MoveIt 사이에서 다르면 integration 비용이 커진다.
-- QoS가 publisher/subscriber 사이에서 호환되지 않으면 sensor data가 보이지 않을 수 있다.
-- command timeout과 e-stop 경계가 없으면 node 중단 시 마지막 명령이 계속 적용될 수 있다.
-
-## 7. 관련 결정
-
-- [System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)는 가용성, 실행 허가와 복구 조정의 책임을 정한다.
-
-- [4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)는 4륜 Mecanum base와 상위 차체 속도 축을 채택한 Decision이다.
-- `/cmd_vel`, frame, arm/gripper, sensor naming의 최종 채택은 Technical Decision 또는 팀 검토가 필요하다.
-- 관련 미해결 항목은 [Technical Questions](<99 - Questions.md>)에서 관리한다.
-
-## 8. 출처
-
-- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
+- [현재 계약 reference 색인 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/docs/INTEGRATION.md)
+- [Base 명령, 구동 허가와 odometry at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/ros2_ws/src/cleany_base_driver/README.md)
+- [micro-ROS firmware와 motor task at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/esp32/README.md)
+- [Wheel protocol v2 at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/ros2_ws/src/cleany_base_interfaces/README.md)
+- [Scene와 Grasp at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/scene-and-grasp.md)
+- [단일 객체 Manipulation at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/manipulation.md)
 - [Supervisor ROS 계약 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
-- [공유 ROS 인터페이스 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_interfaces/README.md)
 
-- [260710 - Docs 검증 및 ROS 2 Contract 회의 준비](<../40_RAW/260710 - Docs 검증 및 ROS 2 Contract 회의 준비.md>)
+## 관련 결정
+
+- [260714 - 4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)
+- [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)
+- [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)

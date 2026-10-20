@@ -64,12 +64,19 @@
 
 ### 구동 관계
 
+구현 브랜치 `e8b9f11`은 ESP32-S3를 통해 네 wheel의 encoder 수집과 PI+FF 제어를
+수행한다. Jetson은 native USB micro-ROS로 wheel 명령과 상태를 교환하고 MCU가
+MDD20A의 PWM/DIR을 구동한다. 아래는 제어 구조이며 실제 배선, 전원 보호의 완료
+판정은 아니다. MCU pinmap, 보드와 firmware는 구현 레포에서 관리한다.
+
 ```mermaid
 flowchart LR
-    J["Jetson<br/>주행 명령"] --> D["MDD20A × 2<br/>PWM, 방향 제어"]
+    J["Jetson<br/>base driver"] -->|USB micro-ROS| C["ESP32-S3<br/>wheel 제어"]
+    C -->|PWM, DIR| D["MDD20A × 2<br/>motor driver"]
     D --> M["DC gear motor × 4<br/>encoder 피드백"]
     M --> W["127 mm Mecanum wheel × 4<br/>전방향 주행"]
-    M --> J
+    M -->|encoder| C
+    C -->|WheelState| J
 ```
 
 > Mecanum wheel set의 실제 구성품에 좌, 우 휠 각 2개, 총 4개가 포함되는지는 발주, 실장 단계에서 확인이 필요하다.
@@ -178,8 +185,10 @@ flowchart LR
 
     S -->|센서 데이터| J
     T -->|조작 입력, 행동 데이터| J
-    J -->|주행 명령| B
-    B -->|encoder 피드백| J
+    J -->|USB micro-ROS wheel 명령| C["ESP32-S3"]
+    C -->|PWM, DIR| B
+    B -->|encoder| C
+    C -->|wheel 피드백| J
     J -->|동작 명령| A
     A -->|관절 위치, 상태 피드백| J
 ```
@@ -202,5 +211,8 @@ flowchart LR
 - [로봇 프레임 구조](<../30_DECISIONS/Technical/260715 - 로봇 프레임 구조.md>): 알루미늄 프로파일을 선택한 결정이다.
 
 ## 15. 출처
+
+- [ESP32 제어 구조와 pinmap 진입점 at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/esp32/README.md)
+- [Base geometry와 hardware profile 경계 at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/ros2_ws/src/cleany_base_driver/README.md)
 
 - 비공개 Raw 원본: 끌리니 하드웨어 구성 및 부품 목록

@@ -48,6 +48,19 @@ System Supervisor는 시스템 가용성, Fault, 기능 제한과 실행 허가�
 기본 설정은 해당 증거 없이 자동 운영을 허용하지 않는다. synthetic ROS graph의
 정지 및 복구 응답은 실물 모터 정지나 E-stop 회로 검증으로 해석하지 않는다.
 
+## 구현된 방어와 실물 증거
+
+| 구현 경계 | 확인한 처리 | 별도 증거가 필요한 것 |
+|---|---|---|
+| 주행 안전 경로 | 관측 최신성, TF, pan과 Collision Monitor, 몸체, 제동 영역 검사 | 실제 시야, slip, 하중과 정지 거리 |
+| MCU와 base driver | 구동 허가, 명령 만료, watchdog, cached 명령 폐기 | 통신 차단 후 실제 모터 정지와 보호 회로 |
+| Mission Runtime | terminal과 정지 확인, 물체 상태 불명확 시 다음 이동 차단 | 실물 팔, 물체 상태의 신뢰할 수 있는 제공자 |
+| Supervisor | UNKNOWN 제한, 허가 만료, 철회와 복구 조정 | 기준 Runtime 및 실제 health, 정지, 복구 adapter 통합 |
+
+0 속도 발행, PWM zero 보고와 실제 정지는 다르다. 초기 설정의 park 팔 자세 가정도
+실제 팔 자세 감시나 자세 유지 기능을 대신하지 않는다. Snapshot, mock 응답과 replay를
+실물 보호 기능의 증거로 사용하지 않는다.
+
 ## 예상 밖 장면 변화
 
 책상 작업은 외부 개입이 없는 준정적 환경을 전제로 하지만, 로봇 행동으로 물체가
@@ -95,6 +108,10 @@ System Supervisor는 시스템 가용성, Fault, 기능 제한과 실행 허가�
 - [System Supervisor](<14 - System Supervisor.md>)
 
 ## 출처
+
+- [주행 보호와 park posture 가정 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_navigation/docs/safety.md)
+- [MCU watchdog와 구동 허가 at e8b9f11](https://github.com/asm17-moving-agent/cleany/blob/e8b9f114518cda1e213cd6ba4fb8fcfce979f951/esp32/README.md)
+- [Runtime 조작 결과와 주행 gate at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/manipulation.md)
 
 - [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
 - [Supervisor 안전 및 검증 범위 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)

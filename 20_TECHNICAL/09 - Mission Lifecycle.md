@@ -90,24 +90,31 @@ Mission Manager가 이후 재관찰과 재계획을 시작한다. 취소는 진�
 
 ## 현재 구현과 차이
 
-구현 레포 `feat/system-supervisor`의 `c63fadb`에서 기본 Mission core는 다음 흐름을
-유지하며 별도의 허가 및 중단 bridge를 연결했다. main 반영이나 실물 배포를 뜻하지 않는다.
+2026-10-17 사용자 결정에 따라 FSM+BT Runtime을 Supervisor 통합 기준으로 삼는다.
+현재 구현과 통합 대상은 다음처럼 나뉜다.
+
+| 구현 기준 | 현재 경로 | 남은 통합 |
+|---|---|---|
+| Runtime `65fdf06` | Gateway 접수, 영속 journal, 상위 FSM과 청소 BT, 비동기 Nav2 및 조작 Action adapter | Supervisor와 실제 perception/planner/조작 실행 연결 |
+| Supervisor `c63fadb` | 기존 순차 Mission core에 실행 허가, 철회, 중단과 재검증 bridge 연결 | 기준 Runtime의 BT, journal 및 중단 경계에 이식 |
 
 ```text
-NAVIGATE_TO_TARGET
-→ PERCEIVE
-→ PLAN_TASKS
-→ EXECUTE_TASKS
-→ RETURN_HOME
-→ REPORT
+상위 FSM: 수락 → 좌석 이동 → WORKING → 종료 정책 → 복귀 또는 다음 배차 대기 → 보고
+청소 BT: 작업 전 관찰 → [다음 행동 제안 → 검증 → 하나 실행 → 재관찰 → 완료 확인]
 ```
 
-이 브랜치에는 허가 만료 및 철회 감시, 중단 수락과 완료 확인, 지연된 결과 무효화와
-명시적 재검증 뒤 재개 경계가 추가됐다. 기존 무감독 core가 자동으로 이 경계를
-사용하는 것은 아니다. production Navigator 및 Arm adapter 연결은 남아 있다.
-작업 후 재관찰 단계와 Dashboard 및 Backend 접수 연결이 추가됐다는 뜻도 아니다.
-정확한 enum, retry 값, 결과 필드와 테스트 상태는 구현 code와 package README가
-Source of Truth다. 다른 구현 브랜치의 진척을 이 기준에 합쳐 해석하지 않는다.
+Runtime은 `done` 제안만으로 완료하지 않고 fresh 관찰로 잔여 대상을 확인한다.
+책상 perception과 planner는 Mock이며 executor는 로컬 또는 외부 Action Mock을 사용한다.
+행동별 재관찰의 제어 흐름이 구현됐다는 사실과 실제 카메라 재관찰은 구분한다.
+
+Runtime의 journal과 bridge outbox는 중복 실행 방지, 재연결과 최종 보고를 지원한다.
+관찰 사진의 로컬 저장 및 Backend 저장 확인은 별도 목표 정책이다. 구현 옵션인
+`return_home`과 `wait_for_next`는 존재하지만 제품의 미션 후 기본 행동을 자동 확정하지 않는다.
+목표 MVP는 기존 왕복 흐름을 유지한다.
+
+Supervisor 허가, 철회와 복구 후 명시적 재검증은 위 기준 Runtime에 통합해야 할
+조건이다. 별도 브랜치의 synthetic ROS 검증을 실제 Nav2, Arm 통합 완료로 취급하지 않는다.
+정확한 state, ROS endpoint와 timeout은 각 구현 reference가 관리한다.
 
 ## 실행 허가 철회와 복구 뒤 판단
 
@@ -175,7 +182,7 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 ## 구현 문서 경계
 
 이 문서는 안정적인 lifecycle 의미만 관리한다. 다음 내용은 구현 레포의
-`cleany_mission_manager` README와 코드에서 관리한다.
+Mission reference와 코드에서 관리한다.
 
 - 정확한 state enum과 transition table
 - dataclass, result schema와 failure code
@@ -193,6 +200,10 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 
 ## 출처
 
+- [현재 Runtime FSM과 BT 및 Gateway 계약 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/mission.md)
+- [Runtime 조작 결과와 주행 gate at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/manipulation.md)
+- [기술 KB 구현 대조와 사용자 결정](<../40_RAW/261017 - 기술 KB 구현 대조와 사용자 결정.md>)
+
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
 - [ROS 2 Action 공식 설계](https://design.ros2.org/articles/actions.html)
 - [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
@@ -201,6 +212,7 @@ Navigation은 현재 별도 Navigator port다. 추후 선택된 Planner가 Navig
 
 ## 관련 결정
 
+- [261017 - FSM과 BT Runtime 기준 Supervisor 통합](<../30_DECISIONS/Technical/261017 - FSM과 BT Runtime 기준 Supervisor 통합.md>)
 - [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260708 - MVP 기능 범위](<../30_DECISIONS/Planning/260708 - MVP 기능 범위.md>)

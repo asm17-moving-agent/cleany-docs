@@ -19,26 +19,29 @@
 
 ## 기술 리뷰
 
-1. [System Context](<../20_TECHNICAL/01 - System Context.md>)
-2. [Robot Operations and Mission Dispatch](<../20_TECHNICAL/02 - Robot Operations and Mission Dispatch.md>)
-3. [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
-4. [Perception and Scene Understanding](<../20_TECHNICAL/07 - Perception and Scene Understanding.md>)
-5. [Mission Lifecycle](<../20_TECHNICAL/09 - Mission Lifecycle.md>)
-6. [Safety and Risk](<../20_TECHNICAL/08 - Safety and Risk.md>)
-7. [System Supervisor](<../20_TECHNICAL/14 - System Supervisor.md>)
-8. 필요한 subsystem 문서
+1. [Technical Overview](<../20_TECHNICAL/00 - Technical Overview.md>)의 현재 구현과 통합 기준
+2. [System Context](<../20_TECHNICAL/01 - System Context.md>)
+3. [Robot Operations and Mission Dispatch](<../20_TECHNICAL/02 - Robot Operations and Mission Dispatch.md>)
+4. [Task Planning and Robot Capabilities](<../20_TECHNICAL/03 - Task Planning and Robot Capabilities.md>)
+5. [Perception and Scene Understanding](<../20_TECHNICAL/07 - Perception and Scene Understanding.md>)
+6. [Mission Lifecycle](<../20_TECHNICAL/09 - Mission Lifecycle.md>)
+7. [Safety and Risk](<../20_TECHNICAL/08 - Safety and Risk.md>)
+8. [System Supervisor](<../20_TECHNICAL/14 - System Supervisor.md>)
+9. 필요한 subsystem 문서
    - [Navigation and Mapping](<../20_TECHNICAL/05 - Navigation and Mapping.md>)
    - [Robot ROS Contract](<../20_TECHNICAL/10 - Robot ROS Contract.md>)
    - [ROS 2 Software Architecture](<../20_TECHNICAL/11 - ROS 2 Software Architecture.md>)
+   - [Manipulation and Calibration](<../20_TECHNICAL/15 - Manipulation and Calibration.md>)
    - [Hardware Configuration](<../20_TECHNICAL/12 - Hardware Configuration.md>)
    - [Verification and Simulation Strategy](<../20_TECHNICAL/13 - Verification and Simulation Strategy.md>)
 
 확인할 점:
 
-- 후보 Planner의 고수준 제안과 Skill 내부 VLA 실행 가능성 검증이 구분되는가?
+- Perception 의미 분류, Planner의 행동 제안과 MoveIt 및 Skill 실행이 구분되는가?
 - Navigation과 Manipulation의 책임이 섞이지 않고 안전 정지가 일반 skill과 구분되는가?
 - 목표 구조, 현재 구현과 실험 후보가 구분되는가?
 - 시스템 가용성, Mission 재개 판단과 독립 안전 정지의 소유자가 구분되는가?
+- FSM+BT Runtime을 기준으로 한 통합 예정과 현재 연결된 구현이 구분되는가?
 
 ## 프로젝트 설명
 

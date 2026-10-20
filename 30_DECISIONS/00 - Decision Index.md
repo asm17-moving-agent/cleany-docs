@@ -10,6 +10,7 @@ Technical Questions에서 관리하고, 검토와 승인 이력은 GitHub PR에 
 |---|---|
 | 2026-07-08 | [1차 타깃 무인 스터디카페](<Planning/260708 - 1차 타깃 무인 스터디카페.md>) |
 | 2026-07-08 | [MVP 기능 범위](<Planning/260708 - MVP 기능 범위.md>) |
+| 2026-10-17 | [261017 - MoveIt과 규칙 기반 조작의 MVP 인정](<Planning/261017 - MoveIt과 규칙 기반 조작의 MVP 인정.md>) |
 
 ## Technical Decisions
 
@@ -25,3 +26,4 @@ Technical Questions에서 관리하고, 검토와 승인 이력은 GitHub PR에 
 | 2026-10-02 | [Manipulation 결과와 안전 상태 보존](<Technical/261002 - Manipulation 결과와 안전 상태 보존.md>) |
 | 2026-10-02 | [관찰 자료 로컬 저장과 Backend 재전송](<Technical/261002 - 관찰 자료 로컬 저장과 Backend 재전송.md>) |
 | 2026-10-16 | [System Supervisor 책임과 안전 경계](<Technical/261016 - System Supervisor 책임과 안전 경계.md>) |
+| 2026-10-17 | [261017 - FSM과 BT Runtime 기준 Supervisor 통합](<Technical/261017 - FSM과 BT Runtime 기준 Supervisor 통합.md>) |

@@ -126,6 +126,11 @@ E-stop은 software reset만으로 해제할 수 없다. 물리 해제 확인과 
 
 ## 현재 구현 범위와 검증 한계
 
+2026-10-17 사용자 결정에 따라 Supervisor는 FSM+BT Runtime을 기준으로 통합한다.
+아래 `c63fadb`의 순차 core bridge는 허가 및 중단 계약의 구현 근거다. 이를 기준
+Runtime에 연결하고 BT, journal, 조작 물체 상태와 재개 의미를 함께 검증해야 한다.
+현재 두 구현이 하나의 실행으로 통합됐다는 뜻은 아니다.
+
 이 절은 구현 레포 `feat/system-supervisor`의 `c63fadb`를 기준으로 한다. main 반영,
 원격 공개, 배포 완료 또는 실제 로봇 가동을 의미하지 않는다.
 
@@ -161,4 +166,5 @@ E-stop은 software reset만으로 해제할 수 없다. 물리 해제 확인과 
 
 ## 관련 결정
 
+- [261017 - FSM과 BT Runtime 기준 Supervisor 통합](<../30_DECISIONS/Technical/261017 - FSM과 BT Runtime 기준 Supervisor 통합.md>)
 - [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)

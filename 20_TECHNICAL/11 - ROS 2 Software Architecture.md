@@ -2,129 +2,103 @@
 
 ## 요약
 
-Cleany ROS 2 workspace는 Mission orchestration, 장면 인식, task planning, physical
-execution, 시스템 가용성 및 복구 조정과 robot backend를 분리한다. 이 문서는 package 책임과 의존 방향만
-관리하며 정확한 ROS interface는 구현 code, package README가 관리한다.
+Backend의 배차, Robot의 미션 실행, 시스템 가용성과 개별 동작을 분리한다.
+현재 연결된 경로와 별도 브랜치의 기능을 구분한다. 컴포넌트 이름이 존재하거나
+목표 구성도에 포함됐다는 사실을 통합 구현 완료로 해석하지 않는다.
 
-## 구성도
+## 현재 연결과 통합 대상
+
+아래 실선은 `feat/runtime-integration`의 `65fdf06`에서 확인한 실행 연결이다.
+점선은 별도 브랜치의 Supervisor를 이 Runtime에 연결할 통합 경계다.
 
 ```mermaid
-flowchart LR
-    external["Dashboard / Backend Adapter"]
-    mission["cleany_mission_manager"]
-    supervisor["cleany_system_supervisor"]
-    safety["Independent Safety Layer"]
-    nav["Navigator / Nav2"]
-    perception["cleany_perception"]
-    planner["cleany_planner"]
-    skills["cleany_skill_executor"]
-    interface["cleany_robot_interface"]
-    sim["Gazebo / MuJoCo Backend"]
-    real["Real Robot Backend"]
-    logger["cleany_logger"]
+flowchart TB
+    backend["Control Plane Backend"]
+    bridge["cleany_control_bridge"]
+    mission["Mission Runtime<br/>상위 FSM + 청소 BT"]
+    nav["Navigator adapter / Nav2"]
+    guard["선택된 주행 안전 경로"]
+    base["활성 Sim 또는 Real base backend"]
+    desk["책상 관측, 계획 Mock"]
+    manip["로컬 Mock 또는 외부 조작 Action Mock"]
+    supervisor["별도 구현: System Supervisor<br/>허가, 중단, 복구 조정"]
+    monitor["개발 관측 도구"]
 
-    external <--> mission
-    supervisor <-->|실행 허가, 중단 요청과 완료| mission
-    nav -->|health와 lifecycle| supervisor
-    perception -->|semantic health| supervisor
-    interface -->|상태 보고| supervisor
-    supervisor -->|담당 컴포넌트에 복구 요청| interface
-    safety -->|보호와 정지 증거| supervisor
-    safety -->|독립 구동 보호| real
-    mission --> nav
-    mission --> perception
-    mission --> planner
-    mission --> skills
-    nav --> interface
-    perception --> interface
-    skills --> interface
-    interface --> sim
-    interface --> real
-    mission --> logger
-    perception --> logger
-    skills --> logger
+    backend <--> bridge <--> mission
+    mission --> nav --> guard --> base
+    mission <--> desk
+    mission <--> manip
+    supervisor -. "Runtime 통합 필요" .-> mission
+    mission -->|상태, 이벤트| monitor
+    nav -->|진단| monitor
 ```
 
-## Package 책임
+이 그림의 Sim/Real base는 하위 계약의 대체 대상이다. 위 Runtime의 실물 미션 가동을
+뜻하지 않는다. Supervisor 브랜치는 별도의 순차 Mission core에 허가 bridge를 연결했으며,
+두 브랜치의 상태 전이와 재개 의미를 그대로 합친 실행은 확인하지 않았다.
 
-| Package, 경계 | 책임 | 소유하지 않는 것 |
-|---|---|---|
-| `cleany_system_supervisor` | 시스템 가용성, Fault, Capability 상태, 실행 허가와 복구 조정 | Mission 재개, Skill 일반 실패와 실제 안전 정지 |
-| `cleany_mission_manager` | Mission lifecycle, 상태 전이, retry, 중단, 재검증과 report | 시스템 Fault 전체 정책, 센서 처리와 motor 제어 |
-| Navigator adapter | 좌석 ID→pose, Nav2 action 조정 | 책상 task 순서 |
-| `cleany_perception` | sensor→Scene State | Mission 전이와 task 정책 |
-| `cleany_planner` | RuleBasedPlanner, 선택된 VLM 또는 API adapter | trajectory, hardware safety |
-| `cleany_skill_executor` | Manipulation Skill 실행 | Mission state 직접 변경 |
-| `cleany_robot_interface` | Sim과 Real의 공통 robot port | 작업 의미 재해석 |
-| `cleany_interfaces` | package 간 공유 ROS type | business, 실행 logic |
-| `cleany_logger` | event, observation, MissionResult 기록 | state Source of Truth |
-| Sim package | Gazebo 주행, MuJoCo 조작 backend | 제품 정책 |
-| Independent Safety Layer | 실제 정지와 하드웨어 보호 | Supervisor의 정상 실행이나 cloud 연결에 의존하지 않음 |
+별도의 Scene/Grasp 경로는 RGB-D에서 물체와 점군을 만들고 파지 후보 및 MoveIt
+검증을 수행한다. MuJoCo sorting은 이 경로를 사용하지만 Mission의 조작 Mock 서버와
+같은 구현으로 취급하지 않는다. 연결 조건은 [Manipulation and Calibration](<15 - Manipulation and Calibration.md>)을 따른다.
 
-현재 일부 package는 scaffold다. 구현 완료 여부는 각 package README를 확인한다.
-`feat/system-supervisor`의 `c63fadb`에는 Supervisor node와 Mission 허가 bridge가 있으며,
-실물 안전 및 component recovery adapter와 production 연결은 남아 있다. 위 안전 계층
-박스는 필요한 책임 경계이며 독립 ROS package나 실물 회로 구현 완료를 뜻하지 않는다.
+## 책임과 구현 경계
 
-## 의존 방향
-
-- Mission core는 ROS node, hardware SDK에 직접 의존하지 않는 순수 logic을 유지한다.
-- 상위 package는 구체적인 Sim과 Real backend 대신 port와 ROS interface에 의존한다.
-- Nav2, MoveIt, controller와 VLA adapter는 Cleany package 뒤에서 호출한다.
-- Perception과 Planner는 자유 형식 dict보다 검증 가능한 typed boundary를 지향한다.
-- hardware limit과 safe stop은 cloud Planner dependency보다 아래에 둔다.
-- Supervisor와 Mission은 공유 interface 및 port로 연결한다. 시스템 운영 상태,
-  복구 작업 상태와 Mission 상태를 서로 직접 덮어쓰지 않는다.
-
-## 통신 선택 원칙
-
-| 형태 | 사용 |
+| 경계 | 현재 책임과 구현 범위 |
 |---|---|
-| Topic | 지속 sensor, state, observation stream |
-| Service | 짧고 즉시 끝나는 조회, 설정 |
-| Action | Navigation, Manipulation처럼 feedback, cancel, result가 필요한 실행 |
+| Control Plane Backend | 대기열, 외부 lifecycle, Gateway event와 결과 저장 |
+| `cleany_control_bridge` | WebSocket과 ROS 변환, snapshot 동기화, outbox 재전송 |
+| `cleany_mission_manager` | 수락, 상위 FSM, 청소 BT, 중복 실행 방지와 최종 보고; 책상 입력은 Mock |
+| `cleany_system_supervisor` | 별도 브랜치의 가용성, Fault, 허가와 복구 조정; production adapter 통합 필요 |
+| `cleany_navigation`와 Navigator adapter | 공통 주행, 관측 보호와 목적지 도착 확인 |
+| `cleany_perception`, `cleany_grasping`, `cleany_skill_executor` | 별도 센서 기반 관찰, 파지 후보, 도달성 검증 및 시뮬레이션 실행 |
+| `cleany_base_driver`, `cleany_base_odometry`, ESP32 | 명령 변환, MCU feedback, wheel odometry와 구동 허가 |
+| `cleany_interfaces`, `cleany_base_interfaces` | 공유 ROS 계약과 단위 및 식별 의미 |
+| `cleany_robot_interface` | 공통 adapter의 설계 경계; 이 Runtime에서 구현된 중앙 통과 패키지가 아님 |
+| `cleany_planner` | 독립 패키지의 구현을 전제로 하지 않음; Runtime의 Mock Planner와 실제 인식 의미 분류를 구분 |
+| `cleany_logger`와 개발 관측 | 미션 journal, 관찰 자료 전달, rosbag, 진단 기록을 목적별로 구분; 하나의 완성된 저장 기능으로 합치지 않음 |
+| 독립 안전 계층 | 실제 정지와 하드웨어 보호 책임; Supervisor의 상태 보고만으로 구현 완료 판정 불가 |
 
-정확한 이름, QoS, schema와 timeout은 실제 package 구현 문서에서 정한다. KB는
-Mission, Capability, failure의 의미만 고정한다.
+## 의존성과 상태 소유권
 
-## Sim과 Real 경계
+Mission core는 ROS와 장치 SDK 대신 port를 사용한다. 구체적인 Navigator 및 조작
+adapter가 ROS를 호출하고, Backend는 Robot 내부 FSM을 직접 변경하지 않는다.
+공통 Robot Interface를 목표로 하더라도 현재 adapter가 실제 어디에 있는지 유지한다.
 
-- 한 실행에서는 하나의 backend만 canonical command, state, TF를 소유한다.
-- Gazebo는 base, Nav2, sensor, MuJoCo는 tabletop arm manipulation을 우선 검증한다.
-- 상위 Mission, Planner는 backend 종류를 알지 않는다.
-- private simulation test hook을 공통 Robot Contract로 승격하지 않는다.
+System Supervisor는 시스템 운영 상태, 복구 작업과 실행 허가를 소유한다. Mission은
+자신의 lifecycle과 복구 후 재검증을 소유한다. Skill은 행동 내부의 순서와 물리 제약을
+소유한다. 일반 Skill 실패와 Nav2 내부 Recovery를 모두 시스템 Fault로 승격하지 않는다.
 
-## 상태와 안전 소유권
+Topic은 센서와 상태, Service는 짧은 요청, Action은 취소와 결과 확인이 필요한 작업에
+사용한다. 정확한 schema, QoS와 endpoint는 구현 레포의 계약 reference가 관리한다.
 
-Mission Manager만 Mission state를 바꾼다. 하위 모듈은 성공, 실패, 차단, 취소와 치명
-오류를 구분해 결과를 반환한다. Manipulation 실행 결과에는 정지 확인과 물체 상태도
-보존한다. 정지 미확인은 일반 실패나 정상 취소로 축약하지 않고 후속 동작을 차단한다.
-hardware fault와 e-stop은 결과를 반환하기 전에 실제 구동을 우선 정지할 수 있어야 한다.
+## Sim, Real과 관측
 
-Supervisor는 Fault와 Capability에서 운영 상태 및 실행 허가를 계산하고 필요하면
-Mission 중단을 요청한다. Mission은 요청 수락과 실제 정지 완료를 구분해 반환한다.
-복구는 컴포넌트가 수행하며 health 복귀 뒤에도 재개 판단은 Mission Manager에 남는다.
-Supervisor 종료와 통신 두절에서 실제 정지를 보장하는 기능은 하위 제어기와 독립 안전
-계층에 있어야 한다.
+한 실행에서 같은 명령, canonical odometry와 TF edge의 소유자는 중복되지 않아야
+한다. 실물 MCU, Mock MCU와 simulator를 같은 명령 경로에 겹쳐 연결하지 않는다.
+Simulator private hook과 평가용 ground truth를 공통 제어 계약으로 노출하지 않는다.
+
+개발 모니터는 실행 출처, 입력 단절, event gap과 기록을 관찰한다. 화면 표시나
+replay가 미션 실행 및 물리 검증을 대신하지 않는다. Runtime journal의 실행 결과,
+Backend의 저장 ACK와 작업 전후 이미지의 저장 확인도 다른 증거다.
 
 ## 관련 문서
 
+- [Technical Overview](<00 - Technical Overview.md>)
 - [Mission Lifecycle](<09 - Mission Lifecycle.md>)
 - [Robot ROS Contract](<10 - Robot ROS Contract.md>)
-- [Verification and Simulation Strategy](<13 - Verification and Simulation Strategy.md>)
 - [System Supervisor](<14 - System Supervisor.md>)
+- [Manipulation and Calibration](<15 - Manipulation and Calibration.md>)
 
 ## 출처
 
-- [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
-- [Supervisor README at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
-
-- [09 - Mission Lifecycle](<09 - Mission Lifecycle.md>)
-- [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)
+- [현재 연결 흐름과 reference 색인 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/docs/INTEGRATION.md)
+- [Runtime과 Gateway 계약 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/mission.md)
+- [Supervisor 구현 범위 at c63fadb](https://github.com/asm17-moving-agent/cleany/blob/c63fadb467afac08cc62a3cfd0a5af7c59b6e8b7/ros2_ws/src/cleany_system_supervisor/README.md)
+- [Control Plane 구조 at e2fa98d](https://github.com/asm17-moving-agent/cleany-control-plane/blob/e2fa98d9d823ba4e2ccb0b8ed510ac7f1badb843/docs/architecture/robot-gateway-integration.md)
 
 ## 관련 결정
 
+- [261017 - FSM과 BT Runtime 기준 Supervisor 통합](<../30_DECISIONS/Technical/261017 - FSM과 BT Runtime 기준 Supervisor 통합.md>)
 - [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
-
-- [260714 - 4륜 메카넘 베이스](<../30_DECISIONS/Technical/260714 - 4륜 메카넘 베이스.md>)
+- [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
 - [261002 - Manipulation 결과와 안전 상태 보존](<../30_DECISIONS/Technical/261002 - Manipulation 결과와 안전 상태 보존.md>)

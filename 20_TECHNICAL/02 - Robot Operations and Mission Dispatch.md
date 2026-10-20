@@ -54,7 +54,7 @@ sequenceDiagram
         Robot-->>Backend: 이동, 책상 작업, 복귀 상태
         Robot-->>Backend: 최종 결과와 전후 관찰 참조
         Backend-->>Dashboard: 진행 상태와 결과
-    else 거절 또는 응답 timeout
+    else 명시적 거절
         Robot-->>Backend: Reject 사유, 응답한 경우
         Backend->>Backend: 사유에 따라 재대기 또는 종료
         Backend-->>Dashboard: 대기 또는 거절 상태
@@ -70,8 +70,8 @@ sequenceDiagram
 - 새 미션이 현재 활성 미션을 선점하지 않는다.
 - Robot이 offline이어도 요청을 대기열에 둘 수 있지만, 명시한 만료 시각이 지나면
   할당하지 않는다.
-- Robot이 응답하지 않거나 일시적으로 실행할 수 없으면 만료 전까지 대기열로
-  되돌릴 수 있다.
+- 일시 거절 또는 미수락이 확인된 미션은 만료 전까지 재대기할 수 있다. 응답 timeout은
+  수락 여부 불명확 상태이므로 실행 슬롯을 유지하고 동기화한다.
 - 유효하지 않은 대상, 지원하지 않는 미션과 안전 조건을 만족하지 못한 요청은
   거절하고 자동 재할당하지 않는다.
 - 같은 미션이 재전달되더라도 중복 실행하지 않아야 한다. 정확한 식별자와 멱등 처리
@@ -80,8 +80,8 @@ sequenceDiagram
 ## 외부 Mission lifecycle
 
 Dashboard와 Backend는 대기, 할당 제안, 수락, 좌석 이동, 책상 작업, 복귀와 종료
-결과의 운영 의미만 공유한다. 응답이 없거나 일시적으로 거절된 미션은 대기열로
-돌아가고, 취소 요청은 안전한 checkpoint를 거쳐 종료 경로로 연결한다. 이 흐름은
+결과의 운영 의미만 공유한다. 미수락이 확인된 일시 거절은 재대기할 수 있고, 응답이
+없으면 먼저 실행 상태를 동기화한다. 취소 요청은 안전한 checkpoint를 거쳐 종료 경로로 연결한다. 이 흐름은
 실제 API enum이나 Mission Manager의 내부 state 이름을 확정하지 않는다.
 
 Robot 가용 상태는 외부 Mission lifecycle과 분리해 `offline`, `idle`, `busy`, `error`
@@ -125,15 +125,22 @@ Backend의 취소, reset과 복귀는 Robot 상태를 강제로 바꾸는 명령
 
 ## 현재 구현과 차이
 
-구현 레포 `feat/system-supervisor`의 `c63fadb`에서는 기존 Mission core에 시스템 허가,
-철회, 중단 확인과 재검증 bridge가 추가됐다. 이 변경이 Dashboard 접수나 Backend
-대기열 및 외부 관제 adapter를 연결한 것은 아니다. Supervisor 연동의 검증 범위는
-로컬 core와 synthetic ROS graph이며, 다른 control-plane 및 runtime 브랜치의 구현
-상태는 해당 checkout의 README에서 별도로 확인한다.
+Control Plane `main`의 `e2fa98d`에는 우선순위 queue, Gateway WebSocket,
+미션별 event 및 중복 방지와 SQLite 영속성이 있다. Robot Runtime `65fdf06`의
+`cleany_control_bridge`가 이 계약을 ROS service와 최종 보고에 연결한다.
 
-이 문서는 목표 관제 의미를 관리한다. 실제 transport, API endpoint, ROS interface,
-message schema, heartbeat 주기, 인증 방식, database와 media 저장 구조는 구현 과정에서
-정하고 관련 package README에 기록한다.
+수신 ACK, 미션 수락과 최종 결과는 다른 증거다. Bridge는 재연결 시 fresh snapshot을
+먼저 동기화하고 outbox의 미확인 event를 같은 ID로 재전송한다. 미션 결과와 Robot의
+fresh 가용 상태가 모두 확인돼야 다음 배차로 넘어간다. 응답 timeout만으로 미수락을
+확정하거나 새 실행을 보내지 않는다.
+
+Runtime 책상 작업은 Mock이다. `mock://` 관찰 ID를 실제 사진으로 전송하지 않으며,
+사진 로컬 저장, Backend 저장 확인, 수동 재전송의 목표 정책은 별도 구현이 필요하다.
+Supervisor는 FSM+BT Runtime을 기준으로 통합할 예정이며 현재 연결된 것으로
+간주하지 않는다. 원격 reset, 복귀 API도 목표 의미와 현재 노출된 API를 구분한다.
+
+정확한 transport payload, sequence, heartbeat, 인증과 database 계약은 Control Plane의
+schema 및 architecture와 Robot 구현 reference가 관리한다.
 
 ## 관련 문서
 
@@ -146,6 +153,9 @@ message schema, heartbeat 주기, 인증 방식, database와 media 저장 구조
 - [Technical Questions](<99 - Questions.md>)
 
 ## 출처
+
+- [Gateway 상태 동기화와 배차 계약 at e2fa98d](https://github.com/asm17-moving-agent/cleany-control-plane/blob/e2fa98d9d823ba4e2ccb0b8ed510ac7f1badb843/docs/architecture/robot-gateway-integration.md)
+- [Robot Runtime과 bridge 계약 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/mission.md)
 
 - [기획서 원문 요약](<../40_RAW/기획서 원문 요약.md>)
 - [Action 결과와 관찰 자료 전달 정책 합의](<../40_RAW/261002 - Action 결과와 관찰 자료 전달 정책 합의.md>)

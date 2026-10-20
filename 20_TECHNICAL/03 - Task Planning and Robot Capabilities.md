@@ -44,7 +44,7 @@ Manager가 처리하고, safe stop과 e-stop은 Planner 응답과 독립된 하�
 Planner는 grasp pose, IK, joint trajectory, motor command를 직접 만들지 않고
 Mission Manager의 state를 변경하지 않는다.
 
-## 현재 후보와 공통 계약
+## 현재 구현과 확장 후보
 
 모델 하나를 고르는 문제가 아니다. 장면 이해 경로와 Task Proposal 생성 경로를 각각
 측정해 조합한다.
@@ -86,11 +86,12 @@ Capability가 실행을 종료, 차단하고 새 장면을 관찰한 뒤, VLM이
 | 분류 | 예시 | 현재 소유 |
 |---|---|---|
 | Navigation | 대상 좌석 이동, 대기 위치 복귀 | Navigator, Nav2 |
-| Manipulation Skill | 쓰레기 수거, 승인된 분실물의 전용 탑재 보관함 보관, arm reset | Skill Executor와 실행 backend |
+| Manipulation Skill | 쓰레기 수거, 시뮬레이션의 전용 보관함 투입, arm reset | Skill Executor와 실행 backend |
 | Observation | 작업 전후 촬영, 실행 결과 확인 | Perception |
 
-분실물 보관은 Planner가 제안하고 Mission Manager가 승인한 경우에 별도 행동으로
-실행한다. 목적지는 로봇의 전용 탑재 보관함이다.
+시뮬레이션에는 전용 탑재 보관함으로 분실물을 옮기는 경로가 있다. 실제 제품의
+분실물 처리 행동과 운영자 인계는 Planning의 미결정 범위를 따른다. 기술 경로의
+존재나 Planner 제안만으로 처리 정책을 확정하지 않는다.
 
 `Robot Capabilities`는 중립적인 상위 용어다. 선택된 Planner가 Navigation까지 직접
 호출할지, 책상 도착 후 Manipulation만 제안할지는 아직 정하지 않는다.
@@ -106,20 +107,20 @@ Mission cancel, safe stop과 e-stop은 Robot Capability로 분류하지 않는�
 
 ## Manipulation Skill과 VLA
 
-Manipulation Skill은 사전 작성 trajectory만을 뜻하지 않는다. Skill 내부에서 VLA
-policy가 arm action을 생성할 수 있으며, 필요에 따라 MoveIt, controller, 규칙 기반
-동작과 조합할 수 있다.
+현재 Manipulation 실행 기준은 규칙 기반 Skill, MoveIt 계획과 controller 실행이다.
+2026-10-17 사용자 결정으로 이 방식도 MVP 조작 기준을 충족할 수 있다. VLA를 필수로
+요구하지 않으며, 향후 다른 실행 backend를 평가할 수 있는 경계는 유지한다.
 
 ```text
-collect_trash(object_id)
-  → object / destination validation
-  → VLA policy 또는 motion backend
-  → workspace / collision / limit validation
-  → arm and gripper execution
-  → success / failed / blocked
+승인된 행동과 object/destination
+→ 입력 및 실행 조건 검사 → 파지, 계획 → arm과 gripper 실행
+→ 행동 결과 + 정지, 물체, 놓기 상태 → 최신 관찰
 ```
 
-정확한 VLA 모델, Skill별 backend 조합과 fallback은 실험 후 결정한다.
+현재 Scene/Grasp 및 MuJoCo 경로와 Mission의 단일 객체 Action Mock은 별도다.
+[Manipulation and Calibration](<15 - Manipulation and Calibration.md>)에서 도달성,
+실행과 성공 판정의 차이를 관리한다. Gemini의 의미 분류를 VLA action 생성이나
+독립 Task Planner 구현으로 부르지 않는다.
 
 ## MVP 실행 검증
 
@@ -147,11 +148,14 @@ stop은 Planner가 선택하는 일반 skill로 보지 않는다. Mission cancel
 
 ## 검증 순서
 
-1. RuleBasedPlanner와 mock, deterministic Capability로 E2E 계약을 연결한다.
-2. 로컬 VLM과 API VLM 후보, YOLO와 segmentation 후보를 같은 정지 이미지로 측정한다.
-3. 검증된 Manipulation Skill을 tool로 노출하고 MuJoCo에서 실행한다.
-4. Streaming 진행 추적과 재계획을 검증한다.
-5. 실제 로봇에서 Mission, Capability 검증과 독립 안전 경계를 포함해 검증한다.
+1. FSM+BT Runtime에서 수락, 객체 하나 실행, 재관찰, 완료와 실패 경계를 확인한다.
+2. 현재 YOLOE-seg, Gemini 관찰을 같은 snapshot 및 실패 계약으로 연결한다.
+3. 승인된 단일 객체 Action을 실제 조작 backend에 연결해 계획과 물리 실행을 구분한다.
+4. 기준 Runtime에 Supervisor 허가, 중단과 복구 후 재검증을 연결한다.
+5. 통제된 실물 시나리오에서 전후 관찰, 결과와 독립 정지를 검증한다.
+
+위 순서는 통합 대상과 검증 경계다. 각 단계의 완료 선언이나 VLA, Streaming의
+필수 채택을 뜻하지 않는다.
 
 ## 관련 문서
 
@@ -162,6 +166,10 @@ stop은 Planner가 선택하는 일반 skill로 보지 않는다. Mission cancel
 
 ## 출처
 
+- [기준 Runtime의 청소 BT 계약 at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_interfaces/docs/mission.md)
+- [현재 조작 실행 reference at 65fdf06](https://github.com/asm17-moving-agent/cleany/blob/65fdf061bcc564f4d362b1994b633d7235df66d7/ros2_ws/src/cleany_skill_executor/docs/manipulation.md)
+- [기술 KB 구현 대조와 사용자 결정](<../40_RAW/261017 - 기술 KB 구현 대조와 사용자 결정.md>)
+
 - [261016 - System Supervisor 설계 지시](<../40_RAW/261016 - System Supervisor 설계 지시.md>)
 
 - [Gemini Robotics ER 2 공식자료 검증](<../40_RAW/260803 - Gemini Robotics ER 2/04 - 공식자료 검증.md>)
@@ -169,6 +177,7 @@ stop은 Planner가 선택하는 일반 skill로 보지 않는다. Mission cancel
 
 ## 관련 결정
 
+- [261017 - MoveIt과 규칙 기반 조작의 MVP 인정](<../30_DECISIONS/Planning/261017 - MoveIt과 규칙 기반 조작의 MVP 인정.md>)
 - [261016 - System Supervisor 책임과 안전 경계](<../30_DECISIONS/Technical/261016 - System Supervisor 책임과 안전 경계.md>)
 
 - [260806 - Task Planning과 Robot Capability 경계](<../30_DECISIONS/Technical/260806 - Task Planning과 Robot Capability 경계.md>)
